@@ -10,7 +10,7 @@ const app = (0, express_1.default)();
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
-app.use((req, res, next) => {
+app.use((_req, res, _next) => {
     res.status(404).send("<h1>Page Not Found</h1>");
 });
 app.listen("3000", () => {
