@@ -12,14 +12,17 @@ router.get(
   "/add-product",
   (req: Request, res: Response, next: NextFunction) => {
     res.send(
-      "<form action='/product' method='POST'><input type='text' name='title'  /><button type='submit'>Add Product</button></form>"
+      "<form action='/admin/add-product' method='POST'><input type='text' name='title'  /><button type='submit'>Add Product</button></form>"
     );
   }
 );
 
-router.post("/product", (req: Request, res: Response, next: NextFunction) => {
-  console.log("request body", req.body);
-  res.redirect("/");
-});
+router.post(
+  "/add-product",
+  (req: Request, res: Response, next: NextFunction) => {
+    console.log("request body", req.body);
+    res.redirect("/");
+  }
+);
 
 export default router;

@@ -7,7 +7,7 @@ const app: Express = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(adminRoutes);
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
