@@ -2,6 +2,8 @@ import path from "path";
 
 import express, { Request, Response, NextFunction, Router } from "express";
 
+import rootDir from "../util/path";
+
 const router: Router = express.Router();
 
 router.get(
@@ -10,9 +12,7 @@ router.get(
     // res.send(
     //   "<form action='/admin/add-product' method='POST'><input type='text' name='title'  /><button type='submit'>Add Product</button></form>"
     // );
-    res.sendFile(
-      path.join(__dirname, "../", "../", "views", "add-product.html")
-    );
+    res.sendFile(path.join(rootDir, "..", "views", "add-product.html"));
   }
 );
 

@@ -12,7 +12,7 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
 app.use((_req, res, _next) => {
-    res.status(404).sendFile(path_1.default.join(__dirname, "../", "views", "404.html"));
+    res.status(404).sendFile(path_1.default.join(__dirname, "..", "views", "404.html"));
 });
 app.listen("3000", () => {
     console.log("Listening on port 3000");
