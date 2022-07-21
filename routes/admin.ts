@@ -15,7 +15,6 @@ router.get(
     res.sendFile(path.join(rootDir, "..", "views", "add-product.html"));
   }
 );
-
 router.post(
   "/add-product",
   (req: Request, res: Response, _next: NextFunction) => {

@@ -5,8 +5,63 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Page Not Found</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        padding: 0;
+        margin: 0;
+        font-family: sans-serif;
+      }
+      .main-header {
+        width: 100%;
+        height: 3.5rem;
+        background-color: #dbc441;
+        padding: 0 1.5rem;
+      }
+      .main-header__nav {
+        height: 100%;
+        display: flex;
+        align-items: center;
+      }
+      .main-header__item-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+      }
+      .main-header__item {
+        margin: 0 1rem;
+        padding: 0;
+      }
+      .main-header__item a {
+        text-decoration: none;
+        color: black;
+      }
+
+      .main-header__item a:hover,
+      .main-header__item a:active,
+      .main-header__item a.active {
+        color: #3e00a1;
+      }
+
+      main {
+        padding: 1rem;
+      }
+    </style>
   </head>
   <body>
+    <header class="main-header">
+      <nav class="main-header__nav">
+        <ul class="main-header__item-list">
+          <li class="main-header__item"><a href="/">Shop</a></li>
+          <li class="main-header__item">
+            <a href="/admin/add-product">Add Products</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
     <h1>Page Not Found</h1>
   </body>
 </html>
