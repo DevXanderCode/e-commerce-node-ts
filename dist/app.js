@@ -9,6 +9,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const routes_1 = require("./routes");
 const app = (0, express_1.default)();
 app.use(body_parser_1.default.urlencoded({ extended: false }));
+app.use("/css", express_1.default.static(path_1.default.join(__dirname, "..", "public", "css")));
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
 app.use((_req, res, _next) => {

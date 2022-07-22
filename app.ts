@@ -8,6 +8,7 @@ import { adminRoutes, shopRoutes } from "./routes";
 const app: Express = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
