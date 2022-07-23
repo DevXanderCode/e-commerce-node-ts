@@ -6,6 +6,12 @@ import rootDir from "../util/path";
 
 const router: Router = express.Router();
 
+interface Product {
+  title: string;
+}
+
+const products: Product[] = [];
+
 router.get(
   "/add-product",
   (_req: Request, res: Response, _next: NextFunction) => {
@@ -19,8 +25,9 @@ router.post(
   "/add-product",
   (req: Request, res: Response, _next: NextFunction) => {
     console.log("request body", req.body);
+    products.push({ title: req?.body?.title });
     res.redirect("/");
   }
 );
 
-export default router;
+export default { routes: router, products };
