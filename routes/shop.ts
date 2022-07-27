@@ -11,7 +11,7 @@ router.get("/", (_req: Request, res: Response, _next: NextFunction) => {
   const products = adminData.products;
   // console.log("Admin products", adminData?.products);
   // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-  res.render("shop", { prods: products, docTitle: "Da Shop" });
+  res.render("shop", { prods: products, pageTitle: "Da Shop", path: "/" });
 });
 
 export default router;

@@ -10,6 +10,6 @@ router.get("/", (_req, res, _next) => {
     const products = admin_1.default.products;
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-    res.render("shop", { prods: products, docTitle: "Da Shop" });
+    res.render("shop", { prods: products, pageTitle: "Da Shop", path: "/" });
 });
 exports.default = router;
