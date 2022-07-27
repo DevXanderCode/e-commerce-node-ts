@@ -18,7 +18,8 @@ app.use("/admin", adminData.routes);
 app.use(shopRoutes);
 
 app.use((_req: Request, res: Response, _next: NextFunction) => {
-  res.status(404).sendFile(path.join(__dirname, "..", "views", "404.html"));
+  // res.status(404).sendFile(path.join(__dirname, "..", "views", "404.html"));
+  res.status(404).render("404");
 });
 
 app.listen("3000", () => {
