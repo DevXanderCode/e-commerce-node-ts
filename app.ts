@@ -2,14 +2,15 @@ import path from "path";
 
 import express, { Express, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
-import { engine } from "express-handlebars";
+import { create, engine } from "express-handlebars";
 
 import { adminRoutes as adminData, shopRoutes } from "./routes";
 import rootDir from "./util/path";
+import ternary from "./util/helpers/ternary";
 
 const app: Express = express();
 
-app.engine("hbs", engine());
+app.engine("hbs", engine({ helpers: { ternary } }));
 
 // app.set("view engine", "pug");
 app.set("view engine", "hbs");
