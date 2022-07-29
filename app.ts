@@ -2,13 +2,17 @@ import path from "path";
 
 import express, { Express, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
+import expressHbs from "express-handlebars";
 
 import { adminRoutes as adminData, shopRoutes } from "./routes";
 import rootDir from "./util/path";
 
 const app: Express = express();
 
-app.set("view engine", "pug");
+app.engine("hbs", expressHbs.engine());
+
+// app.set("view engine", "pug");
+app.set("view engine", "hbs");
 app.set("views", path.join(rootDir, "..", "views"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
