@@ -2,6 +2,10 @@
   <head>
     <meta charset="utf-8" />
     <title>{{pageTitle}}</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    {{#each css}}
+      <link rel="stylesheet" href="/css/{{this}}" />
+    {{/each}}
   </head>
   <body>
 
