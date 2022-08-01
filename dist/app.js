@@ -6,19 +6,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const express_handlebars_1 = require("express-handlebars");
 const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
-const ternary_1 = __importDefault(require("./util/helpers/ternary"));
 const app = (0, express_1.default)();
-app.engine("hbs", (0, express_handlebars_1.engine)({
-    extname: ".hbs",
-    helpers: { ternary: ternary_1.default },
-    layoutsDir: "views/layouts",
-    defaultLayout: "main-layout",
-}));
+// For handleBars
+// app.engine(
+//   "hbs",
+//   engine({
+//     extname: ".hbs",
+//     helpers: { ternary },
+//     layoutsDir: "views/layouts",
+//     defaultLayout: "main-layout",
+//   })
+// );
 // app.set("view engine", "pug");
-app.set("view engine", "hbs");
+// app.set("view engine", "hbs");
+app.set("view engine", "ejs");
 app.set("views", path_1.default.join(path_2.default, "..", "views"));
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use("/css", express_1.default.static(path_1.default.join(__dirname, "..", "public", "css")));

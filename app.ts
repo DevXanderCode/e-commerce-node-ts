@@ -10,18 +10,20 @@ import ternary from "./util/helpers/ternary";
 
 const app: Express = express();
 
-app.engine(
-  "hbs",
-  engine({
-    extname: ".hbs",
-    helpers: { ternary },
-    layoutsDir: "views/layouts",
-    defaultLayout: "main-layout",
-  })
-);
+// For handleBars
+// app.engine(
+//   "hbs",
+//   engine({
+//     extname: ".hbs",
+//     helpers: { ternary },
+//     layoutsDir: "views/layouts",
+//     defaultLayout: "main-layout",
+//   })
+// );
 
 // app.set("view engine", "pug");
-app.set("view engine", "hbs");
+// app.set("view engine", "hbs");
+app.set("view engine", "ejs");
 app.set("views", path.join(rootDir, "..", "views"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
