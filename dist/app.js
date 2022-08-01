@@ -11,7 +11,7 @@ const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
 const ternary_1 = __importDefault(require("./util/helpers/ternary"));
 const app = (0, express_1.default)();
-app.engine("hbs", (0, express_handlebars_1.engine)({ helpers: { ternary: ternary_1.default } }));
+app.engine("hbs", (0, express_handlebars_1.engine)({ extname: ".hbs", helpers: { ternary: ternary_1.default } }));
 // app.set("view engine", "pug");
 app.set("view engine", "hbs");
 app.set("views", path_1.default.join(path_2.default, "..", "views"));
@@ -21,7 +21,7 @@ app.use("/admin", routes_1.adminRoutes.routes);
 app.use(routes_1.shopRoutes);
 app.use((_req, res, _next) => {
     // res.status(404).sendFile(path.join(__dirname, "..", "views", "404.html"));
-    res.status(404).render("404", { pageTitle: "Page Not Found" });
+    res.status(404).render("404", { pageTitle: "Page Not Found", path: "" });
 });
 app.listen("3000", () => {
     console.log("Listening on port 3000");

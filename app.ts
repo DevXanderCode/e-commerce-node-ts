@@ -10,7 +10,7 @@ import ternary from "./util/helpers/ternary";
 
 const app: Express = express();
 
-app.engine("hbs", engine({ helpers: { ternary } }));
+app.engine("hbs", engine({ extname: ".hbs", helpers: { ternary } }));
 
 // app.set("view engine", "pug");
 app.set("view engine", "hbs");
@@ -24,7 +24,7 @@ app.use(shopRoutes);
 
 app.use((_req: Request, res: Response, _next: NextFunction) => {
   // res.status(404).sendFile(path.join(__dirname, "..", "views", "404.html"));
-  res.status(404).render("404", { pageTitle: "Page Not Found" });
+  res.status(404).render("404", { pageTitle: "Page Not Found", path: "" });
 });
 
 app.listen("3000", () => {
