@@ -11,7 +11,12 @@ const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
 const ternary_1 = __importDefault(require("./util/helpers/ternary"));
 const app = (0, express_1.default)();
-app.engine("hbs", (0, express_handlebars_1.engine)({ extname: ".hbs", helpers: { ternary: ternary_1.default } }));
+app.engine("hbs", (0, express_handlebars_1.engine)({
+    extname: ".hbs",
+    helpers: { ternary: ternary_1.default },
+    layoutsDir: "views/layouts",
+    defaultLayout: "main-layout",
+}));
 // app.set("view engine", "pug");
 app.set("view engine", "hbs");
 app.set("views", path_1.default.join(path_2.default, "..", "views"));

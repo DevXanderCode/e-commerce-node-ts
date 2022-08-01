@@ -15,6 +15,7 @@ router.get("/", (_req, res, _next) => {
         pageTitle: "Da Shop",
         path: "/",
         hasProduct: (products === null || products === void 0 ? void 0 : products.length) > 0,
+        activeShop: true,
     });
 });
 exports.default = router;
