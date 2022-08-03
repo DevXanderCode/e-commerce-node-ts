@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction, Router } from "express";
 
+import { Product } from "../types";
+
+export const products: Product[] = [];
+
 export const getAddProduct = (
   _req: Request,
   res: Response,
@@ -15,4 +19,14 @@ export const getAddProduct = (
     activeAddProduct: true,
     // layout: false,
   });
+};
+
+export const postAddProduct = (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  console.log("request body", req.body);
+  products.push({ title: req?.body?.title });
+  res.redirect("/");
 };
