@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProducts = exports.postAddProduct = exports.getAddProduct = void 0;
-// import { Product } from "../types";
 const product_1 = __importDefault(require("../models/product"));
 // export const products: Product[] = [];
 const getAddProduct = (_req, res, _next) => {
@@ -32,13 +31,14 @@ exports.postAddProduct = postAddProduct;
 const getProducts = (_req, res, _next) => {
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-    const products = product_1.default.fetchAll();
-    res.render("shop", {
-        prods: products,
-        pageTitle: "Da Shop",
-        path: "/",
-        hasProduct: (products === null || products === void 0 ? void 0 : products.length) > 0,
-        activeShop: true,
+    product_1.default.fetchAll((products) => {
+        res.render("shop", {
+            prods: products,
+            pageTitle: "Da Shop",
+            path: "/",
+            hasProduct: (products === null || products === void 0 ? void 0 : products.length) > 0,
+            activeShop: true,
+        });
     });
 };
 exports.getProducts = getProducts;

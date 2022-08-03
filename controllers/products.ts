@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, Router } from "express";
 
-// import { Product } from "../types";
+import { Product as ProductInterface } from "../types";
 import Product from "../models/product";
 
 // export const products: Product[] = [];
@@ -41,12 +41,13 @@ export const getProducts = (
 ) => {
   // console.log("Admin products", adminData?.products);
   // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-  const products = Product.fetchAll();
-  res.render("shop", {
-    prods: products,
-    pageTitle: "Da Shop",
-    path: "/",
-    hasProduct: products?.length > 0,
-    activeShop: true,
+  Product.fetchAll((products: ProductInterface[]) => {
+    res.render("shop", {
+      prods: products,
+      pageTitle: "Da Shop",
+      path: "/",
+      hasProduct: products?.length > 0,
+      activeShop: true,
+    });
   });
 };

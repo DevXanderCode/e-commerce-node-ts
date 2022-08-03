@@ -2,9 +2,11 @@ import path from "path";
 import fs from "fs";
 
 import rootDir from "../util/path";
-// import { Product as ProductInterface } from "../types";
+import { Product as ProductInterface } from "../types";
 
 // const products: ProductInterface[] = [];
+
+const p = path.join(rootDir, "..", "data", "products.json");
 
 class Product {
   title: string;
@@ -14,7 +16,6 @@ class Product {
 
   save() {
     // products.push(this);
-    const p = path.join(rootDir, "..", "data", "products.json");
     // console.log("console log path", p);
 
     fs.readFile(p, (err, fileContent) => {
@@ -29,9 +30,19 @@ class Product {
     });
   }
 
-  static fetchAll() {
-    return [];
-    // return products;
+  static fetchAll(cb: Function) {
+    let products: ProductInterface[] = [];
+
+    console.log("List of product ==>", products);
+    fs.readFile(p, (err, fileContent) => {
+      console.log("Logging ppppp", fileContent, err);
+      if (err) {
+        cb([]);
+      } else if (fileContent?.length > 0) {
+        cb(JSON.parse(fileContent?.toString()));
+      }
+      cb([]);
+    });
   }
 }
 
