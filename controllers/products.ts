@@ -30,3 +30,19 @@ export const postAddProduct = (
   products.push({ title: req?.body?.title });
   res.redirect("/");
 };
+
+export const getProducts = (
+  _req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  // console.log("Admin products", adminData?.products);
+  // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
+  res.render("shop", {
+    prods: products,
+    pageTitle: "Da Shop",
+    path: "/",
+    hasProduct: products?.length > 0,
+    activeShop: true,
+  });
+};

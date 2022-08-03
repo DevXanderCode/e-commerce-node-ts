@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postAddProduct = exports.getAddProduct = exports.products = void 0;
+exports.getProducts = exports.postAddProduct = exports.getAddProduct = exports.products = void 0;
 exports.products = [];
 const getAddProduct = (_req, res, _next) => {
     // res.send(
@@ -22,3 +22,15 @@ const postAddProduct = (req, res, _next) => {
     res.redirect("/");
 };
 exports.postAddProduct = postAddProduct;
+const getProducts = (_req, res, _next) => {
+    // console.log("Admin products", adminData?.products);
+    // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
+    res.render("shop", {
+        prods: exports.products,
+        pageTitle: "Da Shop",
+        path: "/",
+        hasProduct: (exports.products === null || exports.products === void 0 ? void 0 : exports.products.length) > 0,
+        activeShop: true,
+    });
+};
+exports.getProducts = getProducts;
