@@ -11,6 +11,10 @@ class Product {
   save() {
     products.push(this);
   }
+
+  static fetchAll() {
+    return products;
+  }
 }
 
 export default Product;

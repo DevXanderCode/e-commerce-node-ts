@@ -8,5 +8,8 @@ class Product {
     save() {
         products.push(this);
     }
+    static fetchAll() {
+        return products;
+    }
 }
 exports.default = Product;

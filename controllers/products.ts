@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction, Router } from "express";
 
-import { Product } from "../types";
+// import { Product } from "../types";
+import Product from "../models/product";
 
-export const products: Product[] = [];
+// export const products: Product[] = [];
 
 export const getAddProduct = (
   _req: Request,
@@ -27,7 +28,9 @@ export const postAddProduct = (
   _next: NextFunction
 ) => {
   console.log("request body", req.body);
-  products.push({ title: req?.body?.title });
+  //   products.push({ title: req?.body?.title });
+  const product = new Product(req?.body?.title);
+  product.save();
   res.redirect("/");
 };
 
@@ -38,6 +41,7 @@ export const getProducts = (
 ) => {
   // console.log("Admin products", adminData?.products);
   // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
+  const products = Product.fetchAll();
   res.render("shop", {
     prods: products,
     pageTitle: "Da Shop",
