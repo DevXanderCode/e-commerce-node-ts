@@ -11,4 +11,4 @@ router.get("/add-product", getAddProduct);
 
 router.post("/add-product", postAddProduct);
 
-export default { routes: router };
+export default router;

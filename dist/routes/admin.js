@@ -9,4 +9,4 @@ const products_1 = require("../controllers/products");
 const router = express_1.default.Router();
 router.get("/add-product", products_1.getAddProduct);
 router.post("/add-product", products_1.postAddProduct);
-exports.default = { routes: router };
+exports.default = router;

@@ -4,9 +4,9 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import { create, engine } from "express-handlebars";
 
-import { adminRoutes as adminData, shopRoutes } from "./routes";
+import { adminRoutes, shopRoutes } from "./routes";
 import rootDir from "./util/path";
-import ternary from "./util/helpers/ternary";
+// import ternary from "./util/helpers/ternary";
 
 const app: Express = express();
 
@@ -29,7 +29,7 @@ app.set("views", path.join(rootDir, "..", "views"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 
-app.use("/admin", adminData.routes);
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 app.use((_req: Request, res: Response, _next: NextFunction) => {

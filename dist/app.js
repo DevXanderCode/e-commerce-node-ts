@@ -8,6 +8,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
+// import ternary from "./util/helpers/ternary";
 const app = (0, express_1.default)();
 // For handleBars
 // app.engine(
@@ -25,7 +26,7 @@ app.set("view engine", "ejs");
 app.set("views", path_1.default.join(path_2.default, "..", "views"));
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use("/css", express_1.default.static(path_1.default.join(__dirname, "..", "public", "css")));
-app.use("/admin", routes_1.adminRoutes.routes);
+app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
 app.use((_req, res, _next) => {
     // res.status(404).sendFile(path.join(__dirname, "..", "views", "404.html"));

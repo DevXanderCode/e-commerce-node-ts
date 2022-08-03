@@ -3,7 +3,7 @@ import path from "path";
 import express, { Router, Request, Response, NextFunction } from "express";
 
 // import rootDir from "../util/path";
-import adminData from "./admin";
+// import adminData from "./admin";
 import { products } from "../controllers/products";
 
 const router: Router = express.Router();
