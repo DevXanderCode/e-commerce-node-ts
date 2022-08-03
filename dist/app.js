@@ -6,8 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
+// import { create, engine } from "express-handlebars";
 const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
+const error_1 = require("./controllers/error");
 // import ternary from "./util/helpers/ternary";
 const app = (0, express_1.default)();
 // For handleBars
@@ -28,10 +30,7 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use("/css", express_1.default.static(path_1.default.join(__dirname, "..", "public", "css")));
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
-app.use((_req, res, _next) => {
-    // res.status(404).sendFile(path.join(__dirname, "..", "views", "404.html"));
-    res.status(404).render("404", { pageTitle: "Page Not Found", path: "" });
-});
+app.use(error_1.get404Page);
 app.listen("3000", () => {
     console.log("Listening on port 3000");
 });
