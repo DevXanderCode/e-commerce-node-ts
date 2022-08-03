@@ -1,6 +1,10 @@
-import { Product as ProductInterface } from "../types";
+import path from "path";
+import fs from "fs";
 
-const products: ProductInterface[] = [];
+import rootDir from "../util/path";
+// import { Product as ProductInterface } from "../types";
+
+// const products: ProductInterface[] = [];
 
 class Product {
   title: string;
@@ -9,11 +13,25 @@ class Product {
   }
 
   save() {
-    products.push(this);
+    // products.push(this);
+    const p = path.join(rootDir, "..", "data", "products.json");
+    // console.log("console log path", p);
+
+    fs.readFile(p, (err, fileContent) => {
+      let products = [];
+      if (!err) {
+        products = JSON.parse(fileContent.toString());
+      }
+      products.push(this);
+      fs.writeFile(p, JSON.stringify(products), (err) => {
+        console.log("write product error", err);
+      });
+    });
   }
 
   static fetchAll() {
-    return products;
+    return [];
+    // return products;
   }
 }
 

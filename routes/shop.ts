@@ -1,6 +1,6 @@
-import path from "path";
+// import path from "path";
 
-import express, { Router, Request, Response, NextFunction } from "express";
+import express, { Router } from "express";
 
 // import rootDir from "../util/path";
 // import adminData from "./admin";
