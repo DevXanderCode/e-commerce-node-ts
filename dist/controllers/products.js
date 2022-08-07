@@ -11,7 +11,7 @@ const getAddProduct = (_req, res, _next) => {
     //   "<form action='/admin/add-product' method='POST'><input type='text' name='title'  /><button type='submit'>Add Product</button></form>"
     // );
     // res.sendFile(path.join(rootDir, "..", "views", "add-product.html"));
-    res.render("add-product", {
+    res.render("admin/add-product", {
         pageTitle: "Add Product",
         path: "/admin/add-product",
         activeAddProduct: true,
@@ -21,7 +21,7 @@ const getAddProduct = (_req, res, _next) => {
 exports.getAddProduct = getAddProduct;
 const postAddProduct = (req, res, _next) => {
     var _a;
-    console.log("request body", req.body);
+    // console.log("request body", req.body);
     //   products.push({ title: req?.body?.title });
     const product = new product_1.default((_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.title);
     product.save();
@@ -32,7 +32,7 @@ const getProducts = (_req, res, _next) => {
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
     product_1.default.fetchAll((products) => {
-        res.render("shop", {
+        res.render("shop/product-list", {
             prods: products,
             pageTitle: "Da Shop",
             path: "/",

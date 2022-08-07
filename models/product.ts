@@ -10,7 +10,7 @@ const p = path.join(rootDir, "..", "data", "products.json");
 
 const getProductsFromFile = (cb: Function) => {
   fs.readFile(p, (err, fileContent) => {
-    console.log("read File", fileContent, fileContent.length);
+    // console.log("read File", fileContent, fileContent.length);
     if (err) {
       cb([]);
     } else if (fileContent?.length > 0) {

@@ -10,7 +10,7 @@ const path_2 = __importDefault(require("../util/path"));
 const p = path_1.default.join(path_2.default, "..", "data", "products.json");
 const getProductsFromFile = (cb) => {
     fs_1.default.readFile(p, (err, fileContent) => {
-        console.log("read File", fileContent, fileContent.length);
+        // console.log("read File", fileContent, fileContent.length);
         if (err) {
             cb([]);
         }
