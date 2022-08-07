@@ -3,9 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = exports.postAddProduct = exports.getAddProduct = void 0;
+exports.getAdminProducts = exports.postAddProduct = exports.getAddProduct = void 0;
 const product_1 = __importDefault(require("../models/product"));
-// export const products: Product[] = [];
 const getAddProduct = (_req, res, _next) => {
     // res.send(
     //   "<form action='/admin/add-product' method='POST'><input type='text' name='title'  /><button type='submit'>Add Product</button></form>"
@@ -14,7 +13,7 @@ const getAddProduct = (_req, res, _next) => {
     res.render("admin/add-product", {
         pageTitle: "Add Product",
         path: "/admin/add-product",
-        activeAddProduct: true,
+        // activeAddProduct: true, // was needed for the handlebars
         // layout: false,
     });
 };
@@ -28,17 +27,10 @@ const postAddProduct = (req, res, _next) => {
     res.redirect("/");
 };
 exports.postAddProduct = postAddProduct;
-const getProducts = (_req, res, _next) => {
-    // console.log("Admin products", adminData?.products);
-    // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-    product_1.default.fetchAll((products) => {
-        res.render("shop/product-list", {
-            prods: products,
-            pageTitle: "Da Shop",
-            path: "/",
-            hasProduct: (products === null || products === void 0 ? void 0 : products.length) > 0,
-            activeShop: true,
-        });
+const getAdminProducts = (_req, res, _next) => {
+    res.render('admin/products', {
+        pageTitle: 'Admin Products',
+        path: '/admin/products',
     });
 };
-exports.getProducts = getProducts;
+exports.getAdminProducts = getAdminProducts;
