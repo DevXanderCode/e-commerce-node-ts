@@ -22,9 +22,8 @@ const getProductsFromFile = (cb: Function) => {
 };
 
 class Product {
-  title: string;
-  constructor(t: string) {
-    this.title = t;
+  
+  constructor(public title:string, public imageUrl: string, public description: string, public price: number) {
   }
 
   save() {
