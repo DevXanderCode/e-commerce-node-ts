@@ -19,10 +19,10 @@ const getAddProduct = (_req, res, _next) => {
 };
 exports.getAddProduct = getAddProduct;
 const postAddProduct = (req, res, _next) => {
-    var _a;
     // console.log("request body", req.body);
     //   products.push({ title: req?.body?.title });
-    const product = new product_1.default((_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.title);
+    const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const product = new product_1.default(title, imageUrl, description, price);
     product.save();
     res.redirect("/");
 };
