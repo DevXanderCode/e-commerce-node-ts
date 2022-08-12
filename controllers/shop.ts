@@ -49,3 +49,11 @@ export const getCheckout = (_req: Request, res: Response, _next: NextFunction) =
     path: '/checkout',
   })
 }
+
+export const getOrders = (_req: Request, res: Response, _next: NextFunction) => {
+  res.render('shop/orders', {
+    pageTitle: 'My Orders',
+    path: '/orders',
+
+  })
+}

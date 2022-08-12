@@ -12,5 +12,6 @@ const router = express_1.default.Router();
 router.get('/cart', shop_1.getCart);
 router.get('/products', shop_1.getProducts);
 router.get('/checkout', shop_1.getCheckout);
+router.get('/orders', shop_1.getOrders);
 router.get("/", shop_1.getIndex);
 exports.default = router;
