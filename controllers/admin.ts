@@ -1,6 +1,8 @@
 import { Response, Request, NextFunction } from "express";
 
 import Product from "../models/product";
+import { Product as ProductInterface } from "../types";
+
 
 export const getAddProduct = (
     _req: Request,
@@ -35,8 +37,17 @@ export const getAddProduct = (
 
 
 export const getAdminProducts = (_req: Request, res: Response, _next: NextFunction) => {
-    res.render('admin/products', {
+  Product.fetchAll((products: ProductInterface[]) => {
+    res.render("admin/products", {
+      prods: products,
       pageTitle: 'Admin Products',
       path: '/admin/products',
+      hasProduct: products?.length > 0,
+      activeShop: true,
     });
+  });
+    // res.render('admin/products', {
+    //   pageTitle: 'Admin Products',
+    //   path: '/admin/products',
+    // });
   }

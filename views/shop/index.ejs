@@ -15,16 +15,16 @@
             <h1 class="product__title"><%= product.title %></h1>
           </header>
           <div class="card__image">
+            <!-- src="https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png" -->
             <img
-              src="https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png"
-              alt="A Book"
+            src="<%=product.imageUrl %>"
+              alt="<%= product?.title %>"
             />
           </div>
           <div class="card__content">
-            <h2 class="product__price">$19.99</h2>
+            <h2 class="product__price">₦<%= product?.price %></h2>
             <p class="product__description">
-              A very interesting book about so many even more interesting
-              things!
+             <%= product?.description%>
             </p>
           </div>
           <div class="card__actions">

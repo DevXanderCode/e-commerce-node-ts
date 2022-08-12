@@ -28,9 +28,18 @@ const postAddProduct = (req, res, _next) => {
 };
 exports.postAddProduct = postAddProduct;
 const getAdminProducts = (_req, res, _next) => {
-    res.render('admin/products', {
-        pageTitle: 'Admin Products',
-        path: '/admin/products',
+    product_1.default.fetchAll((products) => {
+        res.render("admin/products", {
+            prods: products,
+            pageTitle: 'Admin Products',
+            path: '/admin/products',
+            hasProduct: (products === null || products === void 0 ? void 0 : products.length) > 0,
+            activeShop: true,
+        });
     });
+    // res.render('admin/products', {
+    //   pageTitle: 'Admin Products',
+    //   path: '/admin/products',
+    // });
 };
 exports.getAdminProducts = getAdminProducts;
