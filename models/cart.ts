@@ -37,7 +37,7 @@ class Cart {
               })
         })
       }
-     cart.totalPrice = +cart.totalPrice + productPrice;
+     cart.totalPrice += productPrice;
       fs.writeFile(p, JSON.stringify(cart), (err) => {
         console.log('write cart error', err)
       })

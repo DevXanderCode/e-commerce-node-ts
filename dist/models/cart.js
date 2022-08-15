@@ -39,7 +39,7 @@ class Cart {
                     });
                 });
             }
-            cart.totalPrice = +cart.totalPrice + productPrice;
+            cart.totalPrice += productPrice;
             fs_1.default.writeFile(p, JSON.stringify(cart), (err) => {
                 console.log('write cart error', err);
             });
