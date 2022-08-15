@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction, Router } from "express";
 
 import { Product as ProductInterface } from "../types";
-import Product from "../models/product";
+import {Product, Cart} from "../models";
+
 
 // export const products: Product[] = [];
 
@@ -58,7 +59,8 @@ export const getCart = (_req: Request, res: Response, _next: NextFunction) => {
 export const postCart = (req: Request, res: Response, _next: NextFunction) => {
   const prodId = req?.body?.productId;
   Product.findById(prodId, (product: ProductInterface) => {
-    console.log('Product to add to cart', product);
+    // console.log('Product to add to cart', product);
+    Cart.addProduct(prodId, Number(product.price));
   })
 
   res.redirect('/cart')

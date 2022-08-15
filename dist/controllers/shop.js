@@ -1,15 +1,12 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOrders = exports.getCheckout = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
-const product_1 = __importDefault(require("../models/product"));
+const models_1 = require("../models");
 // export const products: Product[] = [];
 const getProducts = (_req, res, _next) => {
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-    product_1.default.fetchAll((products) => {
+    models_1.Product.fetchAll((products) => {
         res.render("shop/product-list", {
             prods: products,
             pageTitle: "All products",
@@ -23,7 +20,7 @@ exports.getProducts = getProducts;
 const getProduct = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.productId;
-    product_1.default.findById(prodId, (product) => {
+    models_1.Product.findById(prodId, (product) => {
         res.render('shop/product-detail', {
             pageTitle: product.title,
             product,
@@ -33,7 +30,7 @@ const getProduct = (req, res, _next) => {
 };
 exports.getProduct = getProduct;
 const getIndex = (_req, res, _next) => {
-    product_1.default.fetchAll((products) => {
+    models_1.Product.fetchAll((products) => {
         res.render("shop/index", {
             prods: products,
             pageTitle: "Shop",
@@ -55,8 +52,9 @@ exports.getCart = getCart;
 const postCart = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
-    product_1.default.findById(prodId, (product) => {
-        console.log('Product to add to cart', product);
+    models_1.Product.findById(prodId, (product) => {
+        // console.log('Product to add to cart', product);
+        models_1.Cart.addProduct(prodId, Number(product.price));
     });
     res.redirect('/cart');
 };
