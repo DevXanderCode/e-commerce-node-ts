@@ -7,6 +7,8 @@ function backdropClickHandler() {
   sideDrawer.classList.remove('open');
 }
 
+console.log('Loading js')
+
 function menuToggleClickHandler() {
   backdrop.style.display = 'block';
   sideDrawer.classList.add('open');

@@ -28,7 +28,8 @@ app.set("view engine", "ejs");
 app.set("views", path.join(rootDir, "..", "views"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
+// app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
+app.use(express.static(path.join(__dirname,'..' , 'public')));
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
