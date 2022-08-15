@@ -11,6 +11,8 @@ const router = express_1.default.Router();
 router.get("/add-product", admin_1.getAddProduct);
 // /admin/add-product ==> post
 router.post("/add-product", admin_1.postAddProduct);
+// /admin/edit-product/:productId
+router.post('/edit-product/:productId', admin_1.getEditProduct);
 //  /admin/products ==> Get
 router.get('/products', admin_1.getAdminProducts);
 exports.default = router;

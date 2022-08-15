@@ -13,7 +13,7 @@ export const getAddProduct = (
     //   "<form action='/admin/add-product' method='POST'><input type='text' name='title'  /><button type='submit'>Add Product</button></form>"
     // );
     // res.sendFile(path.join(rootDir, "..", "views", "add-product.html"));
-    res.render("admin/add-product", {
+    res.render("admin/edit-product", {
       pageTitle: "Add Product",
       path: "/admin/add-product",
       // activeAddProduct: true, // was needed for the handlebars
@@ -34,6 +34,18 @@ export const getAddProduct = (
     product.save();
     res.redirect("/");
   };
+
+  export const getEditProduct = (req: Request, res: Response, _next: NextFunction) => {
+    const editMode = req.query.edit;
+    if (!editMode) {
+      return res.redirect('/');
+    }
+    res.render('admin/edit-product', {
+      pageTitle: "Edit Product",
+      path: "/admin/edit-product",
+      editting: editMode
+    })
+  }
 
 
 export const getAdminProducts = (_req: Request, res: Response, _next: NextFunction) => {
