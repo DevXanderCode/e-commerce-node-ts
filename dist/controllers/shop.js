@@ -42,10 +42,13 @@ const getIndex = (_req, res, _next) => {
 };
 exports.getIndex = getIndex;
 const getCart = (_req, res, _next) => {
-    res.render('shop/cart', {
-        pageTitle: 'My Cart',
-        path: '/cart',
-        prods: []
+    models_1.Cart.fetchAll(({ products }) => {
+        console.log('fetched cart', products);
+        res.render('shop/cart', {
+            pageTitle: 'My Cart',
+            path: '/cart',
+            prods: products
+        });
     });
 };
 exports.getCart = getCart;

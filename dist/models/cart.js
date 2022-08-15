@@ -8,6 +8,20 @@ const path_1 = __importDefault(require("path"));
 const path_2 = __importDefault(require("../util/path"));
 const product_1 = __importDefault(require("./product"));
 const p = path_1.default.join(path_2.default, "..", "data", "cart.json");
+const getProductsFromFile = (cb) => {
+    fs_1.default.readFile(p, (err, fileContent) => {
+        // console.log("read File", fileContent, fileContent.length);
+        if (err) {
+            cb([]);
+        }
+        else if ((fileContent === null || fileContent === void 0 ? void 0 : fileContent.length) > 0) {
+            cb(JSON.parse(fileContent === null || fileContent === void 0 ? void 0 : fileContent.toString()));
+        }
+        else {
+            cb([]);
+        }
+    });
+};
 class Cart {
     static addProduct(id, productPrice) {
         //Fetch previous product
@@ -44,6 +58,9 @@ class Cart {
                 console.log('write cart error', err);
             });
         });
+    }
+    static fetchAll(cb) {
+        getProductsFromFile(cb);
     }
 }
 exports.default = Cart;

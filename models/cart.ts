@@ -7,6 +7,19 @@ import Product from "./product";
 
 const p = path.join(rootDir, "..", "data", "cart.json");
 
+const getProductsFromFile = (cb: Function) => {
+    fs.readFile(p, (err, fileContent) => {
+      // console.log("read File", fileContent, fileContent.length);
+      if (err) {
+        cb([]);
+      } else if (fileContent?.length > 0) {
+        cb(JSON.parse(fileContent?.toString()));
+      } else {
+        cb([]);
+      }
+    });
+  };
+
 class Cart {
   static addProduct(id: string, productPrice: number) {
     //Fetch previous product
@@ -42,6 +55,10 @@ class Cart {
         console.log('write cart error', err)
       })
     });
+  }
+
+  static fetchAll(cb: Function) {
+    getProductsFromFile(cb);
   }
 }
 
