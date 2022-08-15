@@ -23,6 +23,18 @@ export const getProducts = (
   });
 };
 
+
+export const getProduct = (req: Request, res: Response, _next: NextFunction) => {
+  const prodId = req?.params?.productId;
+  Product.findById(prodId, (product: ProductInterface) => {
+    res.render('shop/product-detail', {
+      pageTitle: product.title,
+      product,
+      path: '/products'
+    });
+  });
+}
+
 export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
   Product.fetchAll((products: ProductInterface[]) => {
     res.render("shop/index", {
@@ -41,6 +53,16 @@ export const getCart = (_req: Request, res: Response, _next: NextFunction) => {
     path: '/cart',
     prods: []
   })
+}
+
+export const postCart = (req: Request, res: Response, _next: NextFunction) => {
+  const prodId = req?.body?.productId;
+  Product.findById(prodId, (product: ProductInterface) => {
+    console.log('Product to add to cart', product);
+  })
+
+  res.redirect('/cart')
+ 
 }
 
 export const getCheckout = (_req: Request, res: Response, _next: NextFunction) => {

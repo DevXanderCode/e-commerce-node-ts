@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrders = exports.getCheckout = exports.getCart = exports.getIndex = exports.getProducts = void 0;
+exports.getOrders = exports.getCheckout = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const product_1 = __importDefault(require("../models/product"));
 // export const products: Product[] = [];
 const getProducts = (_req, res, _next) => {
@@ -20,6 +20,18 @@ const getProducts = (_req, res, _next) => {
     });
 };
 exports.getProducts = getProducts;
+const getProduct = (req, res, _next) => {
+    var _a;
+    const prodId = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.productId;
+    product_1.default.findById(prodId, (product) => {
+        res.render('shop/product-detail', {
+            pageTitle: product.title,
+            product,
+            path: '/products'
+        });
+    });
+};
+exports.getProduct = getProduct;
 const getIndex = (_req, res, _next) => {
     product_1.default.fetchAll((products) => {
         res.render("shop/index", {
@@ -40,6 +52,15 @@ const getCart = (_req, res, _next) => {
     });
 };
 exports.getCart = getCart;
+const postCart = (req, res, _next) => {
+    var _a;
+    const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
+    product_1.default.findById(prodId, (product) => {
+        console.log('Product to add to cart', product);
+    });
+    res.redirect('/cart');
+};
+exports.postCart = postCart;
 const getCheckout = (_req, res, _next) => {
     res.render('shop/checkout', {
         pageTitle: 'Checkout',

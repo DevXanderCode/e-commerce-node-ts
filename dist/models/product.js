@@ -53,5 +53,11 @@ class Product {
     static fetchAll(cb) {
         getProductsFromFile(cb);
     }
+    static findById(id, cb) {
+        getProductsFromFile((products) => {
+            const product = products.find(p => (p === null || p === void 0 ? void 0 : p.id) === id);
+            cb(product);
+        });
+    }
 }
 exports.default = Product;

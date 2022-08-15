@@ -53,6 +53,13 @@ class Product {
   static fetchAll(cb: Function) {
     getProductsFromFile(cb);
   }
+
+  static findById(id: string, cb: Function ) {
+    getProductsFromFile((products: Product[]) => {
+      const product = products.find(p => p?.id === id);
+      cb(product)
+    })
+  }
 }
 
 export default Product;
