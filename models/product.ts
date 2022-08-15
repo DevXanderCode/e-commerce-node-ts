@@ -22,6 +22,7 @@ const getProductsFromFile = (cb: Function) => {
 };
 
 class Product {
+  id!: string;
   
   constructor(public title:string, public imageUrl: string, public description: string, public price: number) {
   }
@@ -29,7 +30,7 @@ class Product {
   save() {
     // products.push(this);
     // console.log("console log path", p);
-
+    this.id = Math.random().toString(); 
     getProductsFromFile((products: ProductInterface[]) => {
       products.push(this);
       fs.writeFile(p, JSON.stringify(products), (err) => {

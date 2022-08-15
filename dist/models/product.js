@@ -32,6 +32,7 @@ class Product {
     save() {
         // products.push(this);
         // console.log("console log path", p);
+        this.id = Math.random().toString();
         getProductsFromFile((products) => {
             products.push(this);
             fs_1.default.writeFile(p, JSON.stringify(products), (err) => {
