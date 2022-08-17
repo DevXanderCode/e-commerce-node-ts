@@ -62,10 +62,17 @@ export const getAddProduct = (
 
 export const postEditProduct = (req: Request, res: Response, _next: NextFunction) => {
   const {productId: prodId, title, imageUrl, description, price } = req?.body;
-  const product = new Product(prodId, title, imageUrl, description, price);
-  product.save();
+  const updatedProduct = new Product(prodId, title, imageUrl, description, price);
+  updatedProduct.save();
   res.redirect('/admin/products')
+}
 
+export const deleteProduct = (req: Request, res: Response, _next: NextFunction) => {
+  const prodId = req.params?.productId;
+  console.log('delete', prodId)
+  Product.delete(prodId, () => {
+    res.redirect('/admin/products');
+  });
 }
 
 

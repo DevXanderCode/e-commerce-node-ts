@@ -50,6 +50,7 @@ class Product {
     }
     });
 
+
     // fs.readFile(p, (err, fileContent) => {
     //   let products = [];
     //   if (!err) {
@@ -61,6 +62,20 @@ class Product {
     //   });
     // });
   }
+
+  static delete (id: string, cb: Function) {
+    console.log('delete')
+    getProductsFromFile((products: ProductInterface[]) => {
+      const updatedProduct = products.filter(prod => prod?.id !== id);
+      fs.writeFile(p, JSON.stringify(updatedProduct), (err) => {
+        console.log("write product error", err);
+        if (!err) {
+          cb()
+        }
+      });
+    });
+  }
+
 
   static fetchAll(cb: Function) {
     getProductsFromFile(cb);

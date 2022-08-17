@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAdminProducts = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
+exports.getAdminProducts = exports.deleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
 const product_1 = __importDefault(require("../models/product"));
 const getAddProduct = (_req, res, _next) => {
     // res.send(
@@ -52,11 +52,20 @@ const getEditProduct = (req, res, _next) => {
 exports.getEditProduct = getEditProduct;
 const postEditProduct = (req, res, _next) => {
     const { productId: prodId, title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
-    const product = new product_1.default(prodId, title, imageUrl, description, price);
-    product.save();
+    const updatedProduct = new product_1.default(prodId, title, imageUrl, description, price);
+    updatedProduct.save();
     res.redirect('/admin/products');
 };
 exports.postEditProduct = postEditProduct;
+const deleteProduct = (req, res, _next) => {
+    var _a;
+    const prodId = (_a = req.params) === null || _a === void 0 ? void 0 : _a.productId;
+    console.log('delete', prodId);
+    product_1.default.delete(prodId, () => {
+        res.redirect('/admin/products');
+    });
+};
+exports.deleteProduct = deleteProduct;
 const getAdminProducts = (_req, res, _next) => {
     product_1.default.fetchAll((products) => {
         res.render("admin/products", {
