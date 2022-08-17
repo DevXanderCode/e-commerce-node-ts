@@ -16,6 +16,7 @@ export const getAddProduct = (
     res.render("admin/edit-product", {
       pageTitle: "Add Product",
       path: "/admin/add-product",
+      editing: false
       // activeAddProduct: true, // was needed for the handlebars
       // layout: false,
     });
@@ -37,14 +38,27 @@ export const getAddProduct = (
 
   export const getEditProduct = (req: Request, res: Response, _next: NextFunction) => {
     const editMode = req.query.edit;
+  
     if (!editMode) {
       return res.redirect('/');
     }
-    res.render('admin/edit-product', {
-      pageTitle: "Edit Product",
-      path: "/admin/edit-product",
-      editting: editMode
-    })
+    const prodId = req.params.productId;
+
+    Product.findById(prodId, (product: ProductInterface) => {
+      if (Object.keys(product).length) {
+        console.log('edit mode', product)
+        res.render('admin/edit-product', {
+          pageTitle: "Edit Product",
+          path: "/admin/edit-product",
+          editing: editMode,
+          product
+        })
+      }else {
+        res.redirect('/');
+      }
+
+    });
+   
   }
 
 
