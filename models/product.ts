@@ -63,7 +63,7 @@ class Product {
     // });
   }
 
-  static delete (id: string, cb: Function) {
+  static deleteById (id: string, cb: Function) {
     console.log('delete')
     getProductsFromFile((products: ProductInterface[]) => {
       const updatedProduct = products.filter(prod => prod?.id !== id);

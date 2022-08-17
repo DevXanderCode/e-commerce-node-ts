@@ -62,7 +62,7 @@ class Product {
         //   });
         // });
     }
-    static delete(id, cb) {
+    static deleteById(id, cb) {
         console.log('delete');
         getProductsFromFile((products) => {
             const updatedProduct = products.filter(prod => (prod === null || prod === void 0 ? void 0 : prod.id) !== id);

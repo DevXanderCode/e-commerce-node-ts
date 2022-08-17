@@ -67,10 +67,10 @@ export const postEditProduct = (req: Request, res: Response, _next: NextFunction
   res.redirect('/admin/products')
 }
 
-export const deleteProduct = (req: Request, res: Response, _next: NextFunction) => {
-  const prodId = req.params?.productId;
+export const postDeleteProduct = (req: Request, res: Response, _next: NextFunction) => {
+  const prodId = req.body?.productId;
   console.log('delete', prodId)
-  Product.delete(prodId, () => {
+  Product.deleteById(prodId, () => {
     res.redirect('/admin/products');
   });
 }
