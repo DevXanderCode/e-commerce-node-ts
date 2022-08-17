@@ -31,7 +31,7 @@ export const getAddProduct = (
     // console.log("request body", req.body);
     //   products.push({ title: req?.body?.title });
     const {title, imageUrl, description, price} = req?.body;
-    const product = new Product(title, imageUrl, description, price);
+    const product = new Product('', title, imageUrl, description, price);
     product.save();
     res.redirect("/");
   };
@@ -58,8 +58,15 @@ export const getAddProduct = (
       }
 
     });
-   
   }
+
+export const postEditProduct = (req: Request, res: Response, _next: NextFunction) => {
+  const {productId: prodId, title, imageUrl, description, price } = req?.body;
+  const product = new Product(prodId, title, imageUrl, description, price);
+  product.save();
+  res.redirect('/admin/products')
+
+}
 
 
 export const getAdminProducts = (_req: Request, res: Response, _next: NextFunction) => {

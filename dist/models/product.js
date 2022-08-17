@@ -23,7 +23,9 @@ const getProductsFromFile = (cb) => {
     });
 };
 class Product {
-    constructor(title, imageUrl, description, price) {
+    // id!: string;
+    constructor(id, title, imageUrl, description, price) {
+        this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -32,12 +34,22 @@ class Product {
     save() {
         // products.push(this);
         // console.log("console log path", p);
-        this.id = Math.random().toString();
         getProductsFromFile((products) => {
-            products.push(this);
-            fs_1.default.writeFile(p, JSON.stringify(products), (err) => {
-                console.log("write product error", err);
-            });
+            if (this.id) {
+                const existingProductIndex = products.findIndex(prod => (prod === null || prod === void 0 ? void 0 : prod.id) === this.id);
+                const updatedProduct = [...products];
+                updatedProduct[existingProductIndex] = this;
+                fs_1.default.writeFile(p, JSON.stringify(updatedProduct), (err) => {
+                    console.log("write product error", err);
+                });
+            }
+            else {
+                this.id = Math.random().toString();
+                products.push(this);
+                fs_1.default.writeFile(p, JSON.stringify(products), (err) => {
+                    console.log("write product error", err);
+                });
+            }
         });
         // fs.readFile(p, (err, fileContent) => {
         //   let products = [];

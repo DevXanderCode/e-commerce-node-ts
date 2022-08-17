@@ -3,7 +3,7 @@ import path from "path";
 import express, { Router } from "express";
 
 // import rootDir from "../util/path";
-import { getAddProduct, getAdminProducts, postAddProduct, getEditProduct } from "../controllers/admin";
+import { getAddProduct, getAdminProducts, postAddProduct, getEditProduct, postEditProduct } from "../controllers/admin";
 
 const router: Router = express.Router();
 
@@ -18,5 +18,7 @@ router.get('/edit-product/:productId', getEditProduct)
 
 //  /admin/products ==> Get
 router.get('/products', getAdminProducts);
+
+router.post('/edit-product', postEditProduct)
 
 export default router;

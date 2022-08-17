@@ -22,20 +22,32 @@ const getProductsFromFile = (cb: Function) => {
 };
 
 class Product {
-  id!: string;
+  // id!: string;
   
-  constructor(public title:string, public imageUrl: string, public description: string, public price: number) {
+  constructor(public id: string, public title:string, public imageUrl: string, public description: string, public price: number) {
   }
 
   save() {
     // products.push(this);
     // console.log("console log path", p);
-    this.id = Math.random().toString(); 
+
     getProductsFromFile((products: ProductInterface[]) => {
-      products.push(this);
-      fs.writeFile(p, JSON.stringify(products), (err) => {
+
+    if (this.id){
+      const existingProductIndex = products.findIndex(prod => prod?.id === this.id);
+      const updatedProduct = [...products];
+      updatedProduct[existingProductIndex] = this;
+      fs.writeFile(p, JSON.stringify(updatedProduct), (err) => {
         console.log("write product error", err);
       });
+    }else {
+
+      this.id = Math.random().toString(); 
+        products.push(this);
+        fs.writeFile(p, JSON.stringify(products), (err) => {
+          console.log("write product error", err);
+        });
+    }
     });
 
     // fs.readFile(p, (err, fileContent) => {
