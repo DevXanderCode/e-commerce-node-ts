@@ -70,6 +70,9 @@ class Cart {
             const cart = JSON.parse(fileContent.toString());
             const updatedCart = Object.assign({}, cart);
             const product = updatedCart.products.find((prod) => (prod === null || prod === void 0 ? void 0 : prod.id) === id);
+            if (!product) {
+                return;
+            }
             const productQty = product.qty;
             updatedCart.products = updatedCart.products.filter((prod) => prod.id !== id);
             updatedCart.totalPrice = updatedCart.totalPrice - ((product === null || product === void 0 ? void 0 : product.price) * productQty);

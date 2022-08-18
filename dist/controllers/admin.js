@@ -36,7 +36,7 @@ const getEditProduct = (req, res, _next) => {
     const prodId = req.params.productId;
     product_1.default.findById(prodId, (product) => {
         if (Object.keys(product).length) {
-            console.log('edit mode', product);
+            // console.log('edit mode', product)
             res.render('admin/edit-product', {
                 pageTitle: "Edit Product",
                 path: "/admin/edit-product",
@@ -60,7 +60,7 @@ exports.postEditProduct = postEditProduct;
 const postDeleteProduct = (req, res, _next) => {
     var _a;
     const prodId = (_a = req.body) === null || _a === void 0 ? void 0 : _a.productId;
-    console.log('delete', prodId);
+    // console.log('delete', prodId)
     product_1.default.deleteById(prodId, () => {
         res.redirect('/admin/products');
     });

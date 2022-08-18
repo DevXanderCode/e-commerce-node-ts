@@ -46,7 +46,7 @@ export const getAddProduct = (
 
     Product.findById(prodId, (product: ProductInterface) => {
       if (Object.keys(product).length) {
-        console.log('edit mode', product)
+        // console.log('edit mode', product)
         res.render('admin/edit-product', {
           pageTitle: "Edit Product",
           path: "/admin/edit-product",
@@ -69,7 +69,7 @@ export const postEditProduct = (req: Request, res: Response, _next: NextFunction
 
 export const postDeleteProduct = (req: Request, res: Response, _next: NextFunction) => {
   const prodId = req.body?.productId;
-  console.log('delete', prodId)
+  // console.log('delete', prodId)
   Product.deleteById(prodId, () => {
     res.redirect('/admin/products');
   });

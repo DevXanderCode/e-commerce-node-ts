@@ -69,7 +69,7 @@ export const postCart = (req: Request, res: Response, _next: NextFunction) => {
  
 }
 
-export const postDeleteCart = (req: Request, res: Response, _next: NextFunction) => {
+export const postCartDeleteProduct = (req: Request, res: Response, _next: NextFunction) => {
   const prodId = req.body.productId;
   
   Cart.deleteProduct(prodId);
