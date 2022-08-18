@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrders = exports.getCheckout = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.getOrders = exports.getCheckout = exports.postDeleteCart = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const models_1 = require("../models");
 // export const products: Product[] = [];
 const getProducts = (_req, res, _next) => {
@@ -61,6 +61,12 @@ const postCart = (req, res, _next) => {
     res.redirect('/cart');
 };
 exports.postCart = postCart;
+const postDeleteCart = (req, res, _next) => {
+    const prodId = req.body.productId;
+    models_1.Cart.deleteProduct(prodId);
+    res.redirect('/cart');
+};
+exports.postDeleteCart = postDeleteCart;
 const getCheckout = (_req, res, _next) => {
     res.render('shop/checkout', {
         pageTitle: 'Checkout',

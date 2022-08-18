@@ -4,13 +4,15 @@ import express, { Router } from "express";
 
 // import rootDir from "../util/path";
 // import adminData from "./admin";
-import { getCart, getCheckout, getIndex, getProducts, getOrders, getProduct, postCart } from "../controllers/shop";
+import { getCart, getCheckout, getIndex, getProducts, getOrders, getProduct, postCart, postDeleteCart } from "../controllers/shop";
 
 const router: Router = express.Router();
 
 router.get('/cart', getCart);
 
 router.post('/cart', postCart);
+
+router.post('/cart-delete-item', postDeleteCart)
 
 router.get('/products', getProducts);
 
