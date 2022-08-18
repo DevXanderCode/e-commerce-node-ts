@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const cart_1 = __importDefault(require("./cart"));
 const path_2 = __importDefault(require("../util/path"));
 // const products: ProductInterface[] = [];
 const p = path_1.default.join(path_2.default, "..", "data", "products.json");
@@ -69,6 +70,7 @@ class Product {
             fs_1.default.writeFile(p, JSON.stringify(updatedProduct), (err) => {
                 console.log("write product error", err);
                 if (!err) {
+                    cart_1.default.deleteProduct(id);
                     cb();
                 }
             });

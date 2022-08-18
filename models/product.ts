@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 
+import Cart from "./cart";
 import rootDir from "../util/path";
 import { Product as ProductInterface } from "../types";
 
@@ -70,6 +71,7 @@ class Product {
       fs.writeFile(p, JSON.stringify(updatedProduct), (err) => {
         console.log("write product error", err);
         if (!err) {
+          Cart.deleteProduct(id);
           cb()
         }
       });

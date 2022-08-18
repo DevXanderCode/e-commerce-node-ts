@@ -50,7 +50,6 @@ export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
 
 export const getCart = (_req: Request, res: Response, _next: NextFunction) => {
   Cart.fetchAll(({products}: {products: ProductInterface[], totalPrice: number}) => {
-    console.log('fetched cart', products)
     res.render('shop/cart', {
       pageTitle: 'My Cart',
       path: '/cart',

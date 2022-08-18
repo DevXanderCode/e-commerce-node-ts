@@ -62,5 +62,21 @@ class Cart {
     static fetchAll(cb) {
         getProductsFromFile(cb);
     }
+    static deleteProduct(id) {
+        fs_1.default.readFile(p, (err, fileContent) => {
+            if (err) {
+                return;
+            }
+            const cart = JSON.parse(fileContent.toString());
+            const updatedCart = Object.assign({}, cart);
+            const product = updatedCart.products.find((prod) => (prod === null || prod === void 0 ? void 0 : prod.id) === id);
+            const productQty = product.qty;
+            updatedCart.products = updatedCart.products.filter((prod) => prod.id !== id);
+            updatedCart.totalPrice = updatedCart.totalPrice - ((product === null || product === void 0 ? void 0 : product.price) * productQty);
+            fs_1.default.writeFile(p, JSON.stringify(updatedCart), (err) => {
+                console.log('write cart err', err);
+            });
+        });
+    }
 }
 exports.default = Cart;

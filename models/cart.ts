@@ -60,6 +60,24 @@ class Cart {
   static fetchAll(cb: Function) {
     getProductsFromFile(cb);
   }
+
+  static deleteProduct (id: string) {
+    fs.readFile(p, (err, fileContent) => {
+      if (err) {
+        return;
+      }
+      const cart = JSON.parse(fileContent.toString());
+      const updatedCart = {...cart};
+      const product = updatedCart.products.find((prod: ProductInterface) => prod?.id === id);
+      const productQty = product.qty;
+      updatedCart.products = updatedCart.products.filter((prod: ProductInterface) => prod.id !== id);
+      updatedCart.totalPrice = updatedCart.totalPrice - (product?.price * productQty);
+
+      fs.writeFile(p, JSON.stringify(updatedCart), (err) => {
+        console.log('write cart err', err)
+      })
+    })
+  }
 }
 
 export default Cart;

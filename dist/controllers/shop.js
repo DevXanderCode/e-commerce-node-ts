@@ -43,7 +43,6 @@ const getIndex = (_req, res, _next) => {
 exports.getIndex = getIndex;
 const getCart = (_req, res, _next) => {
     models_1.Cart.fetchAll(({ products }) => {
-        console.log('fetched cart', products);
         res.render('shop/cart', {
             pageTitle: 'My Cart',
             path: '/cart',
