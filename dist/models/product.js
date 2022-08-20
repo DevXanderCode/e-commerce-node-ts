@@ -29,10 +29,12 @@ class Product {
         this.price = price;
     }
     save() {
-        return database_1.default.execute("INSERT INTO product (title, price, imageUrl, description) VALUES (?, ?, ?, ?)", [this.title, this.price, this.imageUrl, this.description]);
+        return database_1.default.execute("INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)", [this.title, this.price, this.imageUrl, this.description]);
     }
     static deleteById(id) { }
-    static findById(id) { }
+    static findById(id) {
+        return database_1.default.execute("SELECT * FROM products WHERE id = ?", [id]);
+    }
     static fetchAll() {
         return database_1.default.execute("SELECT * FROM products");
     }

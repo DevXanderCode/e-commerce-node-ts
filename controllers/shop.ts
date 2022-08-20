@@ -47,13 +47,15 @@ export const getProduct = (
   _next: NextFunction
 ) => {
   const prodId = req?.params?.productId;
-  // Product.findById(prodId, (product: ProductInterface) => {
-  //   res.render('shop/product-detail', {
-  //     pageTitle: product.title,
-  //     product,
-  //     path: '/products'
-  //   });
-  // });
+  Product.findById(prodId)
+    .then(([rows]) => {
+      res.render("shop/product-detail", {
+        pageTitle: "Product Details",
+        product: rows,
+        path: "/products",
+      });
+    })
+    .catch((err) => console.error(err));
 };
 
 export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {

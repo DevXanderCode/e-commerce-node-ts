@@ -26,12 +26,12 @@ export const postAddProduct = (
   res: Response,
   _next: NextFunction
 ) => {
-  // console.log("request body", req.body);
-  //   products.push({ title: req?.body?.title });
   const { title, imageUrl, description, price } = req?.body;
   const product = new Product("", title, imageUrl, description, price);
-  product.save();
-  res.redirect("/");
+  product
+    .save()
+    .then(() => res.redirect("/"))
+    .catch((err) => console.error(err));
 };
 
 export const getEditProduct = (

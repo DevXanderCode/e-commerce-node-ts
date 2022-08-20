@@ -38,13 +38,15 @@ exports.getProducts = getProducts;
 const getProduct = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.productId;
-    // Product.findById(prodId, (product: ProductInterface) => {
-    //   res.render('shop/product-detail', {
-    //     pageTitle: product.title,
-    //     product,
-    //     path: '/products'
-    //   });
-    // });
+    models_1.Product.findById(prodId)
+        .then(([rows]) => {
+        res.render("shop/product-detail", {
+            pageTitle: "Product Details",
+            product: rows,
+            path: "/products",
+        });
+    })
+        .catch((err) => console.error(err));
 };
 exports.getProduct = getProduct;
 const getIndex = (_req, res, _next) => {

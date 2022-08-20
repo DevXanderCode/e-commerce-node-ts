@@ -34,14 +34,16 @@ class Product {
 
   save() {
     return db.execute(
-      "INSERT INTO product (title, price, imageUrl, description) VALUES (?, ?, ?, ?)",
+      "INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)",
       [this.title, this.price, this.imageUrl, this.description]
     );
   }
 
   static deleteById(id: string) {}
 
-  static findById(id: string) {}
+  static findById(id: string) {
+    return db.execute("SELECT * FROM products WHERE id = ?", [id]);
+  }
 
   static fetchAll() {
     return db.execute("SELECT * FROM products");
