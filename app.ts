@@ -32,12 +32,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express.static(path.join(__dirname,'..' , 'public')));
 
-db.execute('SELECT * FROM products').then(result => {
-  console.log('Logging data ====> ', result[0]);
-  console.log('Logging meta data ===> ', result[1]);
-}).catch(err => {
-  console.log('Logging execution error', err)
-})
+// Test database connection
+// db.execute('SELECT * FROM products').then(result => {
+//   console.log('Logging data ====> ', result[0]);
+//   console.log('Logging meta data ===> ', result[1]);
+// }).catch(err => {
+//   console.log('Logging execution error', err)
+// });
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);

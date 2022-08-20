@@ -13,39 +13,41 @@ export const getProducts = (
 ) => {
   // console.log("Admin products", adminData?.products);
   // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-  Product.fetchAll((products: ProductInterface[]) => {
-    res.render("shop/product-list", {
-      prods: products,
-      pageTitle: "All products",
-      path: "/products",
-      hasProduct: products?.length > 0,
-      activeShop: true,
-    });
-  });
+  Product.fetchAll().then(([rows, fieldData]) =>{
+      res.render("shop/product-list", {
+        prods: rows,
+        pageTitle: "All products",
+        path: "/products",
+        // hasProduct: rows.toString().length > 0,
+        activeShop: true,
+      });
+    }).catch(err => console.error('Logging err', err));
 };
 
 
 export const getProduct = (req: Request, res: Response, _next: NextFunction) => {
   const prodId = req?.params?.productId;
-  Product.findById(prodId, (product: ProductInterface) => {
-    res.render('shop/product-detail', {
-      pageTitle: product.title,
-      product,
-      path: '/products'
-    });
-  });
+  // Product.findById(prodId, (product: ProductInterface) => {
+  //   res.render('shop/product-detail', {
+  //     pageTitle: product.title,
+  //     product,
+  //     path: '/products'
+  //   });
+  // });
 }
 
 export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
-  Product.fetchAll((products: ProductInterface[]) => {
-    res.render("shop/index", {
-      prods: products,
-      pageTitle: "Shop",
-      path: "/",
-      hasProduct: products?.length > 0,
-      activeShop: true,
-    });
-  });
+  Product.fetchAll().then(([rows, fieldData]) => {
+    
+      res.render("shop/index", {
+        prods: rows,
+        pageTitle: "Shop",
+        path: "/",
+        // hasProduct: products?.length > 0,
+        activeShop: true,
+      })
+    }
+  ).catch(err => console.error(err));
 }
 
 export const getCart = (_req: Request, res: Response, _next: NextFunction) => {

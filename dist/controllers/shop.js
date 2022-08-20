@@ -6,39 +6,39 @@ const models_1 = require("../models");
 const getProducts = (_req, res, _next) => {
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-    models_1.Product.fetchAll((products) => {
+    models_1.Product.fetchAll().then(([rows, fieldData]) => {
         res.render("shop/product-list", {
-            prods: products,
+            prods: rows,
             pageTitle: "All products",
             path: "/products",
-            hasProduct: (products === null || products === void 0 ? void 0 : products.length) > 0,
+            // hasProduct: rows.toString().length > 0,
             activeShop: true,
         });
-    });
+    }).catch(err => console.error('Logging err', err));
 };
 exports.getProducts = getProducts;
 const getProduct = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.productId;
-    models_1.Product.findById(prodId, (product) => {
-        res.render('shop/product-detail', {
-            pageTitle: product.title,
-            product,
-            path: '/products'
-        });
-    });
+    // Product.findById(prodId, (product: ProductInterface) => {
+    //   res.render('shop/product-detail', {
+    //     pageTitle: product.title,
+    //     product,
+    //     path: '/products'
+    //   });
+    // });
 };
 exports.getProduct = getProduct;
 const getIndex = (_req, res, _next) => {
-    models_1.Product.fetchAll((products) => {
+    models_1.Product.fetchAll().then(([rows, fieldData]) => {
         res.render("shop/index", {
-            prods: products,
+            prods: rows,
             pageTitle: "Shop",
             path: "/",
-            hasProduct: (products === null || products === void 0 ? void 0 : products.length) > 0,
+            // hasProduct: products?.length > 0,
             activeShop: true,
         });
-    });
+    }).catch(err => console.error(err));
 };
 exports.getIndex = getIndex;
 const getCart = (_req, res, _next) => {
