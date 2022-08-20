@@ -24,20 +24,28 @@ import db from "../util/database";
 // };
 
 class Product {
-  
-  constructor(public id: string, public title:string, public imageUrl: string, public description: string, public price: number) {
-  }
+  constructor(
+    public id: string,
+    public title: string,
+    public imageUrl: string,
+    public description: string,
+    public price: number
+  ) {}
 
-  save () {}
+  save() {
+    return db.execute(
+      "INSERT INTO product (title, price, imageUrl, description) VALUES (?, ?, ?, ?)",
+      [this.title, this.price, this.imageUrl, this.description]
+    );
+  }
 
   static deleteById(id: string) {}
 
-  static findById (id: string) {}
+  static findById(id: string) {}
 
-  static fetchAll () {
-   return db.execute('SELECT * FROM products')
+  static fetchAll() {
+    return db.execute("SELECT * FROM products");
   }
-
 
   // old methods
 
@@ -56,14 +64,13 @@ class Product {
   //     });
   //   }else {
 
-  //     this.id = Math.random().toString(); 
+  //     this.id = Math.random().toString();
   //       products.push(this);
   //       fs.writeFile(p, JSON.stringify(products), (err) => {
   //         console.log("write product error", err);
   //       });
   //   }
   //   });
-
 
   //   // fs.readFile(p, (err, fileContent) => {
   //   //   let products = [];
@@ -90,7 +97,6 @@ class Product {
   //     });
   //   });
   // }
-
 
   // static fetchAll(cb: Function) {
   //   getProductsFromFile(cb);
