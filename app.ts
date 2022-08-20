@@ -8,6 +8,7 @@ import { adminRoutes, shopRoutes } from "./routes";
 import rootDir from "./util/path";
 import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
+import db from './util/database';
 
 const app: Express = express();
 
@@ -30,6 +31,13 @@ app.set("views", path.join(rootDir, "..", "views"));
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express.static(path.join(__dirname,'..' , 'public')));
+
+db.execute('SELECT * FROM products').then(result => {
+  console.log('Logging data ====> ', result[0]);
+  console.log('Logging meta data ===> ', result[1]);
+}).catch(err => {
+  console.log('Logging execution error', err)
+})
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
