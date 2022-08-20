@@ -13,7 +13,7 @@ const getAddProduct = (_req, res, _next) => {
     res.render("admin/edit-product", {
         pageTitle: "Add Product",
         path: "/admin/add-product",
-        editing: false
+        editing: false,
         // activeAddProduct: true, // was needed for the handlebars
         // layout: false,
     });
@@ -23,7 +23,7 @@ const postAddProduct = (req, res, _next) => {
     // console.log("request body", req.body);
     //   products.push({ title: req?.body?.title });
     const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
-    const product = new product_1.default('', title, imageUrl, description, price);
+    const product = new product_1.default("", title, imageUrl, description, price);
     product.save();
     res.redirect("/");
 };
@@ -31,21 +31,21 @@ exports.postAddProduct = postAddProduct;
 const getEditProduct = (req, res, _next) => {
     const editMode = req.query.edit;
     if (!editMode) {
-        return res.redirect('/');
+        return res.redirect("/");
     }
     const prodId = req.params.productId;
     product_1.default.findById(prodId, (product) => {
         if (Object.keys(product).length) {
             // console.log('edit mode', product)
-            res.render('admin/edit-product', {
+            res.render("admin/edit-product", {
                 pageTitle: "Edit Product",
                 path: "/admin/edit-product",
                 editing: editMode,
-                product
+                product,
             });
         }
         else {
-            res.redirect('/');
+            res.redirect("/");
         }
     });
 };
@@ -54,7 +54,7 @@ const postEditProduct = (req, res, _next) => {
     const { productId: prodId, title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
     const updatedProduct = new product_1.default(prodId, title, imageUrl, description, price);
     updatedProduct.save();
-    res.redirect('/admin/products');
+    res.redirect("/admin/products");
 };
 exports.postEditProduct = postEditProduct;
 const postDeleteProduct = (req, res, _next) => {
@@ -62,23 +62,30 @@ const postDeleteProduct = (req, res, _next) => {
     const prodId = (_a = req.body) === null || _a === void 0 ? void 0 : _a.productId;
     // console.log('delete', prodId)
     product_1.default.deleteById(prodId, () => {
-        res.redirect('/admin/products');
+        res.redirect("/admin/products");
     });
 };
 exports.postDeleteProduct = postDeleteProduct;
+/**
+ * We're using the fetchAll() method from the Product model to get all the products from the database,
+ * then we're rendering the admin/products.ejs view with the products we got from the database
+ * @param {Request} _req - Request - this is the request object that is passed to the route handler.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} _next - NextFunction - This is a function that is used to call the next
+ * middleware in the stack.
+ */
 const getAdminProducts = (_req, res, _next) => {
-    product_1.default.fetchAll((products) => {
+    product_1.default.fetchAll()
+        .then(([rows]) => {
         res.render("admin/products", {
-            prods: products,
-            pageTitle: 'Admin Products',
-            path: '/admin/products',
-            hasProduct: (products === null || products === void 0 ? void 0 : products.length) > 0,
+            prods: rows,
+            pageTitle: "Admin Products",
+            path: "/admin/products",
+            // hasProduct: products?.length > 0,
             activeShop: true,
         });
-    });
-    // res.render('admin/products', {
-    //   pageTitle: 'Admin Products',
-    //   path: '/admin/products',
-    // });
+    })
+        .catch((err) => console.error(err));
 };
 exports.getAdminProducts = getAdminProducts;
