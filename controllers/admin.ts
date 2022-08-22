@@ -8,16 +8,10 @@ export const getAddProduct = (
   res: Response,
   _next: NextFunction
 ) => {
-  // res.send(
-  //   "<form action='/admin/add-product' method='POST'><input type='text' name='title'  /><button type='submit'>Add Product</button></form>"
-  // );
-  // res.sendFile(path.join(rootDir, "..", "views", "add-product.html"));
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
-    // activeAddProduct: true, // was needed for the handlebars
-    // layout: false,
   });
 };
 
@@ -49,19 +43,21 @@ export const getEditProduct = (
   }
   const prodId = req.params.productId;
 
-  Product.findById(prodId, (product: ProductInterface) => {
-    if (Object.keys(product).length) {
-      // console.log('edit mode', product)
-      res.render("admin/edit-product", {
-        pageTitle: "Edit Product",
-        path: "/admin/edit-product",
-        editing: editMode,
-        product,
-      });
-    } else {
-      res.redirect("/");
-    }
-  });
+  Product.findByPk(prodId)
+    .then((product) => {
+      // console.log("Edit product", JSON.stringify(product, null, 2));
+      if (product) {
+        res.render("admin/edit-product", {
+          pageTitle: "Edit Product",
+          path: "/admin/edit-product",
+          editing: editMode,
+          product,
+        });
+      } else {
+        res.redirect("/");
+      }
+    })
+    .catch((err) => console.log(err));
 };
 
 export const postEditProduct = (

@@ -6,16 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAdminProducts = exports.postDeleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
 const product_1 = __importDefault(require("../models/product"));
 const getAddProduct = (_req, res, _next) => {
-    // res.send(
-    //   "<form action='/admin/add-product' method='POST'><input type='text' name='title'  /><button type='submit'>Add Product</button></form>"
-    // );
-    // res.sendFile(path.join(rootDir, "..", "views", "add-product.html"));
     res.render("admin/edit-product", {
         pageTitle: "Add Product",
         path: "/admin/add-product",
         editing: false,
-        // activeAddProduct: true, // was needed for the handlebars
-        // layout: false,
     });
 };
 exports.getAddProduct = getAddProduct;
@@ -37,9 +31,10 @@ const getEditProduct = (req, res, _next) => {
         return res.redirect("/");
     }
     const prodId = req.params.productId;
-    product_1.default.findById(prodId, (product) => {
-        if (Object.keys(product).length) {
-            // console.log('edit mode', product)
+    product_1.default.findByPk(prodId)
+        .then((product) => {
+        // console.log("Edit product", JSON.stringify(product, null, 2));
+        if (product) {
             res.render("admin/edit-product", {
                 pageTitle: "Edit Product",
                 path: "/admin/edit-product",
@@ -50,7 +45,8 @@ const getEditProduct = (req, res, _next) => {
         else {
             res.redirect("/");
         }
-    });
+    })
+        .catch((err) => console.log(err));
 };
 exports.getEditProduct = getEditProduct;
 const postEditProduct = (req, res, _next) => {
