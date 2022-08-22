@@ -48,7 +48,7 @@ app.use(get404Page);
 sequelize
   .sync()
   .then((result) => {
-    console.log("sequelize result", result);
+    // console.log("sequelize result", result);
     app.listen("3000", () => {
       console.log("Listening on port 3000");
     });

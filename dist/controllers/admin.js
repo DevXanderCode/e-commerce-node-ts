@@ -21,9 +21,12 @@ const getAddProduct = (_req, res, _next) => {
 exports.getAddProduct = getAddProduct;
 const postAddProduct = (req, res, _next) => {
     const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
-    const product = new product_1.default("", title, imageUrl, description, price);
-    product
-        .save()
+    // const product = new Product("", title, imageUrl, description, price);
+    // product
+    //   .save()
+    //   .then(() => res.redirect("/"))
+    //   .catch((err) => console.error(err));
+    product_1.default.create({ title, price, imageUrl, description })
         .then(() => res.redirect("/"))
         .catch((err) => console.error(err));
 };

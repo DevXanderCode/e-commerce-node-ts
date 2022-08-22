@@ -1,4 +1,4 @@
-import { Response, Request, NextFunction } from "express";
+import { Response, Request, NextFunction, RequestHandler } from "express";
 
 import Product from "../models/product";
 import { Product as ProductInterface } from "../types";
@@ -27,9 +27,12 @@ export const postAddProduct = (
   _next: NextFunction
 ) => {
   const { title, imageUrl, description, price } = req?.body;
-  const product = new Product("", title, imageUrl, description, price);
-  product
-    .save()
+  // const product = new Product("", title, imageUrl, description, price);
+  // product
+  //   .save()
+  //   .then(() => res.redirect("/"))
+  //   .catch((err) => console.error(err));
+  Product.create({ title, price, imageUrl, description })
     .then(() => res.redirect("/"))
     .catch((err) => console.error(err));
 };
