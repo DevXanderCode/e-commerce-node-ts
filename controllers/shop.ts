@@ -59,17 +59,27 @@ export const getProduct = (
 };
 
 export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
-  Product.fetchAll()
-    .then(([rows]) => {
+  Product.findAll()
+    .then((products) => {
       res.render("shop/index", {
-        prods: rows,
+        prods: products,
         pageTitle: "Shop",
         path: "/",
-        // hasProduct: products?.length > 0,
         activeShop: true,
       });
     })
-    .catch((err) => console.error(err));
+    .catch((err) => console.log(err));
+  // Product.fetchAll()
+  //   .then(([rows]) => {
+  //     res.render("shop/index", {
+  //       prods: rows,
+  //       pageTitle: "Shop",
+  //       path: "/",
+  //       // hasProduct: products?.length > 0,
+  //       activeShop: true,
+  //     });
+  //   })
+  //   .catch((err) => console.error(err));
 };
 
 export const getCart = (_req: Request, res: Response, _next: NextFunction) => {

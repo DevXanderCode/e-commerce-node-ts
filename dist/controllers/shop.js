@@ -50,17 +50,27 @@ const getProduct = (req, res, _next) => {
 };
 exports.getProduct = getProduct;
 const getIndex = (_req, res, _next) => {
-    models_1.Product.fetchAll()
-        .then(([rows]) => {
+    models_1.Product.findAll()
+        .then((products) => {
         res.render("shop/index", {
-            prods: rows,
+            prods: products,
             pageTitle: "Shop",
             path: "/",
-            // hasProduct: products?.length > 0,
             activeShop: true,
         });
     })
-        .catch((err) => console.error(err));
+        .catch((err) => console.log(err));
+    // Product.fetchAll()
+    //   .then(([rows]) => {
+    //     res.render("shop/index", {
+    //       prods: rows,
+    //       pageTitle: "Shop",
+    //       path: "/",
+    //       // hasProduct: products?.length > 0,
+    //       activeShop: true,
+    //     });
+    //   })
+    //   .catch((err) => console.error(err));
 };
 exports.getIndex = getIndex;
 const getCart = (_req, res, _next) => {
