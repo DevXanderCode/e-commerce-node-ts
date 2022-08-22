@@ -1,115 +1,139 @@
-// import path from "path";
-// import fs from "fs";
+// // import path from "path";
+// // import fs from "fs";
 
-import Cart from "./cart";
-import rootDir from "../util/path";
-import { Product as ProductInterface } from "../types";
-import db from "../util/database";
+// import Cart from "./cart";
+// import rootDir from "../util/path";
+// import { Product as ProductInterface } from "../types";
+// import db from "../util/database";
 
-// const products: ProductInterface[] = [];
+// // const products: ProductInterface[] = [];
 
-// const p = path.join(rootDir, "..", "data", "products.json");
+// // const p = path.join(rootDir, "..", "data", "products.json");
 
-// const getProductsFromFile = (cb: Function) => {
-//   fs.readFile(p, (err, fileContent) => {
-//     // console.log("read File", fileContent, fileContent.length);
-//     if (err) {
-//       cb([]);
-//     } else if (fileContent?.length > 0) {
-//       cb(JSON.parse(fileContent?.toString()));
-//     } else {
-//       cb([]);
-//     }
-//   });
-// };
+// // const getProductsFromFile = (cb: Function) => {
+// //   fs.readFile(p, (err, fileContent) => {
+// //     // console.log("read File", fileContent, fileContent.length);
+// //     if (err) {
+// //       cb([]);
+// //     } else if (fileContent?.length > 0) {
+// //       cb(JSON.parse(fileContent?.toString()));
+// //     } else {
+// //       cb([]);
+// //     }
+// //   });
+// // };
 
-class Product {
-  constructor(
-    public id: string,
-    public title: string,
-    public imageUrl: string,
-    public description: string,
-    public price: number
-  ) {}
+// class Product {
+//   constructor(
+//     public id: string,
+//     public title: string,
+//     public imageUrl: string,
+//     public description: string,
+//     public price: number
+//   ) {}
 
-  save() {
-    return db.execute(
-      "INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)",
-      [this.title, this.price, this.imageUrl, this.description]
-    );
-  }
+//   save() {
+//     return db.execute(
+//       "INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)",
+//       [this.title, this.price, this.imageUrl, this.description]
+//     );
+//   }
 
-  static deleteById(id: string) {}
+//   static deleteById(id: string) {}
 
-  static findById(id: string) {
-    return db.execute("SELECT * FROM products WHERE id = ?", [id]);
-  }
+//   static findById(id: string) {
+//     return db.execute("SELECT * FROM products WHERE id = ?", [id]);
+//   }
 
-  static fetchAll() {
-    return db.execute("SELECT * FROM products");
-  }
+//   static fetchAll() {
+//     return db.execute("SELECT * FROM products");
+//   }
 
-  // old methods
+//   // old methods
 
-  // save() {
-  //   // products.push(this);
-  //   // console.log("console log path", p);
+//   // save() {
+//   //   // products.push(this);
+//   //   // console.log("console log path", p);
 
-  //   getProductsFromFile((products: ProductInterface[]) => {
+//   //   getProductsFromFile((products: ProductInterface[]) => {
 
-  //   if (this.id){
-  //     const existingProductIndex = products.findIndex(prod => prod?.id === this.id);
-  //     const updatedProduct = [...products];
-  //     updatedProduct[existingProductIndex] = this;
-  //     fs.writeFile(p, JSON.stringify(updatedProduct), (err) => {
-  //       console.log("write product error", err);
-  //     });
-  //   }else {
+//   //   if (this.id){
+//   //     const existingProductIndex = products.findIndex(prod => prod?.id === this.id);
+//   //     const updatedProduct = [...products];
+//   //     updatedProduct[existingProductIndex] = this;
+//   //     fs.writeFile(p, JSON.stringify(updatedProduct), (err) => {
+//   //       console.log("write product error", err);
+//   //     });
+//   //   }else {
 
-  //     this.id = Math.random().toString();
-  //       products.push(this);
-  //       fs.writeFile(p, JSON.stringify(products), (err) => {
-  //         console.log("write product error", err);
-  //       });
-  //   }
-  //   });
+//   //     this.id = Math.random().toString();
+//   //       products.push(this);
+//   //       fs.writeFile(p, JSON.stringify(products), (err) => {
+//   //         console.log("write product error", err);
+//   //       });
+//   //   }
+//   //   });
 
-  //   // fs.readFile(p, (err, fileContent) => {
-  //   //   let products = [];
-  //   //   if (!err) {
-  //   //     products = JSON.parse(fileContent.toString());
-  //   //   }
-  //   //   products.push(this);
-  //   //   fs.writeFile(p, JSON.stringify(products), (err) => {
-  //   //     console.log("write product error", err);
-  //   //   });
-  //   // });
-  // }
+//   //   // fs.readFile(p, (err, fileContent) => {
+//   //   //   let products = [];
+//   //   //   if (!err) {
+//   //   //     products = JSON.parse(fileContent.toString());
+//   //   //   }
+//   //   //   products.push(this);
+//   //   //   fs.writeFile(p, JSON.stringify(products), (err) => {
+//   //   //     console.log("write product error", err);
+//   //   //   });
+//   //   // });
+//   // }
 
-  // static deleteById (id: string, cb: Function) {
-  //   console.log('delete')
-  //   getProductsFromFile((products: ProductInterface[]) => {
-  //     const updatedProduct = products.filter(prod => prod?.id !== id);
-  //     fs.writeFile(p, JSON.stringify(updatedProduct), (err) => {
-  //       console.log("write product error", err);
-  //       if (!err) {
-  //         Cart.deleteProduct(id);
-  //         cb()
-  //       }
-  //     });
-  //   });
-  // }
+//   // static deleteById (id: string, cb: Function) {
+//   //   console.log('delete')
+//   //   getProductsFromFile((products: ProductInterface[]) => {
+//   //     const updatedProduct = products.filter(prod => prod?.id !== id);
+//   //     fs.writeFile(p, JSON.stringify(updatedProduct), (err) => {
+//   //       console.log("write product error", err);
+//   //       if (!err) {
+//   //         Cart.deleteProduct(id);
+//   //         cb()
+//   //       }
+//   //     });
+//   //   });
+//   // }
 
-  // static fetchAll(cb: Function) {
-  //   getProductsFromFile(cb);
-  // }
+//   // static fetchAll(cb: Function) {
+//   //   getProductsFromFile(cb);
+//   // }
 
-  // static findById(id: string, cb: Function ) {
-  //   getProductsFromFile((products: Product[]) => {
-  //     const product = products.find(p => p?.id === id);
-  //     cb(product)
-  //   })
-  // }
-}
+//   // static findById(id: string, cb: Function ) {
+//   //   getProductsFromFile((products: Product[]) => {
+//   //     const product = products.find(p => p?.id === id);
+//   //     cb(product)
+//   //   })
+//   // }
+// }
+
+// export default Product;
+
+import { DataType } from "sequelize-typescript";
+import sequelize from "../util/database";
+
+const Product = sequelize.define("product", {
+  id: {
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  title: DataType.STRING,
+  price: {
+    type: DataType.DOUBLE,
+    allowNull: false,
+  },
+  imageUrl: {
+    type: DataType.STRING,
+    allowNull: false,
+  },
+  description: { type: DataType.STRING, allowNull: false },
+});
 
 export default Product;

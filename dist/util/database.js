@@ -1,13 +1,16 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+// import mysql  from 'mysql2';
 Object.defineProperty(exports, "__esModule", { value: true });
-const mysql2_1 = __importDefault(require("mysql2"));
-const pool = mysql2_1.default.createPool({
-    host: 'localhost',
-    user: 'root',
-    database: 'node-ecommerce',
-    password: 'Nweke@!ex'
+// const pool = mysql.createPool({
+//     host: 'localhost',
+//     user: 'root',
+//     database: 'node-ecommerce',
+//     password: 'Nweke@!ex'
+// });
+// export default pool.promise();
+const sequelize_1 = require("sequelize");
+const sequelize = new sequelize_1.Sequelize("node-ecommerce", "root", "Nweke@!ex", {
+    dialect: "mysql",
+    host: "localhost",
 });
-exports.default = pool.promise();
+exports.default = sequelize;

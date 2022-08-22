@@ -8,7 +8,7 @@ import { adminRoutes, shopRoutes } from "./routes";
 import rootDir from "./util/path";
 import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
-import db from './util/database';
+import sequelize from "./util/database";
 
 const app: Express = express();
 
@@ -30,7 +30,7 @@ app.set("views", path.join(rootDir, "..", "views"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
-app.use(express.static(path.join(__dirname,'..' , 'public')));
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 // Test database connection
 // db.execute('SELECT * FROM products').then(result => {
@@ -45,6 +45,14 @@ app.use(shopRoutes);
 
 app.use(get404Page);
 
-app.listen("3000", () => {
-  console.log("Listening on port 3000");
-});
+sequelize
+  .sync()
+  .then((result) => {
+    console.log("sequelize result", result);
+    app.listen("3000", () => {
+      console.log("Listening on port 3000");
+    });
+  })
+  .catch((err) => {
+    console.error(err);
+  });
