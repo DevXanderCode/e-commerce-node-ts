@@ -107,10 +107,10 @@ export const getAdminProducts = (
   res: Response,
   _next: NextFunction
 ) => {
-  Product.fetchAll()
-    .then(([rows]) => {
+  Product.findAll()
+    .then((result) => {
       res.render("admin/products", {
-        prods: rows,
+        prods: result,
         pageTitle: "Admin Products",
         path: "/admin/products",
         // hasProduct: products?.length > 0,

@@ -22,13 +22,12 @@ const models_1 = require("../models");
 const getProducts = (_req, res, _next) => {
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-    models_1.Product.fetchAll()
-        .then(([rows]) => {
+    models_1.Product.findAll()
+        .then((result) => {
         res.render("shop/product-list", {
-            prods: rows,
+            prods: result,
             pageTitle: "All products",
             path: "/products",
-            // hasProduct: rows.toString().length > 0,
             activeShop: true,
         });
     })
@@ -38,11 +37,11 @@ exports.getProducts = getProducts;
 const getProduct = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.productId;
-    models_1.Product.findById(prodId)
-        .then(([rows]) => {
+    models_1.Product.findByPk(prodId)
+        .then((result) => {
         res.render("shop/product-detail", {
             pageTitle: "Product Details",
-            product: rows,
+            product: result,
             path: "/products",
         });
     })

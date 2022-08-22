@@ -79,10 +79,10 @@ exports.postDeleteProduct = postDeleteProduct;
  * middleware in the stack.
  */
 const getAdminProducts = (_req, res, _next) => {
-    product_1.default.fetchAll()
-        .then(([rows]) => {
+    product_1.default.findAll()
+        .then((result) => {
         res.render("admin/products", {
-            prods: rows,
+            prods: result,
             pageTitle: "Admin Products",
             path: "/admin/products",
             // hasProduct: products?.length > 0,

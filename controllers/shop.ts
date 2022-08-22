@@ -28,13 +28,12 @@ export const getProducts = (
 ) => {
   // console.log("Admin products", adminData?.products);
   // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-  Product.fetchAll()
-    .then(([rows]) => {
+  Product.findAll()
+    .then((result) => {
       res.render("shop/product-list", {
-        prods: rows,
+        prods: result,
         pageTitle: "All products",
         path: "/products",
-        // hasProduct: rows.toString().length > 0,
         activeShop: true,
       });
     })
@@ -47,11 +46,11 @@ export const getProduct = (
   _next: NextFunction
 ) => {
   const prodId = req?.params?.productId;
-  Product.findById(prodId)
-    .then(([rows]) => {
+  Product.findByPk(prodId)
+    .then((result) => {
       res.render("shop/product-detail", {
         pageTitle: "Product Details",
-        product: rows,
+        product: result,
         path: "/products",
       });
     })
