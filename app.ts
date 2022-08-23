@@ -2,6 +2,7 @@ import path from "path";
 
 import express, { Express, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
+import * as dotenv from "dotenv";
 // import { create, engine } from "express-handlebars";
 
 import { adminRoutes, shopRoutes } from "./routes";
@@ -10,6 +11,7 @@ import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
 import sequelize from "./util/database";
 
+dotenv.config();
 const app: Express = express();
 
 // For handleBars

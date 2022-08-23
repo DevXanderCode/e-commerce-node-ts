@@ -1,19 +1,26 @@
 // import mysql  from 'mysql2';
 
 // const pool = mysql.createPool({
-//     host: 'localhost',
-//     user: 'root',
-//     database: 'node-ecommerce',
-//     password: 'Nweke@!ex'
+//     host: process.env.DB_HOST,
+//     user: process.env.dbUser,
+//     database: process.env.dbName,
+//     password: process.env.dbPassword
 // });
 
 // export default pool.promise();
 
-import { Sequelize } from "sequelize";
+import { Sequelize, Dialect } from "sequelize";
+import "dotenv/config";
 
-const sequelize = new Sequelize("node-ecommerce", "root", "Nweke@!ex", {
+const dbName = process.env.DB_NAME as string;
+const dbUser = process.env.DB_USER as string;
+const dbHost = process.env.DB_HOST;
+const dbDriver = process.env.DB_DRIVER as Dialect;
+const dbPassword = process.env.DB_PASSWORD;
+
+const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
   dialect: "mysql",
-  host: "localhost",
+  host: dbHost,
 });
 
 export default sequelize;
