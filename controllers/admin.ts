@@ -1,4 +1,5 @@
 import { Response, Request, NextFunction, RequestHandler } from "express";
+// import { Model } from "sequelize-typescript";
 
 import Product from "../models/product";
 import { Product as ProductInterface } from "../types";
@@ -66,14 +67,22 @@ export const postEditProduct = (
   _next: NextFunction
 ) => {
   const { productId: prodId, title, imageUrl, description, price } = req?.body;
-  const updatedProduct = new Product(
-    prodId,
-    title,
-    imageUrl,
-    description,
-    price
-  );
-  updatedProduct.save();
+  // const updatedProduct = new Product(
+  //   prodId,
+  //   title,
+  //   imageUrl,
+  //   description,
+  //   price
+  // );
+  // updatedProduct.save();
+
+  Product.findByPk()
+    .then((product) => {
+      if (product) {
+        product.title = title;
+      }
+    })
+    .catch((err) => console.log(err));
   res.redirect("/admin/products");
 };
 
@@ -84,9 +93,9 @@ export const postDeleteProduct = (
 ) => {
   const prodId = req.body?.productId;
   // console.log('delete', prodId)
-  Product.deleteById(prodId, () => {
-    res.redirect("/admin/products");
-  });
+  // Product.deleteById(prodId, () => {
+  //   res.redirect("/admin/products");
+  // });
 };
 
 /**

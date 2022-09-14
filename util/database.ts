@@ -19,7 +19,7 @@ const dbDriver = process.env.DB_DRIVER as Dialect;
 const dbPassword = process.env.DB_PASSWORD;
 
 const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
-  dialect: "mysql",
+  dialect: dbDriver,
   host: dbHost,
 });
 

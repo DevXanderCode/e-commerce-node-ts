@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAdminProducts = exports.postDeleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
+// import { Model } from "sequelize-typescript";
 const product_1 = __importDefault(require("../models/product"));
 const getAddProduct = (_req, res, _next) => {
     res.render("admin/edit-product", {
@@ -51,8 +52,21 @@ const getEditProduct = (req, res, _next) => {
 exports.getEditProduct = getEditProduct;
 const postEditProduct = (req, res, _next) => {
     const { productId: prodId, title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
-    const updatedProduct = new product_1.default(prodId, title, imageUrl, description, price);
-    updatedProduct.save();
+    // const updatedProduct = new Product(
+    //   prodId,
+    //   title,
+    //   imageUrl,
+    //   description,
+    //   price
+    // );
+    // updatedProduct.save();
+    product_1.default.findByPk()
+        .then((product) => {
+        if (product) {
+            product.title = title;
+        }
+    })
+        .catch((err) => console.log(err));
     res.redirect("/admin/products");
 };
 exports.postEditProduct = postEditProduct;
@@ -60,9 +74,9 @@ const postDeleteProduct = (req, res, _next) => {
     var _a;
     const prodId = (_a = req.body) === null || _a === void 0 ? void 0 : _a.productId;
     // console.log('delete', prodId)
-    product_1.default.deleteById(prodId, () => {
-        res.redirect("/admin/products");
-    });
+    // Product.deleteById(prodId, () => {
+    //   res.redirect("/admin/products");
+    // });
 };
 exports.postDeleteProduct = postDeleteProduct;
 /**

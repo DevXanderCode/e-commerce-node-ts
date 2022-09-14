@@ -16,7 +16,7 @@ const dbHost = process.env.DB_HOST;
 const dbDriver = process.env.DB_DRIVER;
 const dbPassword = process.env.DB_PASSWORD;
 const sequelize = new sequelize_1.Sequelize(dbName, dbUser, dbPassword, {
-    dialect: "mysql",
+    dialect: dbDriver,
     host: dbHost,
 });
 exports.default = sequelize;
