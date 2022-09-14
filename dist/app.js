@@ -36,6 +36,7 @@ const path_2 = __importDefault(require("./util/path"));
 const error_1 = require("./controllers/error");
 // import ternary from "./util/helpers/ternary";
 const database_1 = __importDefault(require("./util/database"));
+const models_1 = require("./models");
 dotenv.config();
 const app = (0, express_1.default)();
 // For handleBars
@@ -65,6 +66,8 @@ app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public"))
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
 app.use(error_1.get404Page);
+models_1.Product.belongsTo(models_1.User, { constraints: true, onDelete: "CASCADE" });
+models_1.User.hasMany(models_1.Product);
 database_1.default
     .sync()
     .then((result) => {

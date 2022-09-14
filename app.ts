@@ -10,6 +10,7 @@ import rootDir from "./util/path";
 import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
 import sequelize from "./util/database";
+import { User, Product } from "./models";
 
 dotenv.config();
 const app: Express = express();
@@ -46,6 +47,10 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 app.use(get404Page);
+
+Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+
+User.hasMany(Product);
 
 sequelize
   .sync()
