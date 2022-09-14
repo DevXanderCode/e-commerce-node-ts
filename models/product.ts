@@ -197,6 +197,10 @@ class Product extends Model<
   declare price: number;
   declare imageUrl: string;
   declare description: string;
+  // createdAt can be undefined during creation
+  declare createdAt: CreationOptional<Date>;
+  // updatedAt can be undefined during creation
+  declare updatedAt: CreationOptional<Date>;
 }
 
 Product.init(
@@ -217,6 +221,8 @@ Product.init(
       allowNull: false,
     },
     description: { type: DataTypes.STRING, allowNull: false },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
   { sequelize, tableName: "products" }
 );
@@ -291,8 +297,8 @@ Product.init(
 //   updatedAt?: Date;
 // }
 
-(async () => {
-  await sequelize.sync();
-})();
+// (async () => {
+//   await sequelize.sync();
+// })();
 
 export default Product;

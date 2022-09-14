@@ -85,7 +85,7 @@ exports.getCart = getCart;
 const postCart = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
-    models_1.Product.findById(prodId, (product) => {
+    models_1.Product.findByPk(prodId).then((product) => {
         // console.log('Product to add to cart', product);
         models_1.Cart.addProduct(prodId, Number(product.price));
     });

@@ -60,14 +60,20 @@ const postEditProduct = (req, res, _next) => {
     //   price
     // );
     // updatedProduct.save();
-    product_1.default.findByPk()
+    product_1.default.findByPk(prodId)
         .then((product) => {
         if (product) {
             product.title = title;
+            product.imageUrl = imageUrl;
+            product.description = description;
+            product.price = price;
+            return product.save();
         }
     })
+        .then(() => {
+        res.redirect("/admin/products");
+    })
         .catch((err) => console.log(err));
-    res.redirect("/admin/products");
 };
 exports.postEditProduct = postEditProduct;
 const postDeleteProduct = (req, res, _next) => {

@@ -76,14 +76,21 @@ export const postEditProduct = (
   // );
   // updatedProduct.save();
 
-  Product.findByPk()
+  Product.findByPk(prodId)
     .then((product) => {
       if (product) {
         product.title = title;
+        product.imageUrl = imageUrl;
+        product.description = description;
+        product.price = price;
+
+        return product.save();
       }
     })
+    .then(() => {
+      res.redirect("/admin/products");
+    })
     .catch((err) => console.log(err));
-  res.redirect("/admin/products");
 };
 
 export const postDeleteProduct = (

@@ -95,9 +95,9 @@ export const getCart = (_req: Request, res: Response, _next: NextFunction) => {
 
 export const postCart = (req: Request, res: Response, _next: NextFunction) => {
   const prodId = req?.body?.productId;
-  Product.findById(prodId, (product: ProductInterface) => {
+  Product.findByPk(prodId).then((product) => {
     // console.log('Product to add to cart', product);
-    Cart.addProduct(prodId, Number(product.price));
+    Cart.addProduct(prodId, Number(product!.price));
   });
 
   res.redirect("/cart");
