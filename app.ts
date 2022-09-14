@@ -11,8 +11,10 @@ import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
 import sequelize from "./util/database";
 import { User, Product } from "./models";
+import { UserRequest } from "./types";
 
 dotenv.config();
+
 const app: Express = express();
 
 // For handleBars
@@ -35,11 +37,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-app.use((req: Request & User, res: Response, next: NextFunction) => {
+app.use((req: UserRequest, res: Response, next: NextFunction) => {
   User.findByPk(1)
     .then((user) => {
       if (user) {
-        req = { ...req, user };
+        req.user = user;
       }
     })
     .catch((err) => console.log("Logging catch user error", err));

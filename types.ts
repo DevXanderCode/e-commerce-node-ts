@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 export interface Product {
   id: string;
   title: string;
@@ -7,4 +9,8 @@ export interface Product {
   qty?: number;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface UserRequest extends Request {
+  [key: string]: any;
 }
