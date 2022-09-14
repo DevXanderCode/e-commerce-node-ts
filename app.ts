@@ -35,13 +35,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-// Test database connection
-// db.execute('SELECT * FROM products').then(result => {
-//   console.log('Logging data ====> ', result[0]);
-//   console.log('Logging meta data ===> ', result[1]);
-// }).catch(err => {
-//   console.log('Logging execution error', err)
-// });
+app.use((req: Request & User, res: Response, next: NextFunction) => {
+  User.findByPk(1)
+    .then((user) => {
+      if (user) {
+        req = { ...req, user };
+      }
+    })
+    .catch((err) => console.log("Logging catch user error", err));
+});
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -56,6 +58,15 @@ sequelize
   .sync()
   .then((result) => {
     // console.log("sequelize result", result);
+    return User.findByPk(1);
+  })
+  .then((user) => {
+    if (!user) {
+      return User.create({ name: "Alex", email: "test@test.com" });
+    }
+    return user;
+  })
+  .then((user) => {
     app.listen("3000", () => {
       console.log("Listening on port 3000");
     });

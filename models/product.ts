@@ -126,51 +126,7 @@ import {
   CreationOptional,
 } from "sequelize";
 
-// import {
-//   Table,
-//   Column,
-//   Model,
-//   CreatedAt,
-//   UpdatedAt,
-//   PrimaryKey,
-//   DataTypes,
-// } from "sequelize-typescript";
-// import {
-//   CreationOptional,
-//   DataTypes,
-//   InferAttributes,
-//   InferCreationAttributes,
-// } from "sequelize/types";
 import sequelize from "../util/database";
-
-// @Table({
-//   timestamps: true,
-// })
-// class Product extends Model<ProductInterface> {
-//   @PrimaryKey
-//   @Column
-//   id!: number;
-
-//   @Column
-//   title!: string;
-
-//   @Column
-//   price!: number;
-
-//   @Column
-//   imageUrl!: string;
-
-//   @Column
-//   description!: string;
-
-//   @CreatedAt
-//   @Column
-//   createdAt!: Date;
-
-//   @UpdatedAt
-//   @Column
-//   updatedAt!: Date;
-// }
 
 class Product extends Model<
   InferAttributes<Product>,
@@ -210,76 +166,6 @@ Product.init(
   },
   { sequelize, tableName: "products" }
 );
-
-// const Product = sequelize.define("product", {
-//   id: {
-//     type: DataType.INTEGER,
-//     autoIncrement: true,
-//     allowNull: false,
-//     primaryKey: true,
-//   },
-//   title: DataType.STRING,
-//   price: {
-//     type: DataType.DOUBLE,
-//     allowNull: false,
-//   },
-//   imageUrl: {
-//     type: DataType.STRING,
-//     allowNull: false,
-//   },
-//   description: { type: DataType.STRING, allowNull: false },
-// });
-
-// class Product
-//   extends Model<ProductAttributes, ProductAttributes>
-//   implements ProductAttributes
-// {
-//   public id!: number;
-//   public title!: string;
-//   public price!: number;
-//   public imageUrl!: string;
-//   public description!: string;
-
-//   // timestamps!
-//   public readonly createdAt!: Date;
-//   public readonly updatedAt!: Date;
-// }
-
-// Product.init(
-//   {
-//     id: {
-//       type: DataType.INTEGER,
-//       autoIncrement: true,
-//       allowNull: false,
-//       primaryKey: true,
-//     },
-//     title: DataType.STRING,
-//     price: {
-//       type: DataType.DOUBLE,
-//       allowNull: false,
-//     },
-//     imageUrl: {
-//       type: DataType.STRING,
-//       allowNull: false,
-//     },
-//     description: { type: DataType.STRING, allowNull: false },
-//   },
-//   {
-//     timestamps: true,
-//     sequelize: sequelize,
-//     paranoid: true,
-//     tableName: "products",
-//   }
-// );
-// export interface ProductAttributes {
-//   id: number;
-//   title: string;
-//   price: number;
-//   imageUrl: string;
-//   description: string;
-//   createdAt?: Date;
-//   updatedAt?: Date;
-// }
 
 // (async () => {
 //   await sequelize.sync();

@@ -100,44 +100,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import { Optional } from "sequelize";
 // import sequelize from "../util/database";
 const sequelize_1 = require("sequelize");
-// import {
-//   Table,
-//   Column,
-//   Model,
-//   CreatedAt,
-//   UpdatedAt,
-//   PrimaryKey,
-//   DataTypes,
-// } from "sequelize-typescript";
-// import {
-//   CreationOptional,
-//   DataTypes,
-//   InferAttributes,
-//   InferCreationAttributes,
-// } from "sequelize/types";
 const database_1 = __importDefault(require("../util/database"));
-// @Table({
-//   timestamps: true,
-// })
-// class Product extends Model<ProductInterface> {
-//   @PrimaryKey
-//   @Column
-//   id!: number;
-//   @Column
-//   title!: string;
-//   @Column
-//   price!: number;
-//   @Column
-//   imageUrl!: string;
-//   @Column
-//   description!: string;
-//   @CreatedAt
-//   @Column
-//   createdAt!: Date;
-//   @UpdatedAt
-//   @Column
-//   updatedAt!: Date;
-// }
 class Product extends sequelize_1.Model {
 }
 Product.init({
@@ -160,72 +123,6 @@ Product.init({
     createdAt: sequelize_1.DataTypes.DATE,
     updatedAt: sequelize_1.DataTypes.DATE,
 }, { sequelize: database_1.default, tableName: "products" });
-// const Product = sequelize.define("product", {
-//   id: {
-//     type: DataType.INTEGER,
-//     autoIncrement: true,
-//     allowNull: false,
-//     primaryKey: true,
-//   },
-//   title: DataType.STRING,
-//   price: {
-//     type: DataType.DOUBLE,
-//     allowNull: false,
-//   },
-//   imageUrl: {
-//     type: DataType.STRING,
-//     allowNull: false,
-//   },
-//   description: { type: DataType.STRING, allowNull: false },
-// });
-// class Product
-//   extends Model<ProductAttributes, ProductAttributes>
-//   implements ProductAttributes
-// {
-//   public id!: number;
-//   public title!: string;
-//   public price!: number;
-//   public imageUrl!: string;
-//   public description!: string;
-//   // timestamps!
-//   public readonly createdAt!: Date;
-//   public readonly updatedAt!: Date;
-// }
-// Product.init(
-//   {
-//     id: {
-//       type: DataType.INTEGER,
-//       autoIncrement: true,
-//       allowNull: false,
-//       primaryKey: true,
-//     },
-//     title: DataType.STRING,
-//     price: {
-//       type: DataType.DOUBLE,
-//       allowNull: false,
-//     },
-//     imageUrl: {
-//       type: DataType.STRING,
-//       allowNull: false,
-//     },
-//     description: { type: DataType.STRING, allowNull: false },
-//   },
-//   {
-//     timestamps: true,
-//     sequelize: sequelize,
-//     paranoid: true,
-//     tableName: "products",
-//   }
-// );
-// export interface ProductAttributes {
-//   id: number;
-//   title: string;
-//   price: number;
-//   imageUrl: string;
-//   description: string;
-//   createdAt?: Date;
-//   updatedAt?: Date;
-// }
 // (async () => {
 //   await sequelize.sync();
 // })();
