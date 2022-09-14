@@ -99,6 +99,17 @@ export const postDeleteProduct = (
   _next: NextFunction
 ) => {
   const prodId = req.body?.productId;
+  Product.findByPk(prodId)
+    .then((product) => {
+      return product!.destroy();
+    })
+    .then(() => {
+      console.log("Product deleted");
+      res.redirect("/admin/products");
+    })
+    .catch((err) => {
+      console.log("Logging product delete error");
+    });
   // console.log('delete', prodId)
   // Product.deleteById(prodId, () => {
   //   res.redirect("/admin/products");
