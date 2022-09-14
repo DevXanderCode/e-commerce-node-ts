@@ -119,27 +119,11 @@ import { Product as ProductInterface } from "../types";
 // import sequelize from "../util/database";
 
 import {
-  Association,
   DataTypes,
-  HasManyAddAssociationMixin,
-  HasManyCountAssociationsMixin,
-  HasManyCreateAssociationMixin,
-  HasManyGetAssociationsMixin,
-  HasManyHasAssociationMixin,
-  HasManySetAssociationsMixin,
-  HasManyAddAssociationsMixin,
-  HasManyHasAssociationsMixin,
-  HasManyRemoveAssociationMixin,
-  HasManyRemoveAssociationsMixin,
   Model,
-  ModelDefined,
-  Optional,
-  Sequelize,
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
-  NonAttribute,
-  ForeignKey,
 } from "sequelize";
 
 // import {
