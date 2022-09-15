@@ -10,7 +10,7 @@ import rootDir from "./util/path";
 import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
 import sequelize from "./util/database";
-import { User, Product } from "./models";
+import { User, Product, Cart, CartItem } from "./models";
 import { UserRequest } from "./types";
 
 dotenv.config();
@@ -52,8 +52,11 @@ app.use(shopRoutes);
 app.use(get404Page);
 
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
-
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
   .sync()

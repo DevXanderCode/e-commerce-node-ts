@@ -14,5 +14,5 @@ export interface Product {
 
 export interface UserRequest extends Request {
   user: User;
-  [key: string]: any;
+  // [key: string]: any;
 }

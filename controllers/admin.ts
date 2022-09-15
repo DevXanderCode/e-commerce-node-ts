@@ -180,5 +180,5 @@ export const getAdminProducts = (
         activeShop: true,
       });
     })
-    .catch((err) => console.error(err));
+    .catch((err: Error) => console.error(err));
 };

@@ -69,6 +69,10 @@ app.use(routes_1.shopRoutes);
 app.use(error_1.get404Page);
 models_1.Product.belongsTo(models_1.User, { constraints: true, onDelete: "CASCADE" });
 models_1.User.hasMany(models_1.Product);
+models_1.User.hasOne(models_1.Cart);
+models_1.Cart.belongsTo(models_1.User);
+models_1.Cart.belongsToMany(models_1.Product, { through: models_1.CartItem });
+models_1.Product.belongsToMany(models_1.Cart, { through: models_1.CartItem });
 database_1.default
     .sync()
     .then((result) => {
