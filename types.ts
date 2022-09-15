@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { User } from "./models";
 
 export interface Product {
   id: string;
@@ -12,5 +13,6 @@ export interface Product {
 }
 
 export interface UserRequest extends Request {
+  user: User;
   [key: string]: any;
 }

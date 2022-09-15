@@ -1,3 +1,4 @@
+import { getProducts } from "./shop";
 import { UserRequest } from "./../types";
 import { Response, Request, NextFunction, RequestHandler } from "express";
 // import { Model } from "sequelize-typescript";
@@ -48,7 +49,7 @@ export const postAddProduct = (
  * @returns The product object
  */
 export const getEditProduct = (
-  req: Request,
+  req: UserRequest,
   res: Response,
   _next: NextFunction
 ) => {
@@ -58,10 +59,12 @@ export const getEditProduct = (
     return res.redirect("/");
   }
   const prodId = req.params.productId;
-
-  Product.findByPk(prodId)
-    .then((product) => {
+  req.user
+    .getProducts({ where: { id: prodId } })
+    // Product.findByPk(prodId)
+    .then((products: any[]) => {
       // console.log("Edit product", JSON.stringify(product, null, 2));
+      const product = products[0];
       if (product) {
         res.render("admin/edit-product", {
           pageTitle: "Edit Product",
@@ -73,7 +76,7 @@ export const getEditProduct = (
         res.redirect("/");
       }
     })
-    .catch((err) => console.log(err));
+    .catch((err: Error) => console.log(err));
 };
 
 /**
@@ -161,12 +164,14 @@ export const postDeleteProduct = (
  * middleware in the stack.
  */
 export const getAdminProducts = (
-  _req: Request,
+  req: UserRequest,
   res: Response,
   _next: NextFunction
 ) => {
-  Product.findAll()
-    .then((result) => {
+  req.user
+    .getProducts()
+    // Product.findAll()
+    .then((result: any[]) => {
       res.render("admin/products", {
         prods: result,
         pageTitle: "Admin Products",

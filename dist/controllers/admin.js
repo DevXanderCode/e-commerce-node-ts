@@ -46,9 +46,12 @@ const getEditProduct = (req, res, _next) => {
         return res.redirect("/");
     }
     const prodId = req.params.productId;
-    product_1.default.findByPk(prodId)
-        .then((product) => {
+    req.user
+        .getProducts({ where: { id: prodId } })
+        // Product.findByPk(prodId)
+        .then((products) => {
         // console.log("Edit product", JSON.stringify(product, null, 2));
+        const product = products[0];
         if (product) {
             res.render("admin/edit-product", {
                 pageTitle: "Edit Product",
@@ -139,8 +142,10 @@ exports.postDeleteProduct = postDeleteProduct;
  * @param {NextFunction} _next - NextFunction - This is a function that is used to call the next
  * middleware in the stack.
  */
-const getAdminProducts = (_req, res, _next) => {
-    product_1.default.findAll()
+const getAdminProducts = (req, res, _next) => {
+    req.user
+        .getProducts()
+        // Product.findAll()
         .then((result) => {
         res.render("admin/products", {
             prods: result,
