@@ -56,7 +56,7 @@ app.set("views", path_1.default.join(path_2.default, "..", "views"));
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public")));
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
     models_1.User.findByPk(1)
         .then((user) => {
         req.user = user;
