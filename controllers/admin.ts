@@ -1,3 +1,4 @@
+import { UserRequest } from "./../types";
 import { Response, Request, NextFunction, RequestHandler } from "express";
 // import { Model } from "sequelize-typescript";
 
@@ -17,7 +18,7 @@ export const getAddProduct = (
 };
 
 export const postAddProduct = (
-  req: Request,
+  req: UserRequest,
   res: Response,
   _next: NextFunction
 ) => {
@@ -27,11 +28,25 @@ export const postAddProduct = (
   //   .save()
   //   .then(() => res.redirect("/"))
   //   .catch((err) => console.error(err));
-  Product.create({ title, price, imageUrl, description })
+  req.user
+    .createProduct({ title, price, imageUrl, description })
     .then(() => res.redirect("/"))
-    .catch((err) => console.error(err));
+    .catch((err: Error) => console.error(err));
+  // Product.create({ title, price, imageUrl, description })
+  //   .then(() => res.redirect("/"))
+  //   .catch((err) => console.error(err));
 };
 
+/**
+ * We're checking if the editMode query parameter is present in the URL, if it is, we're fetching the
+ * product from the database and rendering the edit-product view
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} _next - NextFunction
+ * @returns The product object
+ */
 export const getEditProduct = (
   req: Request,
   res: Response,
@@ -61,6 +76,16 @@ export const getEditProduct = (
     .catch((err) => console.log(err));
 };
 
+/**
+ * We're using the findByPk() method to find the product with the given id, then we're updating the
+ * product's properties with the new values, and finally we're saving the product
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response
+ * back to the client.
+ * @param {NextFunction} _next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function in the stack.
+ */
 export const postEditProduct = (
   req: Request,
   res: Response,
@@ -93,6 +118,16 @@ export const postEditProduct = (
     .catch((err) => console.log(err));
 };
 
+/**
+ * We're using the productId from the request body to find the product in the database, then we're
+ * deleting it
+ * @param {Request} req - Request - this is the incoming request object. It contains all the
+ * information about the request.
+ * @param {Response} res - Response - this is the response object that we can use to send a response
+ * back to the client.
+ * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
+ * is done.
+ */
 export const postDeleteProduct = (
   req: Request,
   res: Response,

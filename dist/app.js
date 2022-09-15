@@ -59,9 +59,8 @@ app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public"))
 app.use((req, res, next) => {
     models_1.User.findByPk(1)
         .then((user) => {
-        if (user) {
-            req = Object.assign(Object.assign({}, req), { user });
-        }
+        req.user = user;
+        next();
     })
         .catch((err) => console.log("Logging catch user error", err));
 });
