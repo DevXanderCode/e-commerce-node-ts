@@ -88,6 +88,9 @@ database_1.default
     return user;
 })
     .then((user) => {
+    return user.createCart();
+})
+    .then((cart) => {
     app.listen("3000", () => {
         console.log("Listening on port 3000");
     });

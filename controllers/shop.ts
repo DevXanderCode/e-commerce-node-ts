@@ -81,16 +81,34 @@ export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
   //   .catch((err) => console.error(err));
 };
 
-export const getCart = (_req: Request, res: Response, _next: NextFunction) => {
-  Cart.fetchAll(
-    ({ products }: { products: ProductInterface[]; totalPrice: number }) => {
-      res.render("shop/cart", {
-        pageTitle: "My Cart",
-        path: "/cart",
-        prods: products,
-      });
-    }
-  );
+export const getCart = (req: Request, res: Response, _next: NextFunction) => {
+  req.user
+    ?.getCart()
+    .then((cart: any) => {
+      console.log("Logging cart", cart);
+      return cart
+        .getProducts()
+        .then((products: ProductInterface[]) => {
+          res.render("shop/cart", {
+            pageTitle: "My Cart",
+            path: "/cart",
+            prods: products,
+          });
+        })
+        .catch((err: Error) => {
+          console.log("get cart product error", err);
+        });
+    })
+    .catch((err: Error) => console.log("get cart Errror", err));
+  // Cart.fetchAll(
+  //   ({ products }: { products: ProductInterface[]; totalPrice: number }) => {
+  //     res.render("shop/cart", {
+  //       pageTitle: "My Cart",
+  //       path: "/cart",
+  //       prods: products,
+  //     });
+  //   }
+  // );
 };
 
 export const postCart = (req: Request, res: Response, _next: NextFunction) => {

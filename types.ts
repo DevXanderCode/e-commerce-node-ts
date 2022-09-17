@@ -1,4 +1,4 @@
-import { Request } from "express";
+// import { Request } from "express";
 import { User } from "./models";
 
 export interface Product {
@@ -14,7 +14,7 @@ export interface Product {
 
 declare global {
   namespace Express {
-    interface Request extends Request {
+    interface Request {
       user: User;
     }
   }
