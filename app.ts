@@ -11,7 +11,7 @@ import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
 import sequelize from "./util/database";
 import { User, Product, Cart, CartItem } from "./models";
-import { UserRequest } from "./types";
+// import { UserRequest } from "./types";
 
 dotenv.config();
 
@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-app.use((req: UserRequest, _res: Response, next: NextFunction) => {
+app.use((req: Request, _res: Response, next: NextFunction) => {
   User.findByPk(1)
     .then((user) => {
       req.user = user!;
@@ -59,6 +59,7 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
+  // .sync({ force: true })
   .sync()
   .then((result) => {
     // console.log("sequelize result", result);

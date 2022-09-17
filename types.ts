@@ -12,7 +12,15 @@ export interface Product {
   updatedAt?: Date;
 }
 
-export interface UserRequest extends Request {
-  user: User;
-  // [key: string]: any;
+declare global {
+  namespace Express {
+    interface Request extends Request {
+      user: User;
+    }
+  }
 }
+
+// export interface UserRequest extends Request {
+//   user: User;
+//   // [key: string]: any;
+// }

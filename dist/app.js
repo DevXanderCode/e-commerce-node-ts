@@ -37,6 +37,7 @@ const error_1 = require("./controllers/error");
 // import ternary from "./util/helpers/ternary";
 const database_1 = __importDefault(require("./util/database"));
 const models_1 = require("./models");
+// import { UserRequest } from "./types";
 dotenv.config();
 const app = (0, express_1.default)();
 // For handleBars
@@ -74,6 +75,7 @@ models_1.Cart.belongsTo(models_1.User);
 models_1.Cart.belongsToMany(models_1.Product, { through: models_1.CartItem });
 models_1.Product.belongsToMany(models_1.Cart, { through: models_1.CartItem });
 database_1.default
+    // .sync({ force: true })
     .sync()
     .then((result) => {
     // console.log("sequelize result", result);
