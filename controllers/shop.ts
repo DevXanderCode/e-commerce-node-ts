@@ -160,6 +160,16 @@ export const postCart = (req: Request, res: Response, _next: NextFunction) => {
     .catch((err: Error) => console.log("Logging get cart error", err));
 };
 
+/**
+ * We get the product id from the request body, then we get the cart of the user, then we get the
+ * products from the cart, then we get the first product from the products array, then we destroy the
+ * cart item, then we redirect to the cart page
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} _next - NextFunction
+ */
 export const postCartDeleteProduct = (
   req: Request,
   res: Response,
