@@ -104,6 +104,7 @@ const postCart = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
     let fetchedCart;
+    let newQuantity = 1;
     req.user
         .getCart()
         .then((cart) => {
@@ -115,20 +116,18 @@ const postCart = (req, res, _next) => {
         if (products === null || products === void 0 ? void 0 : products.length) {
             product = products[0];
         }
-        let newQuantity = 1;
         if (product) {
-            // ...
+            const oldQuantity = product.CartItem.quantity;
+            newQuantity = oldQuantity + 1;
         }
-        return models_1.Product.findByPk(prodId)
-            .then((product) => {
-            if (fetchedCart) {
-                return fetchedCart.addProducts(product, {
-                    through: { quantity: newQuantity },
-                });
-            }
-            return;
-        })
-            .catch((err) => console.log("get Products error", err));
+        return models_1.Product.findByPk(prodId);
+    })
+        .then((product) => {
+        if (fetchedCart) {
+            return fetchedCart.addProducts(product, {
+                through: { quantity: newQuantity },
+            });
+        }
     })
         .then(() => {
         res.redirect("/cart");

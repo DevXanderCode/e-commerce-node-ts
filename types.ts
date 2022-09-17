@@ -10,6 +10,7 @@ export interface Product {
   qty?: number;
   createdAt?: Date;
   updatedAt?: Date;
+  [key: string]: any;
 }
 
 declare global {
