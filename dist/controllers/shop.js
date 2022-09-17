@@ -100,6 +100,17 @@ const getCart = (req, res, _next) => {
     }).catch((err) => console.log("get cart Errror", err));
 };
 exports.getCart = getCart;
+/**
+ * We're getting the productId from the request body, then we're getting the cart from the user, then
+ * we're getting the products from the cart, then we're checking if the product exists in the cart,
+ * then we're finding the product by its id, then we're adding the product to the cart, then we're
+ * redirecting to the cart page
+ * @param {Request} req - Request - this is the request object that is passed to the route handler.
+ * @param {Response} res - Response - this is the response object that we can use to send a response
+ * back to the client.
+ * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
+ * is done.
+ */
 const postCart = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
@@ -133,17 +144,21 @@ const postCart = (req, res, _next) => {
         res.redirect("/cart");
     })
         .catch((err) => console.log("Logging get cart error", err));
-    // Product.findByPk(prodId).then((product) => {
-    //   // console.log('Product to add to cart', product);
-    //   Cart.addProduct(prodId, Number(product!.price));
-    // });
-    // res.redirect("/cart");
 };
 exports.postCart = postCart;
 const postCartDeleteProduct = (req, res, _next) => {
+    var _a;
     const prodId = req.body.productId;
-    models_1.Cart.deleteProduct(prodId);
-    res.redirect("/cart");
+    (_a = req.user) === null || _a === void 0 ? void 0 : _a.getCart().then((cart) => {
+        return cart.getProducts({ where: { id: prodId } });
+    }).then((products) => {
+        const product = products[0];
+        return product.CartItem.destroy();
+    }).then(() => {
+        res.redirect("/cart");
+    }).catch((err) => {
+        console.log("get cart error", err);
+    });
 };
 exports.postCartDeleteProduct = postCartDeleteProduct;
 const getCheckout = (_req, res, _next) => {

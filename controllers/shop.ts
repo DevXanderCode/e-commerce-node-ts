@@ -112,6 +112,17 @@ export const getCart = (req: Request, res: Response, _next: NextFunction) => {
     .catch((err: Error) => console.log("get cart Errror", err));
 };
 
+/**
+ * We're getting the productId from the request body, then we're getting the cart from the user, then
+ * we're getting the products from the cart, then we're checking if the product exists in the cart,
+ * then we're finding the product by its id, then we're adding the product to the cart, then we're
+ * redirecting to the cart page
+ * @param {Request} req - Request - this is the request object that is passed to the route handler.
+ * @param {Response} res - Response - this is the response object that we can use to send a response
+ * back to the client.
+ * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
+ * is done.
+ */
 export const postCart = (req: Request, res: Response, _next: NextFunction) => {
   const prodId = req?.body?.productId;
   let fetchedCart: any;
@@ -147,12 +158,6 @@ export const postCart = (req: Request, res: Response, _next: NextFunction) => {
       res.redirect("/cart");
     })
     .catch((err: Error) => console.log("Logging get cart error", err));
-  // Product.findByPk(prodId).then((product) => {
-  //   // console.log('Product to add to cart', product);
-  //   Cart.addProduct(prodId, Number(product!.price));
-  // });
-
-  // res.redirect("/cart");
 };
 
 export const postCartDeleteProduct = (
@@ -162,8 +167,21 @@ export const postCartDeleteProduct = (
 ) => {
   const prodId = req.body.productId;
 
-  Cart.deleteProduct(prodId);
-  res.redirect("/cart");
+  req.user
+    ?.getCart()
+    .then((cart: any) => {
+      return cart.getProducts({ where: { id: prodId } });
+    })
+    .then((products: any) => {
+      const product = products[0];
+      return product.CartItem.destroy();
+    })
+    .then(() => {
+      res.redirect("/cart");
+    })
+    .catch((err: Error) => {
+      console.log("get cart error", err);
+    });
 };
 
 export const getCheckout = (
