@@ -92,6 +92,7 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
+import { Product } from "../types";
 import sequelize from "../util/database";
 
 class Cart extends Model<InferAttributes<Cart>, InferCreationAttributes<Cart>> {

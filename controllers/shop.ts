@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, Router } from "express";
+// import {} from 'sequelize'
 
 import { Product as ProductInterface } from "../types";
 import { Product, Cart } from "../models";
@@ -113,12 +114,45 @@ export const getCart = (req: Request, res: Response, _next: NextFunction) => {
 
 export const postCart = (req: Request, res: Response, _next: NextFunction) => {
   const prodId = req?.body?.productId;
-  Product.findByPk(prodId).then((product) => {
-    // console.log('Product to add to cart', product);
-    Cart.addProduct(prodId, Number(product!.price));
-  });
+  let fetchedCart: any;
+  req.user
+    .getCart()
+    .then((cart: any) => {
+      fetchedCart = cart;
+      return cart.getProducts();
+    })
+    .then((products: ProductInterface[] | undefined) => {
+      let product;
+      if (products?.length) {
+        product = products[0];
+      }
+      let newQuantity = 1;
 
-  res.redirect("/cart");
+      if (product) {
+        // ...
+      }
+
+      return Product.findByPk(prodId)
+        .then((product: any) => {
+          if (fetchedCart) {
+            return fetchedCart.addProducts(product, {
+              through: { quantity: newQuantity },
+            });
+          }
+          return;
+        })
+        .catch((err: Error) => console.log("get Products error", err));
+    })
+    .then(() => {
+      res.redirect("/cart");
+    })
+    .catch((err: Error) => console.log("Logging get cart error", err));
+  // Product.findByPk(prodId).then((product) => {
+  //   // console.log('Product to add to cart', product);
+  //   Cart.addProduct(prodId, Number(product!.price));
+  // });
+
+  // res.redirect("/cart");
 };
 
 export const postCartDeleteProduct = (

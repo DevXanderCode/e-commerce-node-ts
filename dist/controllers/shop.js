@@ -103,11 +103,42 @@ exports.getCart = getCart;
 const postCart = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
-    models_1.Product.findByPk(prodId).then((product) => {
-        // console.log('Product to add to cart', product);
-        models_1.Cart.addProduct(prodId, Number(product.price));
-    });
-    res.redirect("/cart");
+    let fetchedCart;
+    req.user
+        .getCart()
+        .then((cart) => {
+        fetchedCart = cart;
+        return cart.getProducts();
+    })
+        .then((products) => {
+        let product;
+        if (products === null || products === void 0 ? void 0 : products.length) {
+            product = products[0];
+        }
+        let newQuantity = 1;
+        if (product) {
+            // ...
+        }
+        return models_1.Product.findByPk(prodId)
+            .then((product) => {
+            if (fetchedCart) {
+                return fetchedCart.addProducts(product, {
+                    through: { quantity: newQuantity },
+                });
+            }
+            return;
+        })
+            .catch((err) => console.log("get Products error", err));
+    })
+        .then(() => {
+        res.redirect("/cart");
+    })
+        .catch((err) => console.log("Logging get cart error", err));
+    // Product.findByPk(prodId).then((product) => {
+    //   // console.log('Product to add to cart', product);
+    //   Cart.addProduct(prodId, Number(product!.price));
+    // });
+    // res.redirect("/cart");
 };
 exports.postCart = postCart;
 const postCartDeleteProduct = (req, res, _next) => {
