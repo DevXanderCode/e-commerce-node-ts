@@ -81,6 +81,15 @@ export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
   //   .catch((err) => console.error(err));
 };
 
+/**
+ * We get the cart from the user, then we get the products from the cart, then we render the cart page
+ * with the products
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
+ */
 export const getCart = (req: Request, res: Response, _next: NextFunction) => {
   req.user
     ?.getCart()
@@ -100,15 +109,6 @@ export const getCart = (req: Request, res: Response, _next: NextFunction) => {
         });
     })
     .catch((err: Error) => console.log("get cart Errror", err));
-  // Cart.fetchAll(
-  //   ({ products }: { products: ProductInterface[]; totalPrice: number }) => {
-  //     res.render("shop/cart", {
-  //       pageTitle: "My Cart",
-  //       path: "/cart",
-  //       prods: products,
-  //     });
-  //   }
-  // );
 };
 
 export const postCart = (req: Request, res: Response, _next: NextFunction) => {
