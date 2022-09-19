@@ -1,5 +1,5 @@
 import { getProducts } from "./shop";
-import { UserRequest } from "./../types";
+// import { UserRequest } from "./../types";
 import { Response, Request, NextFunction, RequestHandler } from "express";
 // import { Model } from "sequelize-typescript";
 
@@ -19,7 +19,7 @@ export const getAddProduct = (
 };
 
 export const postAddProduct = (
-  req: UserRequest,
+  req: Request,
   res: Response,
   _next: NextFunction
 ) => {
@@ -49,7 +49,7 @@ export const postAddProduct = (
  * @returns The product object
  */
 export const getEditProduct = (
-  req: UserRequest,
+  req: Request,
   res: Response,
   _next: NextFunction
 ) => {
@@ -164,7 +164,7 @@ export const postDeleteProduct = (
  * middleware in the stack.
  */
 export const getAdminProducts = (
-  req: UserRequest,
+  req: Request,
   res: Response,
   _next: NextFunction
 ) => {
