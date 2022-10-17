@@ -208,10 +208,18 @@ const postOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.postOrder = postOrder;
-const getOrders = (_req, res, _next) => {
-    res.render("shop/orders", {
-        pageTitle: "My Orders",
-        path: "/orders",
-    });
-};
+const getOrders = (req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const orders = yield req.user.getOrders({ include: ["Products"] });
+        console.log("Orders ==> ", JSON.stringify(orders, null, 2));
+        res.render("shop/orders", {
+            pageTitle: "My Orders",
+            path: "/orders",
+            orders: orders,
+        });
+    }
+    catch (error) {
+        console.log("Logging get orders error", error);
+    }
+});
 exports.getOrders = getOrders;
