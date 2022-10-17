@@ -74,6 +74,10 @@ models_1.User.hasOne(models_1.Cart);
 models_1.Cart.belongsTo(models_1.User);
 models_1.Cart.belongsToMany(models_1.Product, { through: models_1.CartItem });
 models_1.Product.belongsToMany(models_1.Cart, { through: models_1.CartItem });
+models_1.Order.belongsTo(models_1.User);
+models_1.User.hasMany(models_1.Order);
+models_1.Order.belongsToMany(models_1.Product, { through: models_1.OrderItem });
+models_1.Product.belongsToMany(models_1.Order, { through: models_1.OrderItem });
 database_1.default
     // .sync({ force: true })
     .sync()

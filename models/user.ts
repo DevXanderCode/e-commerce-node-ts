@@ -9,6 +9,7 @@ import {
 import sequelize from "../util/database";
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  [x: string]: any;
   declare id: CreationOptional<number>;
   declare email: string;
   declare name: string;

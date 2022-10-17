@@ -1,6 +1,15 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrders = exports.getCheckout = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.getOrders = exports.postOrder = exports.getCheckout = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -178,6 +187,27 @@ const getCheckout = (_req, res, _next) => {
     });
 };
 exports.getCheckout = getCheckout;
+const postOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const cart = yield req.user.getCart();
+        const products = yield cart.getProducts();
+        let fetchedCart = cart;
+        const order = yield req.user.createOrder();
+        yield order.addProducts(products.map((product) => {
+            product.OrderItem = {
+                quantity: product.CartItem.quantity,
+            };
+            return product;
+        }));
+        fetchedCart.setProducts(null);
+        res.redirect("/orders");
+        // console.log("Logging product ", products);
+    }
+    catch (error) {
+        console.log("Logging error", error);
+    }
+});
+exports.postOrder = postOrder;
 const getOrders = (_req, res, _next) => {
     res.render("shop/orders", {
         pageTitle: "My Orders",

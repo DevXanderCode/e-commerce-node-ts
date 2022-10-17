@@ -6,6 +6,7 @@ import {
   DataTypes,
 } from "sequelize";
 import sequelize from "../util/database";
+import User from "./user";
 
 class Order extends Model<
   InferAttributes<Order>,

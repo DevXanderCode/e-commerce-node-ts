@@ -10,7 +10,8 @@ import rootDir from "./util/path";
 import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
 import sequelize from "./util/database";
-import { User, Product, Cart, CartItem } from "./models";
+import { User, Product, Cart, CartItem, Order, OrderItem } from "./models";
+import { userInfo } from "os";
 // import { UserRequest } from "./types";
 
 dotenv.config();
@@ -57,6 +58,10 @@ User.hasOne(Cart);
 Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, { through: OrderItem });
+Product.belongsToMany(Order, { through: OrderItem });
 
 sequelize
   // .sync({ force: true })
