@@ -9,18 +9,38 @@
 
 // export default pool.promise();
 
-import { Sequelize, Dialect } from "sequelize";
-import "dotenv/config";
+// import { Sequelize, Dialect } from "sequelize";
+// import "dotenv/config";
 
-const dbName = process.env.DB_NAME as string;
-const dbUser = process.env.DB_USER as string;
-const dbHost = process.env.DB_HOST;
-const dbDriver = process.env.DB_DRIVER as Dialect;
-const dbPassword = process.env.DB_PASSWORD;
+// const dbName = process.env.DB_NAME as string;
+// const dbUser = process.env.DB_USER as string;
+// const dbHost = process.env.DB_HOST;
+// const dbDriver = process.env.DB_DRIVER as Dialect;
+// const dbPassword = process.env.DB_PASSWORD;
 
-const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
-  dialect: dbDriver,
-  host: dbHost,
-});
+// const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
+//   dialect: dbDriver,
+//   host: dbHost,
+// });
 
-export default sequelize;
+// export default sequelize;
+
+import { MongoClient } from "mongodb";
+
+let _db;
+const mongoConnect = (callback: Function) => {
+  let mongoUri =
+    "mongodb+srv://admin:0123456789@cluster0.mutb5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+  MongoClient.connect(mongoUri)
+    .then((client) => {
+      console.log("Connected!");
+      _db = client.db();
+      callback();
+    })
+    .catch((err) => {
+      console.log("Logging mongo connection error", err);
+      throw err;
+    });
+};
+
+export default mongoConnect;

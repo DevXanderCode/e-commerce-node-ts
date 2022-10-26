@@ -31,13 +31,14 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv = __importStar(require("dotenv"));
 // import { create, engine } from "express-handlebars";
-const routes_1 = require("./routes");
+// import { adminRoutes, shopRoutes } from "./routes";
 const path_2 = __importDefault(require("./util/path"));
 const error_1 = require("./controllers/error");
 // import ternary from "./util/helpers/ternary";
-const database_1 = __importDefault(require("./util/database"));
-const models_1 = require("./models");
+// import sequelize from "./util/database";
+// import { User, Product, Cart, CartItem, Order, OrderItem } from "./models";
 // import { UserRequest } from "./types";
+const database_1 = __importDefault(require("./util/database"));
 dotenv.config();
 const app = (0, express_1.default)();
 // For handleBars
@@ -58,47 +59,54 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public")));
 app.use((req, _res, next) => {
-    models_1.User.findByPk(1)
-        .then((user) => {
-        req.user = user;
-        next();
-    })
-        .catch((err) => console.log("Logging catch user error", err));
+    // User.findByPk(1)
+    //   .then((user) => {
+    //     req.user = user!;
+    //     next();
+    //   })
+    //   .catch((err) => console.log("Logging catch user error", err));
 });
-app.use("/admin", routes_1.adminRoutes);
-app.use(routes_1.shopRoutes);
+// app.use("/admin", adminRoutes);
+// app.use(shopRoutes);
 app.use(error_1.get404Page);
-models_1.Product.belongsTo(models_1.User, { constraints: true, onDelete: "CASCADE" });
-models_1.User.hasMany(models_1.Product);
-models_1.User.hasOne(models_1.Cart);
-models_1.Cart.belongsTo(models_1.User);
-models_1.Cart.belongsToMany(models_1.Product, { through: models_1.CartItem });
-models_1.Product.belongsToMany(models_1.Cart, { through: models_1.CartItem });
-models_1.Order.belongsTo(models_1.User);
-models_1.User.hasMany(models_1.Order);
-models_1.Order.belongsToMany(models_1.Product, { through: models_1.OrderItem });
-models_1.Product.belongsToMany(models_1.Order, { through: models_1.OrderItem });
-database_1.default
-    // .sync({ force: true })
-    .sync()
-    .then((result) => {
-    // console.log("sequelize result", result);
-    return models_1.User.findByPk(1);
-})
-    .then((user) => {
-    if (!user) {
-        return models_1.User.create({ name: "Alex", email: "test@test.com" });
-    }
-    return user;
-})
-    .then((user) => {
-    return user.createCart();
-})
-    .then((cart) => {
+// Associations
+// Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+// User.hasMany(Product);
+// User.hasOne(Cart);
+// Cart.belongsTo(User);
+// Cart.belongsToMany(Product, { through: CartItem });
+// Product.belongsToMany(Cart, { through: CartItem });
+// Order.belongsTo(User);
+// User.hasMany(Order);
+// Order.belongsToMany(Product, { through: OrderItem });
+// Product.belongsToMany(Order, { through: OrderItem });
+// sequelize
+//   // .sync({ force: true })
+//   .sync()
+//   .then((result) => {
+//     // console.log("sequelize result", result);
+//     return User.findByPk(1);
+//   })
+//   .then((user) => {
+//     if (!user) {
+//       return User.create({ name: "Alex", email: "test@test.com" });
+//     }
+//     return user;
+//   })
+//   .then((user) => {
+//     return user.createCart();
+//   })
+//   .then((cart) => {
+//     app.listen("3000", () => {
+//       console.log("Listening on port 3000");
+//     });
+//   })
+//   .catch((err) => {
+//     console.error(err);
+//   });
+(0, database_1.default)((client) => {
+    console.log("Logging client", client);
     app.listen("3000", () => {
         console.log("Listening on port 3000");
     });
-})
-    .catch((err) => {
-    console.error(err);
 });
