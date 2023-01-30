@@ -31,7 +31,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv = __importStar(require("dotenv"));
 // import { create, engine } from "express-handlebars";
-// import { adminRoutes, shopRoutes } from "./routes";
+const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
 const error_1 = require("./controllers/error");
 // import ternary from "./util/helpers/ternary";
@@ -66,7 +66,7 @@ app.use((req, _res, next) => {
     //   })
     //   .catch((err) => console.log("Logging catch user error", err));
 });
-// app.use("/admin", adminRoutes);
+app.use("/admin", routes_1.adminRoutes);
 // app.use(shopRoutes);
 app.use(error_1.get404Page);
 // Associations
@@ -105,7 +105,7 @@ app.use(error_1.get404Page);
 //     console.error(err);
 //   });
 (0, database_1.default)((client) => {
-    console.log("Logging client", client);
+    // console.log("Logging client", client);
     app.listen("3000", () => {
         console.log("Listening on port 3000");
     });

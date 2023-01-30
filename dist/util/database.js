@@ -21,15 +21,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // });
 // export default sequelize;
 const mongodb_1 = require("mongodb");
+let mongoUri = "mongodb+srv://alex:xWK1p6bwKRGl1QuH@cluster0.qy8tddy.mongodb.net/test?retryWrites=true&w=majority";
+let _db;
 const mongoConnect = (callback) => {
-    let mongoUri = "mongodb+srv://admin:0123456789@cluster0.mutb5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
     mongodb_1.MongoClient.connect(mongoUri)
         .then((client) => {
-        console.log("Connected!");
-        callback(client);
+        _db = client.db();
+        callback();
     })
         .catch((err) => {
         console.log("Logging mongo connection error", err);
+        throw err;
     });
 };
 exports.default = mongoConnect;

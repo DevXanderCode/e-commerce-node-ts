@@ -5,7 +5,10 @@ import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 // import { create, engine } from "express-handlebars";
 
-import { adminRoutes, shopRoutes } from "./routes";
+import {
+  adminRoutes,
+  // shopRoutes
+} from "./routes";
 import rootDir from "./util/path";
 import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
@@ -90,7 +93,7 @@ app.use(get404Page);
 //   });
 
 mongoConnect((client: ClientTypes) => {
-  console.log("Logging client", client);
+  // console.log("Logging client", client);
   app.listen("3000", () => {
     console.log("Listening on port 3000");
   });

@@ -25,15 +25,15 @@
 
 // export default sequelize;
 
-import { MongoClient } from "mongodb";
+import { MongoClient, ServerApiVersion } from "mongodb";
+
+let mongoUri =
+  "mongodb+srv://alex:xWK1p6bwKRGl1QuH@cluster0.qy8tddy.mongodb.net/test?retryWrites=true&w=majority";
 
 let _db;
 const mongoConnect = (callback: Function) => {
-  let mongoUri =
-    "mongodb+srv://admin:0123456789@cluster0.mutb5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
   MongoClient.connect(mongoUri)
     .then((client) => {
-      console.log("Connected!");
       _db = client.db();
       callback();
     })
