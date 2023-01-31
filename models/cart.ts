@@ -85,30 +85,32 @@
 
 // export default Cart;
 
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from "sequelize";
-import { Product } from "../types";
-import sequelize from "../util/database";
+// import {
+//   CreationOptional,
+//   DataTypes,
+//   InferAttributes,
+//   InferCreationAttributes,
+//   Model,
+// } from "sequelize";
+// import { Product } from "../types";
+// import sequelize from "../util/database";
 
-class Cart extends Model<InferAttributes<Cart>, InferCreationAttributes<Cart>> {
-  declare id: CreationOptional<number>;
-}
+// class Cart extends Model<InferAttributes<Cart>, InferCreationAttributes<Cart>> {
+//   declare id: CreationOptional<number>;
+// }
 
-Cart.init(
-  {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true,
-    },
-  },
-  { sequelize, tableName: "cart" }
-);
+// Cart.init(
+//   {
+//     id: {
+//       type: DataTypes.INTEGER.UNSIGNED,
+//       autoIncrement: true,
+//       allowNull: false,
+//       primaryKey: true,
+//     },
+//   },
+//   { sequelize, tableName: "cart" }
+// );
+
+class Cart {}
 
 export default Cart;

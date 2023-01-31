@@ -15,7 +15,7 @@ import { get404Page } from "./controllers/error";
 // import sequelize from "./util/database";
 // import { User, Product, Cart, CartItem, Order, OrderItem } from "./models";
 // import { UserRequest } from "./types";
-import mongoConnect from "./util/database";
+import { mongoConnect } from "./util/database";
 
 dotenv.config();
 
@@ -48,6 +48,7 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   //     next();
   //   })
   //   .catch((err) => console.log("Logging catch user error", err));
+  next();
 });
 
 app.use("/admin", adminRoutes);
@@ -92,8 +93,7 @@ app.use(get404Page);
 //     console.error(err);
 //   });
 
-mongoConnect((client: ClientTypes) => {
-  // console.log("Logging client", client);
+mongoConnect(() => {
   app.listen("3000", () => {
     console.log("Listening on port 3000");
   });

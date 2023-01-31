@@ -1,6 +1,7 @@
 "use strict";
 // import mysql  from 'mysql2';
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDb = exports.mongoConnect = void 0;
 // const pool = mysql.createPool({
 //     host: process.env.DB_HOST,
 //     user: process.env.dbUser,
@@ -21,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // });
 // export default sequelize;
 const mongodb_1 = require("mongodb");
-let mongoUri = "mongodb+srv://alex:xWK1p6bwKRGl1QuH@cluster0.qy8tddy.mongodb.net/test?retryWrites=true&w=majority";
+let mongoUri = "mongodb+srv://alex:xWK1p6bwKRGl1QuH@cluster0.qy8tddy.mongodb.net/shop?retryWrites=true&w=majority";
 let _db;
 const mongoConnect = (callback) => {
     mongodb_1.MongoClient.connect(mongoUri)
@@ -34,4 +35,11 @@ const mongoConnect = (callback) => {
         throw err;
     });
 };
-exports.default = mongoConnect;
+exports.mongoConnect = mongoConnect;
+const getDb = () => {
+    if (_db) {
+        return _db;
+    }
+    return "No Database Found";
+};
+exports.getDb = getDb;

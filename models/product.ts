@@ -3,7 +3,7 @@
 
 // import Cart from "./cart";
 // import rootDir from "../util/path";
-import { Product as ProductInterface } from "../types";
+// import { Product as ProductInterface } from "../types";
 // import db from "../util/database";
 
 // // const products: ProductInterface[] = [];
@@ -118,13 +118,13 @@ import { Product as ProductInterface } from "../types";
 // import { Optional } from "sequelize";
 // import sequelize from "../util/database";
 
-import {
-  DataTypes,
-  Model,
-  InferAttributes,
-  InferCreationAttributes,
-  CreationOptional,
-} from "sequelize";
+// import {
+//   DataTypes,
+//   Model,
+//   InferAttributes,
+//   InferCreationAttributes,
+//   CreationOptional,
+// } from "sequelize";
 
 // import sequelize from "../util/database";
 
@@ -171,6 +171,9 @@ import {
 //   await sequelize.sync();
 // })();
 
+import { Collection, Db } from "mongodb";
+import { getDb } from "../util/database";
+
 class Product {
   constructor(
     public title: string,
@@ -179,7 +182,18 @@ class Product {
     public imageUrl: string
   ) {}
 
-  save() {}
+  save() {
+    const db = getDb();
+
+    if (typeof db !== "string") {
+      return db
+        .collection("products")
+        .insertOne(this)
+        .then((result) => console.log("Logging result", result))
+        .catch((err: Error) => console.log(err));
+    }
+    return Promise.resolve();
+  }
 }
 
 export default Product;

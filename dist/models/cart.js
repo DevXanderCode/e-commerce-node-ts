@@ -1,9 +1,6 @@
 "use strict";
 // import fs from "fs";
 // import path from "path";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 // import rootDir from "../util/path";
 // import { Product as ProductInterface } from "../types";
@@ -81,16 +78,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //   }
 // }
 // export default Cart;
-const sequelize_1 = require("sequelize");
-const database_1 = __importDefault(require("../util/database"));
-class Cart extends sequelize_1.Model {
+// import {
+//   CreationOptional,
+//   DataTypes,
+//   InferAttributes,
+//   InferCreationAttributes,
+//   Model,
+// } from "sequelize";
+// import { Product } from "../types";
+// import sequelize from "../util/database";
+// class Cart extends Model<InferAttributes<Cart>, InferCreationAttributes<Cart>> {
+//   declare id: CreationOptional<number>;
+// }
+// Cart.init(
+//   {
+//     id: {
+//       type: DataTypes.INTEGER.UNSIGNED,
+//       autoIncrement: true,
+//       allowNull: false,
+//       primaryKey: true,
+//     },
+//   },
+//   { sequelize, tableName: "cart" }
+// );
+class Cart {
 }
-Cart.init({
-    id: {
-        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
-        autoIncrement: true,
-        allowNull: false,
-        primaryKey: true,
-    },
-}, { sequelize: database_1.default, tableName: "cart" });
 exports.default = Cart;

@@ -38,7 +38,7 @@ const error_1 = require("./controllers/error");
 // import sequelize from "./util/database";
 // import { User, Product, Cart, CartItem, Order, OrderItem } from "./models";
 // import { UserRequest } from "./types";
-const database_1 = __importDefault(require("./util/database"));
+const database_1 = require("./util/database");
 dotenv.config();
 const app = (0, express_1.default)();
 // For handleBars
@@ -65,6 +65,7 @@ app.use((req, _res, next) => {
     //     next();
     //   })
     //   .catch((err) => console.log("Logging catch user error", err));
+    next();
 });
 app.use("/admin", routes_1.adminRoutes);
 // app.use(shopRoutes);
@@ -104,8 +105,7 @@ app.use(error_1.get404Page);
 //   .catch((err) => {
 //     console.error(err);
 //   });
-(0, database_1.default)((client) => {
-    // console.log("Logging client", client);
+(0, database_1.mongoConnect)(() => {
     app.listen("3000", () => {
         console.log("Listening on port 3000");
     });

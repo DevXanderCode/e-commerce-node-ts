@@ -25,12 +25,12 @@
 
 // export default sequelize;
 
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { Db, MongoClient, ServerApiVersion } from "mongodb";
 
 let mongoUri =
-  "mongodb+srv://alex:xWK1p6bwKRGl1QuH@cluster0.qy8tddy.mongodb.net/test?retryWrites=true&w=majority";
+  "mongodb+srv://alex:xWK1p6bwKRGl1QuH@cluster0.qy8tddy.mongodb.net/shop?retryWrites=true&w=majority";
 
-let _db;
+let _db: Db;
 const mongoConnect = (callback: Function) => {
   MongoClient.connect(mongoUri)
     .then((client) => {
@@ -43,4 +43,11 @@ const mongoConnect = (callback: Function) => {
     });
 };
 
-export default mongoConnect;
+const getDb = () => {
+  if (_db) {
+    return _db;
+  }
+  return "No Database Found";
+};
+
+export { mongoConnect, getDb };
