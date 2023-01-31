@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postAddProduct = exports.getAddProduct = void 0;
+exports.getAdminProducts = exports.postAddProduct = exports.getAddProduct = void 0;
 const models_1 = require("../models");
 // import { Model } from "sequelize-typescript";
 // import Product from "../models/product";
@@ -148,22 +148,19 @@ exports.postAddProduct = postAddProduct;
  * @param {NextFunction} _next - NextFunction - This is a function that is used to call the next
  * middleware in the stack.
  */
-// export const getAdminProducts = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   req.user
-//     .getProducts()
-//     // Product.findAll()
-//     .then((result: any[]) => {
-//       res.render("admin/products", {
-//         prods: result,
-//         pageTitle: "Admin Products",
-//         path: "/admin/products",
-//         // hasProduct: products?.length > 0,
-//         activeShop: true,
-//       });
-//     })
-//     .catch((err: Error) => console.error(err));
-// };
+const getAdminProducts = (req, res, _next) => {
+    // req.user
+    //   .getProducts()
+    models_1.Product.fetchAll()
+        .then((result) => {
+        res.render("admin/products", {
+            prods: result,
+            pageTitle: "Admin Products",
+            path: "/admin/products",
+            // hasProduct: products?.length > 0,
+            activeShop: true,
+        });
+    })
+        .catch((err) => console.error(err));
+};
+exports.getAdminProducts = getAdminProducts;

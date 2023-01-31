@@ -5,7 +5,7 @@ import express, { Router } from "express";
 // import rootDir from "../util/path";
 import {
   getAddProduct,
-  //   getAdminProducts,
+  getAdminProducts,
   postAddProduct,
   //   getEditProduct,
   //   postEditProduct,
@@ -24,7 +24,7 @@ router.post("/add-product", postAddProduct);
 // router.get('/edit-product/:productId', getEditProduct)
 
 //  /admin/products ==> Get
-// router.get('/products', getAdminProducts);
+router.get("/products", getAdminProducts);
 
 // router.post('/edit-product', postEditProduct);
 
