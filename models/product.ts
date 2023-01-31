@@ -171,7 +171,7 @@
 //   await sequelize.sync();
 // })();
 
-import { Collection, Db } from "mongodb";
+import { Collection, Db, ObjectId } from "mongodb";
 import { getDb } from "../util/database";
 
 class Product {
@@ -211,12 +211,15 @@ class Product {
     }
     return Promise.resolve();
   }
+
   static findById(prodId: string) {
     const db = getDb();
 
     if (typeof db !== "string") {
-      db.collection("products")
-        .findOne({ _id: prodId })
+      return db
+        .collection("products")
+        .find({ _id: new ObjectId(prodId) })
+        .next()
         .then((product) => {
           console.log("single product", product);
           return product;

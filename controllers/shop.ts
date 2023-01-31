@@ -52,7 +52,7 @@ export const getProduct = (
       console.log("Logging some product ", result);
       res.render("shop/product-detail", {
         pageTitle: "Product Details",
-        product: result![0],
+        product: result,
         path: "/products",
       });
     })
