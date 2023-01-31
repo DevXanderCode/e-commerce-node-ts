@@ -106,18 +106,8 @@ export const postEditProduct = (
   // );
   // updatedProduct.save();
 
-  Product.findById(prodId)
-    // .then((product: { title: any; imageUrl: any; description: any; price: any; save: () => any; }) => {
-    .then((prod) => {
-      if (prod) {
-        // product.title = title;
-        // product.imageUrl = imageUrl;
-        // product.description = description;
-        // product.price = price;
-
-        return product.save();
-      }
-    })
+  product
+    .save()
     .then(() => {
       res.redirect("/admin/products");
     })
@@ -134,28 +124,25 @@ export const postEditProduct = (
  * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
  * is done.
  */
-// export const postDeleteProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const prodId = req.body?.productId;
-//   Product.findByPk(prodId)
-//     .then((product: any) => {
-//       return product!.destroy();
-//     })
-//     .then(() => {
-//       console.log("Product deleted");
-//       res.redirect("/admin/products");
-//     })
-//     .catch((err: any) => {
-//       console.log("Logging product delete error");
-//     });
-//   // console.log('delete', prodId)
-//   // Product.deleteById(prodId, () => {
-//   //   res.redirect("/admin/products");
-//   // });
-// };
+export const postDeleteProduct = (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const prodId = req.body?.productId;
+  Product.deleteById(prodId)
+    .then(() => {
+      console.log("Product deleted");
+      res.redirect("/admin/products");
+    })
+    .catch((err: any) => {
+      console.log("Logging product delete error");
+    });
+  // console.log('delete', prodId)
+  // Product.deleteById(prodId, () => {
+  //   res.redirect("/admin/products");
+  // });
+};
 
 /**
  * We're using the fetchAll() method from the Product model to get all the products from the database,

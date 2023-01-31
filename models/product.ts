@@ -180,8 +180,10 @@ class Product {
     public price: number,
     public description: string,
     public imageUrl: string,
-    private _id?: string
-  ) {}
+    private _id?: string | ObjectId
+  ) {
+    this._id = new ObjectId(_id);
+  }
 
   save() {
     const db = getDb();
@@ -189,19 +191,13 @@ class Product {
 
     if (typeof db !== "string") {
       if (this._id) {
-        dbOp = db
-          .collection("products")
-          .updateOne(
-            { _id: new ObjectId(this._id) },
-            {
-              $set: {
-                title: this.title,
-                price: this.price,
-                description: this.description,
-                imageUrl: this.imageUrl,
-              },
-            }
-          );
+        // Update Product
+        dbOp = db.collection("products").updateOne(
+          { _id: this._id },
+          {
+            $set: this,
+          }
+        );
       } else {
         dbOp = db.collection("products").insertOne({
           title: this.title,
@@ -220,19 +216,24 @@ class Product {
     return Promise.resolve();
   }
 
-  static fetchAll() {
+  static async fetchAll() {
     const db = getDb();
 
     if (typeof db !== "string") {
-      return db
-        .collection("products")
-        .find()
-        .toArray()
-        .then((products) => {
-          // console.log("Logging Products", products);
-          return products;
-        })
-        .catch((err) => console.log("logging error", err));
+      // return db
+      //   .collection("products")
+      //   .find()
+      //   .toArray()
+      //   .then((products) => {
+      //     // console.log("Logging Products", products);
+      //     return products;
+      //   })
+      //   .catch((err) => console.log("logging error", err));
+      try {
+        return await db.collection("products").find().toArray();
+      } catch (error) {
+        console.log("logging error", error);
+      }
     }
     return Promise.resolve();
   }
@@ -250,6 +251,19 @@ class Product {
           return product;
         })
         .catch((err) => console.log("Logging find by id error", err));
+    }
+    return Promise.resolve();
+  }
+
+  static deleteById(prodId: string) {
+    const db = getDb();
+
+    if (typeof db !== "string") {
+      return db
+        .collection("products")
+        .deleteOne({ _id: new ObjectId(prodId) })
+        .then((result) => console.log("deleted product", result))
+        .catch((err) => console.log("Logging error", err));
     }
     return Promise.resolve();
   }

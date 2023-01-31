@@ -1,6 +1,15 @@
 "use strict";
 // // import path from "path";
 // // import fs from "fs";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 // import Cart from "./cart";
 // import rootDir from "../util/path";
@@ -156,21 +165,16 @@ class Product {
         this.description = description;
         this.imageUrl = imageUrl;
         this._id = _id;
+        this._id = new mongodb_1.ObjectId(_id);
     }
     save() {
         const db = (0, database_1.getDb)();
         let dbOp;
         if (typeof db !== "string") {
             if (this._id) {
-                dbOp = db
-                    .collection("products")
-                    .updateOne({ _id: new mongodb_1.ObjectId(this._id) }, {
-                    $set: {
-                        title: this.title,
-                        price: this.price,
-                        description: this.description,
-                        imageUrl: this.imageUrl,
-                    },
+                // Update Product
+                dbOp = db.collection("products").updateOne({ _id: this._id }, {
+                    $set: this,
                 });
             }
             else {
@@ -191,19 +195,27 @@ class Product {
         return Promise.resolve();
     }
     static fetchAll() {
-        const db = (0, database_1.getDb)();
-        if (typeof db !== "string") {
-            return db
-                .collection("products")
-                .find()
-                .toArray()
-                .then((products) => {
-                // console.log("Logging Products", products);
-                return products;
-            })
-                .catch((err) => console.log("logging error", err));
-        }
-        return Promise.resolve();
+        return __awaiter(this, void 0, void 0, function* () {
+            const db = (0, database_1.getDb)();
+            if (typeof db !== "string") {
+                // return db
+                //   .collection("products")
+                //   .find()
+                //   .toArray()
+                //   .then((products) => {
+                //     // console.log("Logging Products", products);
+                //     return products;
+                //   })
+                //   .catch((err) => console.log("logging error", err));
+                try {
+                    return yield db.collection("products").find().toArray();
+                }
+                catch (error) {
+                    console.log("logging error", error);
+                }
+            }
+            return Promise.resolve();
+        });
     }
     static findById(prodId) {
         const db = (0, database_1.getDb)();
@@ -217,6 +229,17 @@ class Product {
                 return product;
             })
                 .catch((err) => console.log("Logging find by id error", err));
+        }
+        return Promise.resolve();
+    }
+    static deleteById(prodId) {
+        const db = (0, database_1.getDb)();
+        if (typeof db !== "string") {
+            return db
+                .collection("products")
+                .deleteOne({ _id: new mongodb_1.ObjectId(prodId) })
+                .then((result) => console.log("deleted product", result))
+                .catch((err) => console.log("Logging error", err));
         }
         return Promise.resolve();
     }

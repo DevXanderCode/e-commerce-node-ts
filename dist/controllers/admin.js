@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAdminProducts = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
+exports.getAdminProducts = exports.postDeleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
 const models_1 = require("../models");
 // import { Model } from "sequelize-typescript";
 // import Product from "../models/product";
@@ -86,17 +86,8 @@ const postEditProduct = (req, res, _next) => {
     //   price
     // );
     // updatedProduct.save();
-    models_1.Product.findById(prodId)
-        // .then((product: { title: any; imageUrl: any; description: any; price: any; save: () => any; }) => {
-        .then((prod) => {
-        if (prod) {
-            // product.title = title;
-            // product.imageUrl = imageUrl;
-            // product.description = description;
-            // product.price = price;
-            return product.save();
-        }
-    })
+    product
+        .save()
         .then(() => {
         res.redirect("/admin/products");
     })
@@ -113,28 +104,23 @@ exports.postEditProduct = postEditProduct;
  * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
  * is done.
  */
-// export const postDeleteProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const prodId = req.body?.productId;
-//   Product.findByPk(prodId)
-//     .then((product: any) => {
-//       return product!.destroy();
-//     })
-//     .then(() => {
-//       console.log("Product deleted");
-//       res.redirect("/admin/products");
-//     })
-//     .catch((err: any) => {
-//       console.log("Logging product delete error");
-//     });
-//   // console.log('delete', prodId)
-//   // Product.deleteById(prodId, () => {
-//   //   res.redirect("/admin/products");
-//   // });
-// };
+const postDeleteProduct = (req, res, _next) => {
+    var _a;
+    const prodId = (_a = req.body) === null || _a === void 0 ? void 0 : _a.productId;
+    models_1.Product.deleteById(prodId)
+        .then(() => {
+        console.log("Product deleted");
+        res.redirect("/admin/products");
+    })
+        .catch((err) => {
+        console.log("Logging product delete error");
+    });
+    // console.log('delete', prodId)
+    // Product.deleteById(prodId, () => {
+    //   res.redirect("/admin/products");
+    // });
+};
+exports.postDeleteProduct = postDeleteProduct;
 /**
  * We're using the fetchAll() method from the Product model to get all the products from the database,
  * then we're rendering the admin/products.ejs view with the products we got from the database
