@@ -21,5 +21,20 @@ class Product {
         }
         return Promise.resolve();
     }
+    static fetchAll() {
+        const db = (0, database_1.getDb)();
+        if (typeof db !== "string") {
+            return db
+                .collection("products")
+                .find()
+                .toArray()
+                .then((products) => {
+                console.log("Logging Products", products);
+                return products;
+            })
+                .catch((err) => console.log("logging error", err));
+        }
+        return Promise.resolve();
+    }
 }
 exports.default = Product;
