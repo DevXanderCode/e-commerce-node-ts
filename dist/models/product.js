@@ -165,11 +165,11 @@ class Product {
         this.description = description;
         this.imageUrl = imageUrl;
         this._id = _id;
-        this._id = new mongodb_1.ObjectId(_id);
+        this._id = _id ? new mongodb_1.ObjectId(_id) : "";
     }
     save() {
         const db = (0, database_1.getDb)();
-        let dbOp;
+        let dbOp = null;
         if (typeof db !== "string") {
             if (this._id) {
                 // Update Product

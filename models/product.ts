@@ -182,12 +182,12 @@ class Product {
     public imageUrl: string,
     private _id?: string | ObjectId
   ) {
-    this._id = new ObjectId(_id);
+    this._id = _id ? new ObjectId(_id) : "";
   }
 
   save() {
     const db = getDb();
-    let dbOp;
+    let dbOp = null;
 
     if (typeof db !== "string") {
       if (this._id) {
