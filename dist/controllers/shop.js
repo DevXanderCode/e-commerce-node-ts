@@ -31,7 +31,7 @@ const models_1 = require("../models");
 const getProducts = (_req, res, _next) => {
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-    models_1.Product.findAll()
+    models_1.Product.fetchAll()
         .then((result) => {
         res.render("shop/product-list", {
             prods: result,
@@ -58,7 +58,7 @@ const getProduct = (req, res, _next) => {
 };
 exports.getProduct = getProduct;
 const getIndex = (_req, res, _next) => {
-    models_1.Product.findAll()
+    models_1.Product.fetchAll()
         .then((products) => {
         res.render("shop/index", {
             prods: products,

@@ -15,7 +15,7 @@ const getAddProduct = (_req, res, _next) => {
 exports.getAddProduct = getAddProduct;
 const postAddProduct = (req, res, _next) => {
     const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
-    const product = new models_1.Product(title, imageUrl, description, price);
+    const product = new models_1.Product(title, price, description, imageUrl);
     product
         .save()
         .then(() => res.redirect("/"))

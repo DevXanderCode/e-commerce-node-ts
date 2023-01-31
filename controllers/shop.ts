@@ -29,7 +29,7 @@ export const getProducts = (
 ) => {
   // console.log("Admin products", adminData?.products);
   // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-  Product.findAll()
+  Product.fetchAll()
     .then((result) => {
       res.render("shop/product-list", {
         prods: result,
@@ -59,7 +59,7 @@ export const getProduct = (
 };
 
 export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
-  Product.findAll()
+  Product.fetchAll()
     .then((products) => {
       res.render("shop/index", {
         prods: products,
