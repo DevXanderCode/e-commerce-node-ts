@@ -46,11 +46,12 @@ exports.getProducts = getProducts;
 const getProduct = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.productId;
-    models_1.Product.findByPk(prodId)
+    models_1.Product.findById(prodId)
         .then((result) => {
+        console.log("Logging some product ", result);
         res.render("shop/product-detail", {
             pageTitle: "Product Details",
-            product: result,
+            product: result[0],
             path: "/products",
         });
     })

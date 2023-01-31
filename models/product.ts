@@ -204,10 +204,24 @@ class Product {
         .find()
         .toArray()
         .then((products) => {
-          console.log("Logging Products", products);
+          // console.log("Logging Products", products);
           return products;
         })
         .catch((err) => console.log("logging error", err));
+    }
+    return Promise.resolve();
+  }
+  static findById(prodId: string) {
+    const db = getDb();
+
+    if (typeof db !== "string") {
+      db.collection("products")
+        .findOne({ _id: prodId })
+        .then((product) => {
+          console.log("single product", product);
+          return product;
+        })
+        .catch((err) => console.log("Logging find by id error", err));
     }
     return Promise.resolve();
   }

@@ -28,7 +28,8 @@
 import { Db, MongoClient, ServerApiVersion } from "mongodb";
 
 let mongoUri =
-  "mongodb+srv://alex:xWK1p6bwKRGl1QuH@cluster0.qy8tddy.mongodb.net/shop?retryWrites=true&w=majority";
+  // "mongodb+srv://alex:xWK1p6bwKRGl1QuH@cluster0.qy8tddy.mongodb.net/shop?retryWrites=true&w=majority";
+  "mongodb://localhost:27017/local_commerce_db";
 
 let _db: Db;
 const mongoConnect = (callback: Function) => {

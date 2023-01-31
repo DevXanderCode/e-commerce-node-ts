@@ -22,7 +22,9 @@ exports.getDb = exports.mongoConnect = void 0;
 // });
 // export default sequelize;
 const mongodb_1 = require("mongodb");
-let mongoUri = "mongodb+srv://alex:xWK1p6bwKRGl1QuH@cluster0.qy8tddy.mongodb.net/shop?retryWrites=true&w=majority";
+let mongoUri = 
+// "mongodb+srv://alex:xWK1p6bwKRGl1QuH@cluster0.qy8tddy.mongodb.net/shop?retryWrites=true&w=majority";
+"mongodb://localhost:27017/local_commerce_db";
 let _db;
 const mongoConnect = (callback) => {
     mongodb_1.MongoClient.connect(mongoUri)

@@ -47,11 +47,12 @@ export const getProduct = (
   _next: NextFunction
 ) => {
   const prodId = req?.params?.productId;
-  Product.findByPk(prodId)
+  Product.findById(prodId)
     .then((result) => {
+      console.log("Logging some product ", result);
       res.render("shop/product-detail", {
         pageTitle: "Product Details",
-        product: result,
+        product: result![0],
         path: "/products",
       });
     })
