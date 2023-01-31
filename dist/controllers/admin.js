@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAdminProducts = exports.postAddProduct = exports.getAddProduct = void 0;
+exports.getAdminProducts = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
 const models_1 = require("../models");
 // import { Model } from "sequelize-typescript";
 // import Product from "../models/product";
@@ -39,35 +39,32 @@ exports.postAddProduct = postAddProduct;
  * @param {NextFunction} _next - NextFunction
  * @returns The product object
  */
-// export const getEditProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const editMode = req.query.edit;
-//   if (!editMode) {
-//     return res.redirect("/");
-//   }
-//   const prodId = req.params.productId;
-//   req.user
-//     .getProducts({ where: { id: prodId } })
-//     // Product.findByPk(prodId)
-//     .then((products: any[]) => {
-//       // console.log("Edit product", JSON.stringify(product, null, 2));
-//       const product = products[0];
-//       if (product) {
-//         res.render("admin/edit-product", {
-//           pageTitle: "Edit Product",
-//           path: "/admin/edit-product",
-//           editing: editMode,
-//           product,
-//         });
-//       } else {
-//         res.redirect("/");
-//       }
-//     })
-//     .catch((err: Error) => console.log(err));
-// };
+const getEditProduct = (req, res, _next) => {
+    const editMode = req.query.edit;
+    if (!editMode) {
+        return res.redirect("/");
+    }
+    const prodId = req.params.productId;
+    // req.user
+    //   .getProducts({ where: { id: prodId } })
+    models_1.Product.findById(prodId)
+        .then((product) => {
+        // console.log("Edit product", JSON .stringify(product, null, 2));
+        if (product) {
+            res.render("admin/edit-product", {
+                pageTitle: "Edit Product",
+                path: "/admin/edit-product",
+                editing: editMode,
+                product,
+            });
+        }
+        else {
+            res.redirect("/");
+        }
+    })
+        .catch((err) => console.log(err));
+};
+exports.getEditProduct = getEditProduct;
 /**
  * We're using the findByPk() method to find the product with the given id, then we're updating the
  * product's properties with the new values, and finally we're saving the product
@@ -78,35 +75,34 @@ exports.postAddProduct = postAddProduct;
  * @param {NextFunction} _next - NextFunction - This is a function that we can call to pass control to
  * the next middleware function in the stack.
  */
-// export const postEditProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const { productId: prodId, title, imageUrl, description, price } = req?.body;
-//   // const updatedProduct = new Product(
-//   //   prodId,
-//   //   title,
-//   //   imageUrl,
-//   //   description,
-//   //   price
-//   // );
-//   // updatedProduct.save();
-//   Product.findByPk(prodId)
-//     .then((product: { title: any; imageUrl: any; description: any; price: any; save: () => any; }) => {
-//       if (product) {
-//         product.title = title;
-//         product.imageUrl = imageUrl;
-//         product.description = description;
-//         product.price = price;
-//         return product.save();
-//       }
-//     })
-//     .then(() => {
-//       res.redirect("/admin/products");
-//     })
-//     .catch((err: any) => console.log(err));
-// };
+const postEditProduct = (req, res, _next) => {
+    const { productId: prodId, title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const product = new models_1.Product(title, price, description, imageUrl, prodId);
+    // const updatedProduct = new Product(
+    //   prodId,
+    //   title,
+    //   imageUrl,
+    //   description,
+    //   price
+    // );
+    // updatedProduct.save();
+    models_1.Product.findById(prodId)
+        // .then((product: { title: any; imageUrl: any; description: any; price: any; save: () => any; }) => {
+        .then((prod) => {
+        if (prod) {
+            // product.title = title;
+            // product.imageUrl = imageUrl;
+            // product.description = description;
+            // product.price = price;
+            return product.save();
+        }
+    })
+        .then(() => {
+        res.redirect("/admin/products");
+    })
+        .catch((err) => console.log(err));
+};
+exports.postEditProduct = postEditProduct;
 /**
  * We're using the productId from the request body to find the product in the database, then we're
  * deleting it

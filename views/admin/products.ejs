@@ -1,47 +1,46 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" type="text/css" href="/css/product.css" />
+  <link rel="stylesheet" type="text/css" href="/css/product.css" />
   </head>
 
   <body>
-   <%- include('../includes/navigation.ejs') %>
+    <%- include('../includes/navigation.ejs') %>
 
-    <main>
-      <% if (prods?.length) { %>
+      <main>
+        <% if (prods?.length) { %>
 
-      <div class="grid">
-        <% prods?.map((product, idx) => { %>
-        <article class="card product-item">
-          <header class="card__header">
-            <h1 class="product__title"><%= product.title %></h1>
-          </header>
-          <div class="card__image">
-            <!-- src="https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png" -->
-            <img
-            src="<%=product.imageUrl %>"
-              alt="<%= product?.title %>"
-            />
-          </div>
-          <div class="card__content">
-            <h2 class="product__price">₦<%= product?.price %></h2>
-            <p class="product__description">
-             <%= product?.description%>
-            </p>
-          </div>
-          <div class="card__actions">
-            <a href="/admin/edit-product/<%= product.id%>?edit=true" class="btn">Edit</a>
-            <!-- <a href="/admin/delete-product/<%= product.id%>" class="btn">Delete</a> -->
+          <div class="grid">
+            <% prods?.map((product, idx)=> { %>
+              <article class="card product-item">
+                <header class="card__header">
+                  <h1 class="product__title">
+                    <%= product.title %>
+                  </h1>
+                </header>
+                <div class="card__image">
+                  <!-- src="https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png" -->
+                  <img src="<%=product.imageUrl %>" alt="<%= product?.title %>" />
+                </div>
+                <div class="card__content">
+                  <h2 class="product__price">₦<%= product?.price %>
+                  </h2>
+                  <p class="product__description">
+                    <%= product?.description%>
+                  </p>
+                </div>
+                <div class="card__actions">
+                  <a href="/admin/edit-product/<%= product._id%>?edit=true" class="btn">Edit</a>
+                  <!-- <a href="/admin/delete-product/<%= product.id%>" class="btn">Delete</a> -->
 
-            <form action="/admin/delete-product" method="POST">
-              <input type="hidden" name="productId" value="<%=product.id %>" />
-              <button class="btn" type="submit">Delete</button>
-            </form>
+                  <form action="/admin/delete-product" method="POST">
+                    <input type="hidden" name="productId" value="<%=product._id %>" />
+                    <button class="btn" type="submit">Delete</button>
+                  </form>
+                </div>
+              </article>
+              <% }) %>
           </div>
-        </article>
-        <% }) %>
-      </div>
-      <% } else { %>
-      <h1>No Products Found!</h1>
-      <% } %>
-    </main>
-<%- include('../includes/end.ejs') %>
- 
+          <% } else { %>
+            <h1>No Products Found!</h1>
+            <% } %>
+      </main>
+      <%- include('../includes/end.ejs') %>

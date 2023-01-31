@@ -1,44 +1,47 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" type="text/css" href="/css/forms.css" />
-    <link rel="stylesheet" type="text/css" href="/css/product.css" />
+  <link rel="stylesheet" type="text/css" href="/css/forms.css" />
+  <link rel="stylesheet" type="text/css" href="/css/product.css" />
   </head>
 
   <body>
-   <%- include('../includes/navigation.ejs') %>
+    <%- include('../includes/navigation.ejs') %>
 
-    <main>
-      <form class="product-form" action="/admin/<%_ if (editing) {_%>edit-product <%_ }else {_%>add-product <%_ } _%>" method="POST">
-        <div class="form-control">
-          <label for="title">Title</label>
-          <input type="text" name="title" id="title" value="<%_ if (editing) {_%> <%= product.title %> <%_ } _%>"/>
-        </div>
-        <div class="form-control">
-          <label for="imageUrl">Image URL</label>
-          <input type="text" name="imageUrl" id="imageUrl" value="<%_ if (editing) {_%> <%= product.imageUrl %> <%_ } _%>"/>
-        </div>
-        <div class="form-control">
-          <label for="price">Price</label>
-          <input type="number" name="price" id="price" step="0.01" value="<%_ if (editing) { _%> <%=product.price%> <%_ } _%>" />
-        </div>
-        <div class="form-control">
-          <label for="description">Description</label>
-          <textarea type="text" name="description" id="description" rows="5">
+      <main>
+        <form class="product-form" action="/admin/<%_ if (editing) {_%>edit-product <%_ }else {_%>add-product <%_ } _%>"
+          method="POST">
+          <div class="form-control">
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title" value="<%_ if (editing) {_%> <%= product.title %> <%_ } _%>" />
+          </div>
+          <div class="form-control">
+            <label for="imageUrl">Image URL</label>
+            <input type="text" name="imageUrl" id="imageUrl"
+              value="<%_ if (editing) {_%> <%= product.imageUrl %> <%_ } _%>" />
+          </div>
+          <div class="form-control">
+            <label for="price">Price</label>
+            <input type="number" name="price" id="price" step="0.01"
+              value="<%_ if (editing) { _%> <%=product.price%> <%_ } _%>" />
+          </div>
+          <div class="form-control">
+            <label for="description">Description</label>
+            <textarea type="text" name="description" id="description" rows="5">
             <%_ if(editing) { _%> <%= product.description %> <%_ } _%>
           </textarea>
-        </div>
+          </div>
 
-        <% if (editing) { %>
-          <input type="hidden" name="productId" value="<%= product.id %>" />
-        <% } %>
+          <% if (editing) { %>
+            <input type="hidden" name="productId" value="<%= product._id %>" />
+            <% } %>
 
-        <button class="btn" type="submit">
-            <%_ if (editing) {_%>
-           Update Products
-           <%_ } else { _%>
-            Add Product
-            <%_ } _%>
+              <button class="btn" type="submit">
+                <%_ if (editing) {_%>
+                  Update Products
+                  <%_ } else { _%>
+                    Add Product
+                    <%_ } _%>
 
-        </button>
-      </form>
-    </main>
-<%- include('../includes/end.ejs') %>
+              </button>
+        </form>
+      </main>
+      <%- include('../includes/end.ejs') %>

@@ -150,20 +150,43 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb_1 = require("mongodb");
 const database_1 = require("../util/database");
 class Product {
-    constructor(title, price, description, imageUrl) {
+    constructor(title, price, description, imageUrl, _id) {
         this.title = title;
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
+        this._id = _id;
     }
     save() {
         const db = (0, database_1.getDb)();
+        let dbOp;
         if (typeof db !== "string") {
-            return db
-                .collection("products")
-                .insertOne(this)
-                .then((result) => console.log("Logging result", result))
-                .catch((err) => console.log(err));
+            if (this._id) {
+                dbOp = db
+                    .collection("products")
+                    .updateOne({ _id: new mongodb_1.ObjectId(this._id) }, {
+                    $set: {
+                        title: this.title,
+                        price: this.price,
+                        description: this.description,
+                        imageUrl: this.imageUrl,
+                    },
+                });
+            }
+            else {
+                dbOp = db.collection("products").insertOne({
+                    title: this.title,
+                    price: this.price,
+                    description: this.description,
+                    imageUrl: this.imageUrl,
+                });
+            }
+            if (dbOp) {
+                return dbOp
+                    .then((result) => console.log("Logging result", result))
+                    .catch((err) => console.log(err));
+            }
+            return Promise.resolve();
         }
         return Promise.resolve();
     }

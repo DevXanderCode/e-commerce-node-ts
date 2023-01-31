@@ -179,18 +179,43 @@ class Product {
     public title: string,
     public price: number,
     public description: string,
-    public imageUrl: string
+    public imageUrl: string,
+    private _id?: string
   ) {}
 
   save() {
     const db = getDb();
+    let dbOp;
 
     if (typeof db !== "string") {
-      return db
-        .collection("products")
-        .insertOne(this)
-        .then((result) => console.log("Logging result", result))
-        .catch((err: Error) => console.log(err));
+      if (this._id) {
+        dbOp = db
+          .collection("products")
+          .updateOne(
+            { _id: new ObjectId(this._id) },
+            {
+              $set: {
+                title: this.title,
+                price: this.price,
+                description: this.description,
+                imageUrl: this.imageUrl,
+              },
+            }
+          );
+      } else {
+        dbOp = db.collection("products").insertOne({
+          title: this.title,
+          price: this.price,
+          description: this.description,
+          imageUrl: this.imageUrl,
+        });
+      }
+      if (dbOp) {
+        return dbOp
+          .then((result) => console.log("Logging result", result))
+          .catch((err: Error) => console.log(err));
+      }
+      return Promise.resolve();
     }
     return Promise.resolve();
   }
