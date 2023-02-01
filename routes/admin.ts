@@ -9,7 +9,7 @@ import {
   postAddProduct,
   getEditProduct,
   postEditProduct,
-  // postDeleteProduct,
+  postDeleteProduct,
 } from "../controllers/admin";
 
 const router: Router = express.Router();
@@ -28,6 +28,6 @@ router.get("/products", getAdminProducts);
 
 router.post("/edit-product", postEditProduct);
 
-// router.post("/delete-product", postDeleteProduct);
+router.post("/delete-product", postDeleteProduct);
 
 export default router;

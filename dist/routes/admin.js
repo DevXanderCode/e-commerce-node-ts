@@ -16,5 +16,5 @@ router.get("/edit-product/:productId", admin_1.getEditProduct);
 //  /admin/products ==> Get
 router.get("/products", admin_1.getAdminProducts);
 router.post("/edit-product", admin_1.postEditProduct);
-// router.post("/delete-product", postDeleteProduct);
+router.post("/delete-product", admin_1.postDeleteProduct);
 exports.default = router;

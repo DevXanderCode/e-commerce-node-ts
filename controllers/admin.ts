@@ -33,7 +33,7 @@ export const postAddProduct = (
   });
   product
     .save()
-    .then(() => res.redirect("/admin/product"))
+    .then(() => res.redirect("/admin/products"))
     .catch((err) => console.error(err));
   // req.user
   //   .createProduct({ title, price, imageUrl, description })
@@ -101,15 +101,6 @@ export const postEditProduct = (
   _next: NextFunction
 ) => {
   const { productId: prodId, title, imageUrl, description, price } = req?.body;
-  // const product = new Product(title, price, description, imageUrl, prodId);
-  // const updatedProduct = new Product(
-  //   prodId,
-  //   title,
-  //   imageUrl,
-  //   description,
-  //   price
-  // );
-  // updatedProduct.save();
 
   Product.findById(prodId)
     .then((product) => {
@@ -137,25 +128,25 @@ export const postEditProduct = (
  * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
  * is done.
  */
-// export const postDeleteProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const prodId = req.body?.productId;
-//   Product.deleteById(prodId)
-//     .then(() => {
-//       console.log("Product deleted");
-//       res.redirect("/admin/products");
-//     })
-//     .catch((err: any) => {
-//       console.log("Logging product delete error");
-//     });
-//   // console.log('delete', prodId)
-//   // Product.deleteById(prodId, () => {
-//   //   res.redirect("/admin/products");
-//   // });
-// };
+export const postDeleteProduct = (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const prodId = req.body?.productId;
+  Product.deleteOne({ _id: prodId })
+    .then(() => {
+      console.log("Product deleted");
+      res.redirect("/admin/products");
+    })
+    .catch((err: any) => {
+      console.log("Logging product delete error", err);
+    });
+  // console.log('delete', prodId)
+  // Product.deleteById(prodId, () => {
+  //   res.redirect("/admin/products");
+  // });
+};
 
 /**
  * We're using the fetchAll() method from the Product model to get all the products from the database,
