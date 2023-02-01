@@ -3,6 +3,7 @@ import path from "path";
 import express, { Express, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
+import mongoose from "mongoose";
 // import { create, engine } from "express-handlebars";
 
 import { adminRoutes, shopRoutes } from "./routes";
@@ -95,8 +96,20 @@ app.use(get404Page);
 //     console.error(err);
 //   });
 
-mongoConnect(() => {
-  app.listen("3000", () => {
-    console.log("Listening on port 3000");
+// mongoConnect(() => {
+//   app.listen("3000", () => {
+//     console.log("Listening on port 3000");
+//   });
+// });
+
+mongoose
+  .connect("mongodb://localhost:27017/local_commerce_db")
+  .then((result) => {
+    console.log("App Connected to Database");
+    app.listen(() => {
+      console.log("Server listening at port 3000");
+    });
+  })
+  .catch((error) => {
+    console.log("Database connection error", error);
   });
-});

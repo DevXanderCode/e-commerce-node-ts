@@ -30,6 +30,7 @@ const path_1 = __importDefault(require("path"));
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv = __importStar(require("dotenv"));
+const mongoose_1 = __importDefault(require("mongoose"));
 // import { create, engine } from "express-handlebars";
 const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
@@ -37,7 +38,6 @@ const error_1 = require("./controllers/error");
 // import ternary from "./util/helpers/ternary";
 // import sequelize from "./util/database";
 const models_1 = require("./models");
-const database_1 = require("./util/database");
 dotenv.config();
 const app = (0, express_1.default)();
 // For handleBars
@@ -103,8 +103,19 @@ app.use(error_1.get404Page);
 //   .catch((err) => {
 //     console.error(err);
 //   });
-(0, database_1.mongoConnect)(() => {
-    app.listen("3000", () => {
-        console.log("Listening on port 3000");
+// mongoConnect(() => {
+//   app.listen("3000", () => {
+//     console.log("Listening on port 3000");
+//   });
+// });
+mongoose_1.default
+    .connect("mongodb://localhost:27017/local_commerce_db")
+    .then((result) => {
+    console.log("App Connected to Database");
+    app.listen(() => {
+        console.log("Server listening at port 3000");
     });
+})
+    .catch((error) => {
+    console.log("Database connection error", error);
 });
