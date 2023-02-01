@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postOrder = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.getOrders = exports.postOrder = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -219,20 +219,18 @@ const postOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.postOrder = postOrder;
-// export const getOrders = async (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   try {
-//     const orders = await req.user.getOrders({ include: ["Products"] });
-//     console.log("Orders ==> ", JSON.stringify(orders, null, 2));
-//     res.render("shop/orders", {
-//       pageTitle: "My Orders",
-//       path: "/orders",
-//       orders: orders,
-//     });
-//   } catch (error) {
-//     console.log("Logging get orders error", error);
-//   }
-// };
+const getOrders = (req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const orders = yield req.user.getOrders();
+        console.log("Orders ==> ", JSON.stringify(orders, null, 2));
+        res.render("shop/orders", {
+            pageTitle: "My Orders",
+            path: "/orders",
+            orders: orders,
+        });
+    }
+    catch (error) {
+        console.log("Logging get orders error", error);
+    }
+});
+exports.getOrders = getOrders;

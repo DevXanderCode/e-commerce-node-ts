@@ -124,15 +124,33 @@ class User {
     addOrder() {
         const db = (0, database_1.getDb)();
         if (typeof db !== "string") {
-            return db
-                .collection("orders")
-                .insertOne(this.cart)
+            return this.getCart()
+                .then((products) => {
+                const order = {
+                    items: products,
+                    user: {
+                        _id: new mongodb_1.ObjectId(this._id),
+                        name: this === null || this === void 0 ? void 0 : this.name,
+                    },
+                };
+                return db.collection("orders").insertOne(order);
+            })
                 .then((result) => {
                 this.cart = { items: [] };
                 return db
                     .collection("user")
                     .updateOne({ _id: new mongodb_1.ObjectId(this === null || this === void 0 ? void 0 : this._id) }, { $set: { cart: { items: [] } } });
             });
+        }
+        return Promise.resolve();
+    }
+    getOrders() {
+        const db = (0, database_1.getDb)();
+        if (typeof db !== "string") {
+            return db
+                .collection("orders")
+                .find({ "user._id": new mongodb_1.ObjectId(this === null || this === void 0 ? void 0 : this._id) })
+                .toArray();
         }
         return Promise.resolve();
     }

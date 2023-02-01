@@ -235,20 +235,20 @@ export const postOrder = async (
   }
 };
 
-// export const getOrders = async (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   try {
-//     const orders = await req.user.getOrders({ include: ["Products"] });
-//     console.log("Orders ==> ", JSON.stringify(orders, null, 2));
-//     res.render("shop/orders", {
-//       pageTitle: "My Orders",
-//       path: "/orders",
-//       orders: orders,
-//     });
-//   } catch (error) {
-//     console.log("Logging get orders error", error);
-//   }
-// };
+export const getOrders = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const orders = await req.user!.getOrders();
+    console.log("Orders ==> ", JSON.stringify(orders, null, 2));
+    res.render("shop/orders", {
+      pageTitle: "My Orders",
+      path: "/orders",
+      orders: orders,
+    });
+  } catch (error) {
+    console.log("Logging get orders error", error);
+  }
+};
