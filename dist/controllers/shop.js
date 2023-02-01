@@ -93,19 +93,12 @@ exports.getIndex = getIndex;
  */
 const getCart = (req, res, _next) => {
     var _a;
-    (_a = req.user) === null || _a === void 0 ? void 0 : _a.getCart().then((cart) => {
-        console.log("Logging cart", cart);
-        return cart
-            .getProducts()
-            .then((products) => {
-            res.render("shop/cart", {
-                pageTitle: "My Cart",
-                path: "/cart",
-                prods: products,
-            });
-        })
-            .catch((err) => {
-            console.log("get cart product error", err);
+    (_a = req.user) === null || _a === void 0 ? void 0 : _a.getCart().then((products) => {
+        console.log("Logging cart", products);
+        res.render("shop/cart", {
+            pageTitle: "My Cart",
+            path: "/cart",
+            prods: products,
         });
     }).catch((err) => console.log("get cart Errror", err));
 };

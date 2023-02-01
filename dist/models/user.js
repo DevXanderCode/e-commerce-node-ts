@@ -85,6 +85,25 @@ class User {
         }
         return Promise.resolve();
     }
+    getCart() {
+        var _a;
+        const db = (0, database_1.getDb)();
+        if (typeof db !== "string") {
+            const productIds = (_a = this === null || this === void 0 ? void 0 : this.cart) === null || _a === void 0 ? void 0 : _a.items.map((item) => item === null || item === void 0 ? void 0 : item.productId);
+            return db
+                .collection("products")
+                .find({ _id: { $in: productIds } })
+                .toArray()
+                .then((products) => {
+                return products === null || products === void 0 ? void 0 : products.map((p) => (Object.assign(Object.assign({}, p), { quantity: this.cart.items.find((i) => {
+                        var _a;
+                        return (i === null || i === void 0 ? void 0 : i.productId.toString()) === ((_a = p === null || p === void 0 ? void 0 : p._id) === null || _a === void 0 ? void 0 : _a.toString());
+                    }).quantity })));
+            })
+                .catch((err) => console.log("Logging get cart products error", err));
+        }
+        return Promise.resolve();
+    }
     static findById(userId) {
         const db = (0, database_1.getDb)();
         if (typeof db !== "string") {

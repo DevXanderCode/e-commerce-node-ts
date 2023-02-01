@@ -18,7 +18,7 @@ import {
 
 const router: Router = express.Router();
 
-// router.get("/cart", getCart);
+router.get("/cart", getCart);
 
 router.post("/cart", postCart);
 
