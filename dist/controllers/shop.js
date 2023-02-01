@@ -83,15 +83,20 @@ exports.getIndex = getIndex;
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
 const getCart = (req, res, _next) => {
-    var _a;
-    (_a = req.user) === null || _a === void 0 ? void 0 : _a.getCart().then((products) => {
-        console.log("Logging cart", JSON.stringify(products, null, 2));
+    req.user
+        .populate("cart.items.productId")
+        // .execPopulate()
+        .then((user) => {
+        var _a;
+        console.log("Logging cart", JSON.stringify(user, null, 2));
+        const products = (_a = user === null || user === void 0 ? void 0 : user.cart) === null || _a === void 0 ? void 0 : _a.items;
         res.render("shop/cart", {
             pageTitle: "My Cart",
             path: "/cart",
             prods: products,
         });
-    }).catch((err) => console.log("get cart Errror", err));
+    })
+        .catch((err) => console.log("get cart Errror", err));
 };
 exports.getCart = getCart;
 /**

@@ -93,9 +93,12 @@ export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
  */
 export const getCart = (req: Request, res: Response, _next: NextFunction) => {
   req.user
-    ?.getCart()
-    .then((products: any) => {
-      console.log("Logging cart", JSON.stringify(products, null, 2));
+    .populate("cart.items.productId")
+    // .execPopulate()
+    .then((user: any) => {
+      console.log("Logging cart", JSON.stringify(user, null, 2));
+
+      const products = user?.cart?.items;
 
       res.render("shop/cart", {
         pageTitle: "My Cart",
