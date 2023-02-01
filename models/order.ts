@@ -27,6 +27,29 @@
 //   { sequelize, tableName: "order" }
 // );
 
-class Order {}
+import { Schema, model } from "mongoose";
 
-export default Order;
+const orderSchema = new Schema({
+  productId: {
+    type: Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+  user: {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+  },
+});
+
+export default model("Order", orderSchema);
