@@ -121,7 +121,8 @@ export const postCart = (req: Request, res: Response, _next: NextFunction) => {
   const prodId = req?.body?.productId;
   Product.findById(prodId)
     .then((prod) => {
-      return req.user!.addToCart(prod);
+      req.user!.addToCart(prod);
+      res.redirect("/cart");
     })
     .catch((err) => console.log("Logging error", err));
   // let fetchedCart: any;
@@ -174,17 +175,19 @@ export const postCartDeleteProduct = (
   res: Response,
   _next: NextFunction
 ) => {
-  const prodId = req.body.productId;
+  const prodId = req?.body?.productId;
 
+  // req.user
+  //   ?.getCdart()
+  //   .then((cart: any) => {
+  //     return cart.getProducts({ where: { id: prodId } });
+  //   })
+  //   .then((products: any) => {
+  //     const product = products[0];
+  //     return product.CartItem.destroy();
+  //   })
   req.user
-    ?.getCart()
-    .then((cart: any) => {
-      return cart.getProducts({ where: { id: prodId } });
-    })
-    .then((products: any) => {
-      const product = products[0];
-      return product.CartItem.destroy();
-    })
+    ?.deleteCartItem(prodId)
     .then(() => {
       res.redirect("/cart");
     })
@@ -193,58 +196,58 @@ export const postCartDeleteProduct = (
     });
 };
 
-export const getCheckout = (
-  _req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  res.render("shop/checkout", {
-    pageTitle: "Checkout",
-    path: "/checkout",
-  });
-};
+// export const getCheckout = (
+//   _req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   res.render("shop/checkout", {
+//     pageTitle: "Checkout",
+//     path: "/checkout",
+//   });
+// };
 
-export const postOrder = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const cart = await req.user.getCart();
-    const products = await cart.getProducts();
-    let fetchedCart = cart;
+// export const postOrder = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const cart = await req.user.getCart();
+//     const products = await cart.getProducts();
+//     let fetchedCart = cart;
 
-    const order = await req.user.createOrder();
-    await order.addProducts(
-      products.map((product: any) => {
-        product.OrderItem = {
-          quantity: product.CartItem.quantity,
-        };
-        return product;
-      })
-    );
-    fetchedCart.setProducts(null);
-    res.redirect("/orders");
-    // console.log("Logging product ", products);
-  } catch (error) {
-    console.log("Logging error", error);
-  }
-};
+//     const order = await req.user.createOrder();
+//     await order.addProducts(
+//       products.map((product: any) => {
+//         product.OrderItem = {
+//           quantity: product.CartItem.quantity,
+//         };
+//         return product;
+//       })
+//     );
+//     fetchedCart.setProducts(null);
+//     res.redirect("/orders");
+//     // console.log("Logging product ", products);
+//   } catch (error) {
+//     console.log("Logging error", error);
+//   }
+// };
 
-export const getOrders = async (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  try {
-    const orders = await req.user.getOrders({ include: ["Products"] });
-    console.log("Orders ==> ", JSON.stringify(orders, null, 2));
-    res.render("shop/orders", {
-      pageTitle: "My Orders",
-      path: "/orders",
-      orders: orders,
-    });
-  } catch (error) {
-    console.log("Logging get orders error", error);
-  }
-};
+// export const getOrders = async (
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   try {
+//     const orders = await req.user.getOrders({ include: ["Products"] });
+//     console.log("Orders ==> ", JSON.stringify(orders, null, 2));
+//     res.render("shop/orders", {
+//       pageTitle: "My Orders",
+//       path: "/orders",
+//       orders: orders,
+//     });
+//   } catch (error) {
+//     console.log("Logging get orders error", error);
+//   }
+// };

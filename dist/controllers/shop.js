@@ -1,15 +1,6 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrders = exports.postOrder = exports.getCheckout = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -119,7 +110,8 @@ const postCart = (req, res, _next) => {
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
     models_1.Product.findById(prodId)
         .then((prod) => {
-        return req.user.addToCart(prod);
+        req.user.addToCart(prod);
+        res.redirect("/cart");
     })
         .catch((err) => console.log("Logging error", err));
     // let fetchedCart: any;
@@ -165,60 +157,73 @@ exports.postCart = postCart;
  * @param {NextFunction} _next - NextFunction
  */
 const postCartDeleteProduct = (req, res, _next) => {
-    var _a;
-    const prodId = req.body.productId;
-    (_a = req.user) === null || _a === void 0 ? void 0 : _a.getCart().then((cart) => {
-        return cart.getProducts({ where: { id: prodId } });
-    }).then((products) => {
-        const product = products[0];
-        return product.CartItem.destroy();
-    }).then(() => {
+    var _a, _b;
+    const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
+    // req.user
+    //   ?.getCdart()
+    //   .then((cart: any) => {
+    //     return cart.getProducts({ where: { id: prodId } });
+    //   })
+    //   .then((products: any) => {
+    //     const product = products[0];
+    //     return product.CartItem.destroy();
+    //   })
+    (_b = req.user) === null || _b === void 0 ? void 0 : _b.deleteCartItem(prodId).then(() => {
         res.redirect("/cart");
     }).catch((err) => {
         console.log("get cart error", err);
     });
 };
 exports.postCartDeleteProduct = postCartDeleteProduct;
-const getCheckout = (_req, res, _next) => {
-    res.render("shop/checkout", {
-        pageTitle: "Checkout",
-        path: "/checkout",
-    });
-};
-exports.getCheckout = getCheckout;
-const postOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const cart = yield req.user.getCart();
-        const products = yield cart.getProducts();
-        let fetchedCart = cart;
-        const order = yield req.user.createOrder();
-        yield order.addProducts(products.map((product) => {
-            product.OrderItem = {
-                quantity: product.CartItem.quantity,
-            };
-            return product;
-        }));
-        fetchedCart.setProducts(null);
-        res.redirect("/orders");
-        // console.log("Logging product ", products);
-    }
-    catch (error) {
-        console.log("Logging error", error);
-    }
-});
-exports.postOrder = postOrder;
-const getOrders = (req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const orders = yield req.user.getOrders({ include: ["Products"] });
-        console.log("Orders ==> ", JSON.stringify(orders, null, 2));
-        res.render("shop/orders", {
-            pageTitle: "My Orders",
-            path: "/orders",
-            orders: orders,
-        });
-    }
-    catch (error) {
-        console.log("Logging get orders error", error);
-    }
-});
-exports.getOrders = getOrders;
+// export const getCheckout = (
+//   _req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   res.render("shop/checkout", {
+//     pageTitle: "Checkout",
+//     path: "/checkout",
+//   });
+// };
+// export const postOrder = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const cart = await req.user.getCart();
+//     const products = await cart.getProducts();
+//     let fetchedCart = cart;
+//     const order = await req.user.createOrder();
+//     await order.addProducts(
+//       products.map((product: any) => {
+//         product.OrderItem = {
+//           quantity: product.CartItem.quantity,
+//         };
+//         return product;
+//       })
+//     );
+//     fetchedCart.setProducts(null);
+//     res.redirect("/orders");
+//     // console.log("Logging product ", products);
+//   } catch (error) {
+//     console.log("Logging error", error);
+//   }
+// };
+// export const getOrders = async (
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   try {
+//     const orders = await req.user.getOrders({ include: ["Products"] });
+//     console.log("Orders ==> ", JSON.stringify(orders, null, 2));
+//     res.render("shop/orders", {
+//       pageTitle: "My Orders",
+//       path: "/orders",
+//       orders: orders,
+//     });
+//   } catch (error) {
+//     console.log("Logging get orders error", error);
+//   }
+// };

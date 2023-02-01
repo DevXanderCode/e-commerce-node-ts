@@ -122,6 +122,33 @@ class User {
     return Promise.resolve();
   }
 
+  deleteCartItem(prodId: string) {
+    const db = getDb();
+
+    if (typeof db !== "string") {
+      const updatedCartItems = [...this.cart.items];
+      const cartProductIndex = this.cart.items.findIndex(
+        (cp) => cp?.productId?.toString() === prodId?.toString()
+      );
+
+      updatedCartItems.splice(cartProductIndex, 1);
+
+      return db
+        .collection("users")
+        .updateOne(
+          { _id: new ObjectId(this?._id) },
+          { $set: { cart: { items: updatedCartItems } } }
+        )
+        .then((result) => {
+          console.log("cart Item deleted", result);
+        })
+        .catch((err) => {
+          console.log("Logging delete cart error", err);
+        });
+    }
+    return Promise.resolve();
+  }
+
   static findById(userId: string) {
     const db = getDb();
 

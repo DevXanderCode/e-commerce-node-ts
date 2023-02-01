@@ -6,14 +6,14 @@ import express, { Router } from "express";
 // import adminData from "./admin";
 import {
   getCart,
-  getCheckout,
+  // getCheckout,
   getIndex,
   getProducts,
-  getOrders,
+  // getOrders,
   getProduct,
   postCart,
   postCartDeleteProduct,
-  postOrder,
+  // postOrder,
 } from "../controllers/shop";
 
 const router: Router = express.Router();
@@ -22,7 +22,7 @@ router.get("/cart", getCart);
 
 router.post("/cart", postCart);
 
-// router.post("/cart-delete-item", postCartDeleteProduct);
+router.post("/cart-delete-item", postCartDeleteProduct);
 
 router.get("/products", getProducts);
 

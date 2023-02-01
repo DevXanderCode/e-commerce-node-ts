@@ -104,6 +104,24 @@ class User {
         }
         return Promise.resolve();
     }
+    deleteCartItem(prodId) {
+        const db = (0, database_1.getDb)();
+        if (typeof db !== "string") {
+            const updatedCartItems = [...this.cart.items];
+            const cartProductIndex = this.cart.items.findIndex((cp) => { var _a; return ((_a = cp === null || cp === void 0 ? void 0 : cp.productId) === null || _a === void 0 ? void 0 : _a.toString()) === (prodId === null || prodId === void 0 ? void 0 : prodId.toString()); });
+            updatedCartItems.splice(cartProductIndex, 1);
+            return db
+                .collection("users")
+                .updateOne({ _id: new mongodb_1.ObjectId(this === null || this === void 0 ? void 0 : this._id) }, { $set: { cart: { items: updatedCartItems } } })
+                .then((result) => {
+                console.log("cart Item deleted", result);
+            })
+                .catch((err) => {
+                console.log("Logging delete cart error", err);
+            });
+        }
+        return Promise.resolve();
+    }
     static findById(userId) {
         const db = (0, database_1.getDb)();
         if (typeof db !== "string") {
