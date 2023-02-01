@@ -55,12 +55,33 @@ class User {
         return Promise.resolve();
     }
     addToCart(product) {
+        var _a, _b, _c, _d, _e;
         const db = (0, database_1.getDb)();
         if (typeof db !== "string") {
-            const updatedCart = { items: [Object.assign(Object.assign({}, product), { quantity: 1 })] };
+            const cartProductIndex = (_b = (_a = this.cart) === null || _a === void 0 ? void 0 : _a.items) === null || _b === void 0 ? void 0 : _b.findIndex((cp) => (cp === null || cp === void 0 ? void 0 : cp.productId.toString()) === (product === null || product === void 0 ? void 0 : product._id.toString()));
+            let newQuantity = 1;
+            const updatedCartItems = [...(_c = this === null || this === void 0 ? void 0 : this.cart) === null || _c === void 0 ? void 0 : _c.items];
+            if (cartProductIndex >= 0) {
+                newQuantity = ((_e = (_d = this === null || this === void 0 ? void 0 : this.cart) === null || _d === void 0 ? void 0 : _d.items[cartProductIndex]) === null || _e === void 0 ? void 0 : _e.quantity) + 1;
+                updatedCartItems[cartProductIndex].quantity = newQuantity;
+            }
+            else {
+                updatedCartItems.push({
+                    productId: new mongodb_1.ObjectId(product === null || product === void 0 ? void 0 : product._id),
+                    quantity: newQuantity,
+                });
+            }
+            const updatedCart = {
+                items: updatedCartItems,
+            };
             return db
-                .collection("user")
-                .updateOne({ _id: new mongodb_1.ObjectId(this._id) }, { $set: { cart: updatedCart } });
+                .collection("users")
+                .updateOne({ _id: new mongodb_1.ObjectId(this._id) }, { $set: { cart: updatedCart } })
+                .then((result) => {
+                console.log("Added the cart", result);
+                return result;
+            })
+                .catch((err) => console.log("Logging error", err));
         }
         return Promise.resolve();
     }

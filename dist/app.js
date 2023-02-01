@@ -60,7 +60,7 @@ app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public"))
 app.use((req, _res, next) => {
     models_1.User.findById("63d93aea87555b1d5bb96663")
         .then((userData) => {
-        req["user"] = userData;
+        req["user"] = new models_1.User(userData === null || userData === void 0 ? void 0 : userData.name, userData === null || userData === void 0 ? void 0 : userData.email, userData === null || userData === void 0 ? void 0 : userData.cart, userData === null || userData === void 0 ? void 0 : userData._id);
         next();
     })
         .catch((err) => console.log("Logging catch user error", err));

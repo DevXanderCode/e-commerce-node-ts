@@ -173,6 +173,7 @@
 
 import { Collection, Db, ObjectId } from "mongodb";
 import { getDb } from "../util/database";
+import { Product as ProductInterface } from "../types";
 
 class Product {
   constructor(
@@ -247,12 +248,12 @@ class Product {
       return db
         .collection("products")
         .find({ _id: new ObjectId(prodId) })
-        .next()
-        .then((product) => {
-          console.log("single product", product);
-          return product;
-        })
-        .catch((err) => console.log("Logging find by id error", err));
+        .next();
+      // .then((product: any) => {
+      //   console.log("single product", product);
+      //   return product;
+      // })
+      // .catch((err) => console.log("Logging find by id error", err));
     }
     return Promise.resolve();
   }

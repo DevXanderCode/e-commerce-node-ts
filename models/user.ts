@@ -6,7 +6,7 @@
 //   CreationOptional,
 // } from "sequelize";
 
-import { ObjectId } from "mongodb";
+import { Document, ObjectId, WithId } from "mongodb";
 import { getDb } from "../util/database";
 import { Product as ProductType } from "../types";
 
@@ -44,7 +44,7 @@ class User {
   constructor(
     public name: string,
     public email: string,
-    public cart: any[],
+    public cart: { items: any[] },
     public _id: string
   ) {}
 
@@ -61,18 +61,40 @@ class User {
     return Promise.resolve();
   }
 
-  addToCart(product: ProductType) {
+  addToCart(product: any) {
     const db = getDb();
 
     if (typeof db !== "string") {
-      const updatedCart = { items: [{ ...product, quantity: 1 }] };
+      const cartProductIndex = this.cart?.items?.findIndex(
+        (cp) => cp?.productId.toString() === product?._id.toString()
+      );
+      let newQuantity = 1;
+      const updatedCartItems = [...this?.cart?.items];
+
+      if (cartProductIndex >= 0) {
+        newQuantity = this?.cart?.items[cartProductIndex]?.quantity + 1;
+        updatedCartItems[cartProductIndex].quantity = newQuantity;
+      } else {
+        updatedCartItems.push({
+          productId: new ObjectId(product?._id),
+          quantity: newQuantity,
+        });
+      }
+      const updatedCart = {
+        items: updatedCartItems,
+      };
 
       return db
-        .collection("user")
+        .collection("users")
         .updateOne(
           { _id: new ObjectId(this._id) },
           { $set: { cart: updatedCart } }
-        );
+        )
+        .then((result) => {
+          console.log("Added the cart", result);
+          return result;
+        })
+        .catch((err) => console.log("Logging error", err));
     }
     return Promise.resolve();
   }

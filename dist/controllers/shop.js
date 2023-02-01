@@ -124,36 +124,41 @@ exports.getCart = getCart;
 const postCart = (req, res, _next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
-    let fetchedCart;
-    let newQuantity = 1;
-    req.user
-        .getCart()
-        .then((cart) => {
-        fetchedCart = cart;
-        return cart.getProducts();
+    models_1.Product.findById(prodId)
+        .then((prod) => {
+        return req.user.addToCart(prod);
     })
-        .then((products) => {
-        let product;
-        if (products === null || products === void 0 ? void 0 : products.length) {
-            product = products[0];
-        }
-        if (product) {
-            const oldQuantity = product.CartItem.quantity;
-            newQuantity = oldQuantity + 1;
-        }
-        return models_1.Product.findByPk(prodId);
-    })
-        .then((product) => {
-        if (fetchedCart) {
-            return fetchedCart.addProducts(product, {
-                through: { quantity: newQuantity },
-            });
-        }
-    })
-        .then(() => {
-        res.redirect("/cart");
-    })
-        .catch((err) => console.log("Logging get cart error", err));
+        .catch((err) => console.log("Logging error", err));
+    // let fetchedCart: any;
+    // let newQuantity = 1;
+    // req.user
+    //   .getCart()
+    //   .then((cart: any) => {
+    //     fetchedCart = cart;
+    //     return cart.getProducts();
+    //   })
+    //   .then((products: ProductInterface[] | undefined) => {
+    //     let product;
+    //     if (products?.length) {
+    //       product = products[0];
+    //     }
+    //     if (product) {
+    //       const oldQuantity = product.CartItem.quantity;
+    //       newQuantity = oldQuantity + 1;
+    //     }
+    //     return Product.findByPk(prodId);
+    //   })
+    //   .then((product: any) => {
+    //     if (fetchedCart) {
+    //       return fetchedCart.addProducts(product, {
+    //         through: { quantity: newQuantity },
+    //       });
+    //     }
+    //   })
+    //   .then(() => {
+    //     res.redirect("/cart");
+    //   })
+    //   .catch((err: Error) => console.log("Logging get cart error", err));
 };
 exports.postCart = postCart;
 /**

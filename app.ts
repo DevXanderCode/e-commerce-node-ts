@@ -10,7 +10,7 @@ import rootDir from "./util/path";
 import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
 // import sequelize from "./util/database";
-import { User, Product, Cart, CartItem, Order, OrderItem } from "./models";
+import { User, Product, Order, OrderItem } from "./models";
 import { UserRequest } from "./types";
 import { mongoConnect } from "./util/database";
 
@@ -41,7 +41,12 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 app.use((req: Request, _res: Response, next: NextFunction) => {
   User.findById("63d93aea87555b1d5bb96663")
     .then((userData: any) => {
-      req["user"] = userData;
+      req["user"] = new User(
+        userData?.name,
+        userData?.email,
+        userData?.cart,
+        userData?._id
+      );
 
       next();
     })

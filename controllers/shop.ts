@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction, Router } from "express";
-// import {} from 'sequelize'
 
 import { Product as ProductInterface } from "../types";
-import { Product, Cart } from "../models";
+import { Product } from "../models";
 
 // export const products: Product[] = [];
 
@@ -126,39 +125,44 @@ export const getCart = (req: Request, res: Response, _next: NextFunction) => {
  */
 export const postCart = (req: Request, res: Response, _next: NextFunction) => {
   const prodId = req?.body?.productId;
-  let fetchedCart: any;
-  let newQuantity = 1;
+  Product.findById(prodId)
+    .then((prod) => {
+      return req.user!.addToCart(prod);
+    })
+    .catch((err) => console.log("Logging error", err));
+  // let fetchedCart: any;
+  // let newQuantity = 1;
 
-  req.user
-    .getCart()
-    .then((cart: any) => {
-      fetchedCart = cart;
-      return cart.getProducts();
-    })
-    .then((products: ProductInterface[] | undefined) => {
-      let product;
-      if (products?.length) {
-        product = products[0];
-      }
+  // req.user
+  //   .getCart()
+  //   .then((cart: any) => {
+  //     fetchedCart = cart;
+  //     return cart.getProducts();
+  //   })
+  //   .then((products: ProductInterface[] | undefined) => {
+  //     let product;
+  //     if (products?.length) {
+  //       product = products[0];
+  //     }
 
-      if (product) {
-        const oldQuantity = product.CartItem.quantity;
-        newQuantity = oldQuantity + 1;
-      }
+  //     if (product) {
+  //       const oldQuantity = product.CartItem.quantity;
+  //       newQuantity = oldQuantity + 1;
+  //     }
 
-      return Product.findByPk(prodId);
-    })
-    .then((product: any) => {
-      if (fetchedCart) {
-        return fetchedCart.addProducts(product, {
-          through: { quantity: newQuantity },
-        });
-      }
-    })
-    .then(() => {
-      res.redirect("/cart");
-    })
-    .catch((err: Error) => console.log("Logging get cart error", err));
+  //     return Product.findByPk(prodId);
+  //   })
+  //   .then((product: any) => {
+  //     if (fetchedCart) {
+  //       return fetchedCart.addProducts(product, {
+  //         through: { quantity: newQuantity },
+  //       });
+  //     }
+  //   })
+  //   .then(() => {
+  //     res.redirect("/cart");
+  //   })
+  //   .catch((err: Error) => console.log("Logging get cart error", err));
 };
 
 /**

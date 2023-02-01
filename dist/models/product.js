@@ -225,12 +225,12 @@ class Product {
             return db
                 .collection("products")
                 .find({ _id: new mongodb_1.ObjectId(prodId) })
-                .next()
-                .then((product) => {
-                console.log("single product", product);
-                return product;
-            })
-                .catch((err) => console.log("Logging find by id error", err));
+                .next();
+            // .then((product: any) => {
+            //   console.log("single product", product);
+            //   return product;
+            // })
+            // .catch((err) => console.log("Logging find by id error", err));
         }
         return Promise.resolve();
     }
