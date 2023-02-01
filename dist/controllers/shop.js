@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.postCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -106,45 +106,47 @@ exports.getIndex = getIndex;
  * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
  * is done.
  */
-// export const postCart = (req: Request, res: Response, _next: NextFunction) => {
-//   const prodId = req?.body?.productId;
-//   Product.findById(prodId)
-//     .then((prod) => {
-//       req.user!.addToCart(prod);
-//       res.redirect("/cart");
-//     })
-//     .catch((err) => console.log("Logging error", err));
-//   // let fetchedCart: any;
-//   // let newQuantity = 1;
-//   // req.user
-//   //   .getCart()
-//   //   .then((cart: any) => {
-//   //     fetchedCart = cart;
-//   //     return cart.getProducts();
-//   //   })
-//   //   .then((products: ProductInterface[] | undefined) => {
-//   //     let product;
-//   //     if (products?.length) {
-//   //       product = products[0];
-//   //     }
-//   //     if (product) {
-//   //       const oldQuantity = product.CartItem.quantity;
-//   //       newQuantity = oldQuantity + 1;
-//   //     }
-//   //     return Product.findByPk(prodId);
-//   //   })
-//   //   .then((product: any) => {
-//   //     if (fetchedCart) {
-//   //       return fetchedCart.addProducts(product, {
-//   //         through: { quantity: newQuantity },
-//   //       });
-//   //     }
-//   //   })
-//   //   .then(() => {
-//   //     res.redirect("/cart");
-//   //   })
-//   //   .catch((err: Error) => console.log("Logging get cart error", err));
-// };
+const postCart = (req, res, _next) => {
+    var _a;
+    const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
+    models_1.Product.findById(prodId)
+        .then((prod) => {
+        req.user.addToCart(prod);
+        res.redirect("/cart");
+    })
+        .catch((err) => console.log("Logging error", err));
+    // let fetchedCart: any;
+    // let newQuantity = 1;
+    // req.user
+    //   .getCart()
+    //   .then((cart: any) => {
+    //     fetchedCart = cart;
+    //     return cart.getProducts();
+    //   })
+    //   .then((products: ProductInterface[] | undefined) => {
+    //     let product;
+    //     if (products?.length) {
+    //       product = products[0];
+    //     }
+    //     if (product) {
+    //       const oldQuantity = product.CartItem.quantity;
+    //       newQuantity = oldQuantity + 1;
+    //     }
+    //     return Product.findByPk(prodId);
+    //   })
+    //   .then((product: any) => {
+    //     if (fetchedCart) {
+    //       return fetchedCart.addProducts(product, {
+    //         through: { quantity: newQuantity },
+    //       });
+    //     }
+    //   })
+    //   .then(() => {
+    //     res.redirect("/cart");
+    //   })
+    //   .catch((err: Error) => console.log("Logging get cart error", err));
+};
+exports.postCart = postCart;
 /**
  * We get the product id from the request body, then we get the cart of the user, then we get the
  * products from the cart, then we get the first product from the products array, then we destroy the

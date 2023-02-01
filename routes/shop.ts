@@ -11,7 +11,7 @@ import {
   getProducts,
   // getOrders,
   getProduct,
-  // postCart,
+  postCart,
   // postCartDeleteProduct,
   // postOrder,
 } from "../controllers/shop";
@@ -20,7 +20,7 @@ const router: Router = express.Router();
 
 // router.get("/cart", getCart);
 
-// router.post("/cart", postCart);
+router.post("/cart", postCart);
 
 // router.post("/cart-delete-item", postCartDeleteProduct);
 

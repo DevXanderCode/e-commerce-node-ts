@@ -202,4 +202,25 @@ const userSchema = new mongoose_1.Schema({
         ],
     },
 });
+userSchema.methods.addToCart = function (product) {
+    var _a, _b, _c, _d, _e;
+    const cartProductIndex = (_b = (_a = this.cart) === null || _a === void 0 ? void 0 : _a.items) === null || _b === void 0 ? void 0 : _b.findIndex((cp) => (cp === null || cp === void 0 ? void 0 : cp.productId.toString()) === (product === null || product === void 0 ? void 0 : product._id.toString()));
+    let newQuantity = 1;
+    const updatedCartItems = [...(_c = this === null || this === void 0 ? void 0 : this.cart) === null || _c === void 0 ? void 0 : _c.items];
+    if (cartProductIndex >= 0) {
+        newQuantity = ((_e = (_d = this === null || this === void 0 ? void 0 : this.cart) === null || _d === void 0 ? void 0 : _d.items[cartProductIndex]) === null || _e === void 0 ? void 0 : _e.quantity) + 1;
+        updatedCartItems[cartProductIndex].quantity = newQuantity;
+    }
+    else {
+        updatedCartItems.push({
+            productId: product === null || product === void 0 ? void 0 : product._id,
+            quantity: newQuantity,
+        });
+    }
+    const updatedCart = {
+        items: updatedCartItems,
+    };
+    this.cart = updatedCart;
+    return this.save();
+};
 exports.default = (0, mongoose_1.model)("User", userSchema);

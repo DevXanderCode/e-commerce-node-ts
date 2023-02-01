@@ -10,7 +10,7 @@ const express_1 = __importDefault(require("express"));
 const shop_1 = require("../controllers/shop");
 const router = express_1.default.Router();
 // router.get("/cart", getCart);
-// router.post("/cart", postCart);
+router.post("/cart", shop_1.postCart);
 // router.post("/cart-delete-item", postCartDeleteProduct);
 router.get("/products", shop_1.getProducts);
 router.get("/products/:productId", shop_1.getProduct);
