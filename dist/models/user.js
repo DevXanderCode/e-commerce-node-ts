@@ -6,6 +6,9 @@
 //   InferCreationAttributes,
 //   CreationOptional,
 // } from "sequelize";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 // import { Document, ObjectId, WithId } from "mongodb";
 // import { getDb } from "../util/database";
@@ -179,7 +182,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //     return Promise.resolve();
 //   }
 // }
+const console_1 = __importDefault(require("console"));
 const mongoose_1 = require("mongoose");
+const product_1 = __importDefault(require("./product"));
 const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
@@ -222,5 +227,22 @@ userSchema.methods.addToCart = function (product) {
     };
     this.cart = updatedCart;
     return this.save();
+};
+userSchema.methods.getCart = function getCart() {
+    var _a;
+    const productIds = (_a = this === null || this === void 0 ? void 0 : this.cart) === null || _a === void 0 ? void 0 : _a.items.map((item) => item === null || item === void 0 ? void 0 : item.productId);
+    return product_1.default.find({ _id: { $in: productIds } })
+        .populate("userId")
+        .then((products) => {
+        // console.log("Logging cart products", JSON.stringify(products, null, 2));
+        return products === null || products === void 0 ? void 0 : products.map((p) => {
+            console_1.default.log("Logging carts PRoducts", JSON.stringify(p, null, 2));
+            return Object.assign(Object.assign({}, p), { quantity: this.cart.items.find((i) => {
+                    var _a;
+                    return (i === null || i === void 0 ? void 0 : i.productId.toString()) === ((_a = p === null || p === void 0 ? void 0 : p._id) === null || _a === void 0 ? void 0 : _a.toString());
+                }).quantity });
+        });
+    });
+    // .catch((err) => console.log("Logging get cart products error", err));
 };
 exports.default = (0, mongoose_1.model)("User", userSchema);

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -82,19 +82,18 @@ exports.getIndex = getIndex;
  * the client.
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
-// export const getCart = (req: Request, res: Response, _next: NextFunction) => {
-//   req.user
-//     ?.getCart()
-//     .then((products: any) => {
-//       console.log("Logging cart", products);
-//       res.render("shop/cart", {
-//         pageTitle: "My Cart",
-//         path: "/cart",
-//         prods: products,
-//       });
-//     })
-//     .catch((err: Error) => console.log("get cart Errror", err));
-// };
+const getCart = (req, res, _next) => {
+    var _a;
+    (_a = req.user) === null || _a === void 0 ? void 0 : _a.getCart().then((products) => {
+        console.log("Logging cart", JSON.stringify(products, null, 2));
+        res.render("shop/cart", {
+            pageTitle: "My Cart",
+            path: "/cart",
+            prods: products,
+        });
+    }).catch((err) => console.log("get cart Errror", err));
+};
+exports.getCart = getCart;
 /**
  * We're getting the productId from the request body, then we're getting the cart from the user, then
  * we're getting the products from the cart, then we're checking if the product exists in the cart,

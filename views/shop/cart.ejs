@@ -13,18 +13,18 @@
               <article class="card product-item">
                 <header class="card__header">
                   <h1 class="product__title">
-                    <%= product.title %>(<%= product.quantity %>)
+                    <%= product._doc.title %>(<%= product.quantity %>)
                   </h1>
                 </header>
                 <div class="card__image">
-                  <img src="<%= product.imageUrl %>" alt="<%= product.title %>" />
+                  <img src="<%= product._doc.imageUrl %>" alt="<%= product._doc.title %>" />
                 </div>
                 <div class="card__content">
                   <h2 class="product__price">
-                    <% product?.price %>
+                    ₦<%= product._doc.price %>
                   </h2>
                   <p class="product__description">
-                    <%= product.description %>
+                    <%= product._doc.description %>
                   </p>
                 </div>
                 <div class="card__actions">

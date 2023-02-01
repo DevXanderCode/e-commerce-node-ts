@@ -201,7 +201,9 @@
 //   }
 // }
 
+import console from "console";
 import { Schema, model } from "mongoose";
+import product from "./product";
 import Product from "./product";
 
 const userSchema = new Schema({
@@ -250,6 +252,26 @@ userSchema.methods.addToCart = function (product: any) {
   this.cart = updatedCart;
 
   return this.save();
+};
+
+userSchema.methods.getCart = function getCart() {
+  const productIds = this?.cart?.items.map((item: any) => item?.productId);
+
+  return Product.find({ _id: { $in: productIds } })
+    .populate("userId")
+    .then((products) => {
+      // console.log("Logging cart products", JSON.stringify(products, null, 2));
+      return products?.map((p) => {
+        console.log("Logging carts PRoducts", JSON.stringify(p, null, 2));
+        return {
+          ...p,
+          quantity: this.cart.items.find((i: any) => {
+            return i?.productId.toString() === p?._id?.toString();
+          }).quantity,
+        };
+      });
+    });
+  // .catch((err) => console.log("Logging get cart products error", err));
 };
 
 export default model("User", userSchema);

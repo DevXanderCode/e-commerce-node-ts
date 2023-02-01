@@ -5,7 +5,7 @@ import express, { Router } from "express";
 // import rootDir from "../util/path";
 // import adminData from "./admin";
 import {
-  // getCart,
+  getCart,
   // getCheckout,
   getIndex,
   getProducts,
@@ -18,7 +18,7 @@ import {
 
 const router: Router = express.Router();
 
-// router.get("/cart", getCart);
+router.get("/cart", getCart);
 
 router.post("/cart", postCart);
 

@@ -91,20 +91,20 @@ export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
  * the client.
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
-// export const getCart = (req: Request, res: Response, _next: NextFunction) => {
-//   req.user
-//     ?.getCart()
-//     .then((products: any) => {
-//       console.log("Logging cart", products);
+export const getCart = (req: Request, res: Response, _next: NextFunction) => {
+  req.user
+    ?.getCart()
+    .then((products: any) => {
+      console.log("Logging cart", JSON.stringify(products, null, 2));
 
-//       res.render("shop/cart", {
-//         pageTitle: "My Cart",
-//         path: "/cart",
-//         prods: products,
-//       });
-//     })
-//     .catch((err: Error) => console.log("get cart Errror", err));
-// };
+      res.render("shop/cart", {
+        pageTitle: "My Cart",
+        path: "/cart",
+        prods: products,
+      });
+    })
+    .catch((err: Error) => console.log("get cart Errror", err));
+};
 
 /**
  * We're getting the productId from the request body, then we're getting the cart from the user, then
