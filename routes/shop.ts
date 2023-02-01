@@ -12,7 +12,7 @@ import {
   // getOrders,
   getProduct,
   postCart,
-  // postCartDeleteProduct,
+  postCartDeleteProduct,
   // postOrder,
 } from "../controllers/shop";
 
@@ -22,7 +22,7 @@ router.get("/cart", getCart);
 
 router.post("/cart", postCart);
 
-// router.post("/cart-delete-item", postCartDeleteProduct);
+router.post("/cart-delete-item", postCartDeleteProduct);
 
 router.get("/products", getProducts);
 

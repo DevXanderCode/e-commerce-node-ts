@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -161,30 +161,25 @@ exports.postCart = postCart;
  * the client.
  * @param {NextFunction} _next - NextFunction
  */
-// export const postCartDeleteProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const prodId = req?.body?.productId;
-//   // req.user
-//   //   ?.getCart()
-//   //   .then((cart: any) => {
-//   //     return cart.getProducts({ where: { id: prodId } });
-//   //   })
-//   //   .then((products: any) => {
-//   //     const product = products[0];
-//   //     return product.CartItem.destroy();
-//   //   })
-//   req.user
-//     ?.deleteCartItem(prodId)
-//     .then(() => {
-//       res.redirect("/cart");
-//     })
-//     .catch((err: Error) => {
-//       console.log("get cart error", err);
-//     });
-// };
+const postCartDeleteProduct = (req, res, _next) => {
+    var _a, _b;
+    const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
+    // req.user
+    //   ?.getCart()
+    //   .then((cart: any) => {
+    //     return cart.getProducts({ where: { id: prodId } });
+    //   })
+    //   .then((products: any) => {
+    //     const product = products[0];
+    //     return product.CartItem.destroy();
+    //   })
+    (_b = req.user) === null || _b === void 0 ? void 0 : _b.removeFromCart(prodId).then(() => {
+        res.redirect("/cart");
+    }).catch((err) => {
+        console.log("get cart error", err);
+    });
+};
+exports.postCartDeleteProduct = postCartDeleteProduct;
 // export const getCheckout = (
 //   _req: Request,
 //   res: Response,

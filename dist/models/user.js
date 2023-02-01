@@ -51,7 +51,13 @@ userSchema.methods.addToCart = function (product) {
     this.cart = updatedCart;
     return this.save();
 };
-// userSchema.methods.getCart = function getCart() {
+userSchema.methods.removeFromCart = function (prodId) {
+    var _a;
+    const updatedCartItems = (_a = this.cart.items) === null || _a === void 0 ? void 0 : _a.filter((item) => { var _a; return ((_a = item === null || item === void 0 ? void 0 : item.productId) === null || _a === void 0 ? void 0 : _a.toString()) !== prodId.toString(); });
+    this.cart.items = updatedCartItems;
+    return this.save();
+};
+// userSchema.methods.getCart = function () {
 //   const productIds = this?.cart?.items.map((item: any) => item?.productId);
 //   return Product.find({ _id: { $in: productIds } })
 //     .populate("userId")

@@ -254,7 +254,17 @@ userSchema.methods.addToCart = function (product: any) {
   return this.save();
 };
 
-// userSchema.methods.getCart = function getCart() {
+userSchema.methods.removeFromCart = function (prodId: string) {
+  const updatedCartItems = this.cart.items?.filter(
+    (item: any) => item?.productId?.toString() !== prodId.toString()
+  );
+
+  this.cart.items = updatedCartItems;
+
+  return this.save();
+};
+
+// userSchema.methods.getCart = function () {
 //   const productIds = this?.cart?.items.map((item: any) => item?.productId);
 
 //   return Product.find({ _id: { $in: productIds } })

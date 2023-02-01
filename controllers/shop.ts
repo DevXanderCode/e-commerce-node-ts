@@ -173,31 +173,31 @@ export const postCart = (req: Request, res: Response, _next: NextFunction) => {
  * the client.
  * @param {NextFunction} _next - NextFunction
  */
-// export const postCartDeleteProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const prodId = req?.body?.productId;
+export const postCartDeleteProduct = (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const prodId = req?.body?.productId;
 
-//   // req.user
-//   //   ?.getCart()
-//   //   .then((cart: any) => {
-//   //     return cart.getProducts({ where: { id: prodId } });
-//   //   })
-//   //   .then((products: any) => {
-//   //     const product = products[0];
-//   //     return product.CartItem.destroy();
-//   //   })
-//   req.user
-//     ?.deleteCartItem(prodId)
-//     .then(() => {
-//       res.redirect("/cart");
-//     })
-//     .catch((err: Error) => {
-//       console.log("get cart error", err);
-//     });
-// };
+  // req.user
+  //   ?.getCart()
+  //   .then((cart: any) => {
+  //     return cart.getProducts({ where: { id: prodId } });
+  //   })
+  //   .then((products: any) => {
+  //     const product = products[0];
+  //     return product.CartItem.destroy();
+  //   })
+  req.user
+    ?.removeFromCart(prodId)
+    .then(() => {
+      res.redirect("/cart");
+    })
+    .catch((err: Error) => {
+      console.log("get cart error", err);
+    });
+};
 
 // export const getCheckout = (
 //   _req: Request,
