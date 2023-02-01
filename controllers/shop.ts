@@ -28,7 +28,7 @@ export const getProducts = (
 ) => {
   // console.log("Admin products", adminData?.products);
   // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-  Product.fetchAll()
+  return Product.find()
     .then((result) => {
       res.render("shop/product-list", {
         prods: result,
@@ -40,26 +40,26 @@ export const getProducts = (
     .catch((err) => console.error("Logging err", err));
 };
 
-export const getProduct = (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  const prodId = req?.params?.productId;
-  Product.findById(prodId)
-    .then((result) => {
-      console.log("Logging some product ", result);
-      res.render("shop/product-detail", {
-        pageTitle: "Product Details",
-        product: result,
-        path: "/products",
-      });
-    })
-    .catch((err) => console.error(err));
-};
+// export const getProduct = (
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   const prodId = req?.params?.productId;
+//   Product.findById(prodId)
+//     .then((result) => {
+//       console.log("Logging some product ", result);
+//       res.render("shop/product-detail", {
+//         pageTitle: "Product Details",
+//         product: result,
+//         path: "/products",
+//       });
+//     })
+//     .catch((err) => console.error(err));
+// };
 
 export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render("shop/index", {
         prods: products,
@@ -91,20 +91,20 @@ export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
  * the client.
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
-export const getCart = (req: Request, res: Response, _next: NextFunction) => {
-  req.user
-    ?.getCart()
-    .then((products: any) => {
-      console.log("Logging cart", products);
+// export const getCart = (req: Request, res: Response, _next: NextFunction) => {
+//   req.user
+//     ?.getCart()
+//     .then((products: any) => {
+//       console.log("Logging cart", products);
 
-      res.render("shop/cart", {
-        pageTitle: "My Cart",
-        path: "/cart",
-        prods: products,
-      });
-    })
-    .catch((err: Error) => console.log("get cart Errror", err));
-};
+//       res.render("shop/cart", {
+//         pageTitle: "My Cart",
+//         path: "/cart",
+//         prods: products,
+//       });
+//     })
+//     .catch((err: Error) => console.log("get cart Errror", err));
+// };
 
 /**
  * We're getting the productId from the request body, then we're getting the cart from the user, then
@@ -117,48 +117,48 @@ export const getCart = (req: Request, res: Response, _next: NextFunction) => {
  * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
  * is done.
  */
-export const postCart = (req: Request, res: Response, _next: NextFunction) => {
-  const prodId = req?.body?.productId;
-  Product.findById(prodId)
-    .then((prod) => {
-      req.user!.addToCart(prod);
-      res.redirect("/cart");
-    })
-    .catch((err) => console.log("Logging error", err));
-  // let fetchedCart: any;
-  // let newQuantity = 1;
+// export const postCart = (req: Request, res: Response, _next: NextFunction) => {
+//   const prodId = req?.body?.productId;
+//   Product.findById(prodId)
+//     .then((prod) => {
+//       req.user!.addToCart(prod);
+//       res.redirect("/cart");
+//     })
+//     .catch((err) => console.log("Logging error", err));
+//   // let fetchedCart: any;
+//   // let newQuantity = 1;
 
-  // req.user
-  //   .getCart()
-  //   .then((cart: any) => {
-  //     fetchedCart = cart;
-  //     return cart.getProducts();
-  //   })
-  //   .then((products: ProductInterface[] | undefined) => {
-  //     let product;
-  //     if (products?.length) {
-  //       product = products[0];
-  //     }
+//   // req.user
+//   //   .getCart()
+//   //   .then((cart: any) => {
+//   //     fetchedCart = cart;
+//   //     return cart.getProducts();
+//   //   })
+//   //   .then((products: ProductInterface[] | undefined) => {
+//   //     let product;
+//   //     if (products?.length) {
+//   //       product = products[0];
+//   //     }
 
-  //     if (product) {
-  //       const oldQuantity = product.CartItem.quantity;
-  //       newQuantity = oldQuantity + 1;
-  //     }
+//   //     if (product) {
+//   //       const oldQuantity = product.CartItem.quantity;
+//   //       newQuantity = oldQuantity + 1;
+//   //     }
 
-  //     return Product.findByPk(prodId);
-  //   })
-  //   .then((product: any) => {
-  //     if (fetchedCart) {
-  //       return fetchedCart.addProducts(product, {
-  //         through: { quantity: newQuantity },
-  //       });
-  //     }
-  //   })
-  //   .then(() => {
-  //     res.redirect("/cart");
-  //   })
-  //   .catch((err: Error) => console.log("Logging get cart error", err));
-};
+//   //     return Product.findByPk(prodId);
+//   //   })
+//   //   .then((product: any) => {
+//   //     if (fetchedCart) {
+//   //       return fetchedCart.addProducts(product, {
+//   //         through: { quantity: newQuantity },
+//   //       });
+//   //     }
+//   //   })
+//   //   .then(() => {
+//   //     res.redirect("/cart");
+//   //   })
+//   //   .catch((err: Error) => console.log("Logging get cart error", err));
+// };
 
 /**
  * We get the product id from the request body, then we get the cart of the user, then we get the
@@ -170,31 +170,31 @@ export const postCart = (req: Request, res: Response, _next: NextFunction) => {
  * the client.
  * @param {NextFunction} _next - NextFunction
  */
-export const postCartDeleteProduct = (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  const prodId = req?.body?.productId;
+// export const postCartDeleteProduct = (
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   const prodId = req?.body?.productId;
 
-  // req.user
-  //   ?.getCdart()
-  //   .then((cart: any) => {
-  //     return cart.getProducts({ where: { id: prodId } });
-  //   })
-  //   .then((products: any) => {
-  //     const product = products[0];
-  //     return product.CartItem.destroy();
-  //   })
-  req.user
-    ?.deleteCartItem(prodId)
-    .then(() => {
-      res.redirect("/cart");
-    })
-    .catch((err: Error) => {
-      console.log("get cart error", err);
-    });
-};
+//   // req.user
+//   //   ?.getCart()
+//   //   .then((cart: any) => {
+//   //     return cart.getProducts({ where: { id: prodId } });
+//   //   })
+//   //   .then((products: any) => {
+//   //     const product = products[0];
+//   //     return product.CartItem.destroy();
+//   //   })
+//   req.user
+//     ?.deleteCartItem(prodId)
+//     .then(() => {
+//       res.redirect("/cart");
+//     })
+//     .catch((err: Error) => {
+//       console.log("get cart error", err);
+//     });
+// };
 
 // export const getCheckout = (
 //   _req: Request,
@@ -207,48 +207,33 @@ export const postCartDeleteProduct = (
 //   });
 // };
 
-export const postOrder = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    // const cart = await req.user.getCart();
-    // const products = await cart.getProducts();
-    // let fetchedCart = cart;
+// export const postOrder = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     await req?.user?.addOrder();
+//     res.redirect("/orders");
+//   } catch (error) {
+//     console.log("Logging error", error);
+//   }
+// };
 
-    // const order = await req.user.createOrder();
-    // await order.addProducts(
-    //   products.map((product: any) => {
-    //     product.OrderItem = {
-    //       quantity: product.CartItem.quantity,
-    //     };
-    //     return product;
-    //   })
-    // );
-    // fetchedCart.setProducts(null);
-    await req?.user?.addOrder();
-    res.redirect("/orders");
-    // console.log("Logging product ", products);
-  } catch (error) {
-    console.log("Logging error", error);
-  }
-};
-
-export const getOrders = async (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  try {
-    const orders = await req.user!.getOrders();
-    console.log("Orders ==> ", JSON.stringify(orders, null, 2));
-    res.render("shop/orders", {
-      pageTitle: "My Orders",
-      path: "/orders",
-      orders: orders,
-    });
-  } catch (error) {
-    console.log("Logging get orders error", error);
-  }
-};
+// export const getOrders = async (
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   try {
+//     const orders = await req.user!.getOrders();
+//     console.log("Orders ==> ", JSON.stringify(orders, null, 2));
+//     res.render("shop/orders", {
+//       pageTitle: "My Orders",
+//       path: "/orders",
+//       orders: orders,
+//     });
+//   } catch (error) {
+//     console.log("Logging get orders error", error);
+//   }
+// };

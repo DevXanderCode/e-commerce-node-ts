@@ -4,16 +4,17 @@ import express, { Router } from "express";
 
 // import rootDir from "../util/path";
 // import adminData from "./admin";
-import // getCart,
-// getCheckout,
-// getIndex,
-// getProducts,
-// getOrders,
-// getProduct,
-// postCart,
-// postCartDeleteProduct,
-// postOrder,
-"../controllers/shop";
+import {
+  // getCart,
+  // getCheckout,
+  getIndex,
+  getProducts,
+  // getOrders,
+  // getProduct,
+  // postCart,
+  // postCartDeleteProduct,
+  // postOrder,
+} from "../controllers/shop";
 
 const router: Router = express.Router();
 
@@ -23,7 +24,7 @@ const router: Router = express.Router();
 
 // router.post("/cart-delete-item", postCartDeleteProduct);
 
-// router.get("/products", getProducts);
+router.get("/products", getProducts);
 
 // router.get("/products/:productId", getProduct);
 
@@ -33,6 +34,6 @@ const router: Router = express.Router();
 
 // router.post("/create-order", postOrder);
 
-// router.get("/", getIndex);
+router.get("/", getIndex);
 
 export default router;

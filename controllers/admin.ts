@@ -165,7 +165,7 @@ export const getAdminProducts = (
 ) => {
   // req.user
   //   .getProducts()
-  Product.fetchAll()
+  Product.find()
     .then((result) => {
       res.render("admin/products", {
         prods: result,

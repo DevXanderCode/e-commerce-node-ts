@@ -145,7 +145,7 @@ exports.postAddProduct = postAddProduct;
 const getAdminProducts = (req, res, _next) => {
     // req.user
     //   .getProducts()
-    models_1.Product.fetchAll()
+    models_1.Product.find()
         .then((result) => {
         res.render("admin/products", {
             prods: result,
