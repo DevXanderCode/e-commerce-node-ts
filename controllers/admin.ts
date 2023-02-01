@@ -1,4 +1,4 @@
-import { getProducts } from "./shop";
+// import { getProducts } from "./shop";
 // import { UserRequest } from "./../types";
 import { Response, Request, NextFunction, RequestHandler } from "express";
 import { Product } from "../models";
@@ -19,32 +19,32 @@ export const getAddProduct = (
   });
 };
 
-export const postAddProduct = (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  const { title, imageUrl, description, price } = req?.body;
-  const product = new Product(
-    title,
-    price,
-    description,
-    imageUrl,
-    "",
-    req.user!._id
-  );
-  product
-    .save()
-    .then(() => res.redirect("/"))
-    .catch((err) => console.error(err));
-  // req.user
-  //   .createProduct({ title, price, imageUrl, description })
-  //   .then(() => res.redirect("/"))
-  //   .catch((err: Error) => console.error(err));
-  // Product.create({ title, price, imageUrl, description })
-  //   .then(() => res.redirect("/"))
-  //   .catch((err) => console.error(err));
-};
+// export const postAddProduct = (
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   const { title, imageUrl, description, price } = req?.body;
+//   const product = new Product(
+//     title,
+//     price,
+//     description,
+//     imageUrl,
+//     "",
+//     req.user!._id
+//   );
+//   product
+//     .save()
+//     .then(() => res.redirect("/"))
+//     .catch((err) => console.error(err));
+//   // req.user
+//   //   .createProduct({ title, price, imageUrl, description })
+//   //   .then(() => res.redirect("/"))
+//   //   .catch((err: Error) => console.error(err));
+//   // Product.create({ title, price, imageUrl, description })
+//   //   .then(() => res.redirect("/"))
+//   //   .catch((err) => console.error(err));
+// };
 
 /**
  * We're checking if the editMode query parameter is present in the URL, if it is, we're fetching the
@@ -56,36 +56,36 @@ export const postAddProduct = (
  * @param {NextFunction} _next - NextFunction
  * @returns The product object
  */
-export const getEditProduct = (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  const editMode = req.query.edit;
+// export const getEditProduct = (
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   const editMode = req.query.edit;
 
-  if (!editMode) {
-    return res.redirect("/");
-  }
-  const prodId = req.params.productId;
-  // req.user
-  //   .getProducts({ where: { id: prodId } })
-  Product.findById(prodId)
-    .then((product) => {
-      // console.log("Edit product", JSON .stringify(product, null, 2));
+//   if (!editMode) {
+//     return res.redirect("/");
+//   }
+//   const prodId = req.params.productId;
+//   // req.user
+//   //   .getProducts({ where: { id: prodId } })
+//   Product.findById(prodId)
+//     .then((product) => {
+//       // console.log("Edit product", JSON .stringify(product, null, 2));
 
-      if (product) {
-        res.render("admin/edit-product", {
-          pageTitle: "Edit Product",
-          path: "/admin/edit-product",
-          editing: editMode,
-          product,
-        });
-      } else {
-        res.redirect("/");
-      }
-    })
-    .catch((err: Error) => console.log(err));
-};
+//       if (product) {
+//         res.render("admin/edit-product", {
+//           pageTitle: "Edit Product",
+//           path: "/admin/edit-product",
+//           editing: editMode,
+//           product,
+//         });
+//       } else {
+//         res.redirect("/");
+//       }
+//     })
+//     .catch((err: Error) => console.log(err));
+// };
 
 /**
  * We're using the findByPk() method to find the product with the given id, then we're updating the
@@ -97,29 +97,29 @@ export const getEditProduct = (
  * @param {NextFunction} _next - NextFunction - This is a function that we can call to pass control to
  * the next middleware function in the stack.
  */
-export const postEditProduct = (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  const { productId: prodId, title, imageUrl, description, price } = req?.body;
-  const product = new Product(title, price, description, imageUrl, prodId);
-  // const updatedProduct = new Product(
-  //   prodId,
-  //   title,
-  //   imageUrl,
-  //   description,
-  //   price
-  // );
-  // updatedProduct.save();
+// export const postEditProduct = (
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   const { productId: prodId, title, imageUrl, description, price } = req?.body;
+//   const product = new Product(title, price, description, imageUrl, prodId);
+//   // const updatedProduct = new Product(
+//   //   prodId,
+//   //   title,
+//   //   imageUrl,
+//   //   description,
+//   //   price
+//   // );
+//   // updatedProduct.save();
 
-  product
-    .save()
-    .then(() => {
-      res.redirect("/admin/products");
-    })
-    .catch((err: any) => console.log(err));
-};
+//   product
+//     .save()
+//     .then(() => {
+//       res.redirect("/admin/products");
+//     })
+//     .catch((err: any) => console.log(err));
+// };
 
 /**
  * We're using the productId from the request body to find the product in the database, then we're
@@ -131,25 +131,25 @@ export const postEditProduct = (
  * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
  * is done.
  */
-export const postDeleteProduct = (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  const prodId = req.body?.productId;
-  Product.deleteById(prodId)
-    .then(() => {
-      console.log("Product deleted");
-      res.redirect("/admin/products");
-    })
-    .catch((err: any) => {
-      console.log("Logging product delete error");
-    });
-  // console.log('delete', prodId)
-  // Product.deleteById(prodId, () => {
-  //   res.redirect("/admin/products");
-  // });
-};
+// export const postDeleteProduct = (
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   const prodId = req.body?.productId;
+//   Product.deleteById(prodId)
+//     .then(() => {
+//       console.log("Product deleted");
+//       res.redirect("/admin/products");
+//     })
+//     .catch((err: any) => {
+//       console.log("Logging product delete error");
+//     });
+//   // console.log('delete', prodId)
+//   // Product.deleteById(prodId, () => {
+//   //   res.redirect("/admin/products");
+//   // });
+// };
 
 /**
  * We're using the fetchAll() method from the Product model to get all the products from the database,
@@ -160,22 +160,22 @@ export const postDeleteProduct = (
  * @param {NextFunction} _next - NextFunction - This is a function that is used to call the next
  * middleware in the stack.
  */
-export const getAdminProducts = (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  // req.user
-  //   .getProducts()
-  Product.fetchAll()
-    .then((result) => {
-      res.render("admin/products", {
-        prods: result,
-        pageTitle: "Admin Products",
-        path: "/admin/products",
-        // hasProduct: products?.length > 0,
-        activeShop: true,
-      });
-    })
-    .catch((err: Error) => console.error(err));
-};
+// export const getAdminProducts = (
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) => {
+//   // req.user
+//   //   .getProducts()
+//   Product.fetchAll()
+//     .then((result) => {
+//       res.render("admin/products", {
+//         prods: result,
+//         pageTitle: "Admin Products",
+//         path: "/admin/products",
+//         // hasProduct: products?.length > 0,
+//         activeShop: true,
+//       });
+//     })
+//     .catch((err: Error) => console.error(err));
+// };

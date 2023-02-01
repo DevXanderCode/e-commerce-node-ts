@@ -1,15 +1,6 @@
 "use strict";
 // // import path from "path";
 // // import fs from "fs";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 // import Cart from "./cart";
 // import rootDir from "../util/path";
@@ -156,94 +147,105 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // (async () => {
 //   await sequelize.sync();
 // })();
-const mongodb_1 = require("mongodb");
-const database_1 = require("../util/database");
-class Product {
-    constructor(title, price, description, imageUrl, _id, userId) {
-        this.title = title;
-        this.price = price;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this._id = _id;
-        this.userId = userId;
-        this._id = _id ? new mongodb_1.ObjectId(_id) : "";
-    }
-    save() {
-        const db = (0, database_1.getDb)();
-        let dbOp = null;
-        if (typeof db !== "string") {
-            if (this._id) {
-                // Update Product
-                dbOp = db.collection("products").updateOne({ _id: this._id }, {
-                    $set: this,
-                });
-            }
-            else {
-                dbOp = db.collection("products").insertOne({
-                    title: this.title,
-                    price: this.price,
-                    description: this.description,
-                    imageUrl: this.imageUrl,
-                    userId: this === null || this === void 0 ? void 0 : this.userId,
-                });
-            }
-            if (dbOp) {
-                return dbOp
-                    .then((result) => console.log("Logging result", result))
-                    .catch((err) => console.log(err));
-            }
-            return Promise.resolve();
-        }
-        return Promise.resolve();
-    }
-    static fetchAll() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const db = (0, database_1.getDb)();
-            if (typeof db !== "string") {
-                // return db
-                //   .collection("products")
-                //   .find()
-                //   .toArray()
-                //   .then((products) => {
-                //     // console.log("Logging Products", products);
-                //     return products;
-                //   })
-                //   .catch((err) => console.log("logging error", err));
-                try {
-                    return yield db.collection("products").find().toArray();
-                }
-                catch (error) {
-                    console.log("logging error", error);
-                }
-            }
-            return Promise.resolve();
-        });
-    }
-    static findById(prodId) {
-        const db = (0, database_1.getDb)();
-        if (typeof db !== "string") {
-            return db
-                .collection("products")
-                .find({ _id: new mongodb_1.ObjectId(prodId) })
-                .next();
-            // .then((product: any) => {
-            //   console.log("single product", product);
-            //   return product;
-            // })
-            // .catch((err) => console.log("Logging find by id error", err));
-        }
-        return Promise.resolve();
-    }
-    static deleteById(prodId) {
-        const db = (0, database_1.getDb)();
-        if (typeof db !== "string") {
-            return db
-                .collection("products")
-                .deleteOne({ _id: new mongodb_1.ObjectId(prodId) })
-                .then((result) => console.log("deleted product", result))
-                .catch((err) => console.log("Logging error", err));
-        }
-        return Promise.resolve();
-    }
-}
-exports.default = Product;
+// import { Collection, Db, ObjectId } from "mongodb";
+// import { getDb } from "../util/database";
+// import { Product as ProductInterface } from "../types";
+// class Product {
+//   constructor(
+//     public title: string,
+//     public price: number,
+//     public description: string,
+//     public imageUrl: string,
+//     private _id?: string | ObjectId | null,
+//     public userId?: string | null
+//   ) {
+//     this._id = _id ? new ObjectId(_id) : "";
+//   }
+//   save() {
+//     const db = getDb();
+//     let dbOp = null;
+//     if (typeof db !== "string") {
+//       if (this._id) {
+//         // Update Product
+//         dbOp = db.collection("products").updateOne(
+//           { _id: this._id },
+//           {
+//             $set: this,
+//           }
+//         );
+//       } else {
+//         dbOp = db.collection("products").insertOne({
+//           title: this.title,
+//           price: this.price,
+//           description: this.description,
+//           imageUrl: this.imageUrl,
+//           userId: this?.userId,
+//         });
+//       }
+//       if (dbOp) {
+//         return dbOp
+//           .then((result) => console.log("Logging result", result))
+//           .catch((err: Error) => console.log(err));
+//       }
+//       return Promise.resolve();
+//     }
+//     return Promise.resolve();
+//   }
+//   static async fetchAll() {
+//     const db = getDb();
+//     if (typeof db !== "string") {
+//       try {
+//         return await db.collection("products").find().toArray();
+//       } catch (error) {
+//         console.log("logging error", error);
+//       }
+//     }
+//     return Promise.resolve();
+//   }
+//   static findById(prodId: string) {
+//     const db = getDb();
+//     if (typeof db !== "string") {
+//       return db
+//         .collection("products")
+//         .find({ _id: new ObjectId(prodId) })
+//         .next();
+//       // .then((product: any) => {
+//       //   console.log("single product", product);
+//       //   return product;
+//       // })
+//       // .catch((err) => console.log("Logging find by id error", err));
+//     }
+//     return Promise.resolve();
+//   }
+//   static deleteById(prodId: string) {
+//     const db = getDb();
+//     if (typeof db !== "string") {
+//       return db
+//         .collection("products")
+//         .deleteOne({ _id: new ObjectId(prodId) })
+//         .then((result) => console.log("deleted product", result))
+//         .catch((err) => console.log("Logging error", err));
+//     }
+//     return Promise.resolve();
+//   }
+// }
+const mongoose_1 = require("mongoose");
+const productSchema = new mongoose_1.Schema({
+    title: {
+        type: String,
+        required: true,
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    imageUrl: {
+        type: String,
+        required: true,
+    },
+});
+exports.default = (0, mongoose_1.model)("Product", productSchema);

@@ -171,105 +171,117 @@
 //   await sequelize.sync();
 // })();
 
-import { Collection, Db, ObjectId } from "mongodb";
-import { getDb } from "../util/database";
-import { Product as ProductInterface } from "../types";
+// import { Collection, Db, ObjectId } from "mongodb";
+// import { getDb } from "../util/database";
+// import { Product as ProductInterface } from "../types";
 
-class Product {
-  constructor(
-    public title: string,
-    public price: number,
-    public description: string,
-    public imageUrl: string,
-    private _id?: string | ObjectId | null,
-    public userId?: string | null
-  ) {
-    this._id = _id ? new ObjectId(_id) : "";
-  }
+// class Product {
+//   constructor(
+//     public title: string,
+//     public price: number,
+//     public description: string,
+//     public imageUrl: string,
+//     private _id?: string | ObjectId | null,
+//     public userId?: string | null
+//   ) {
+//     this._id = _id ? new ObjectId(_id) : "";
+//   }
 
-  save() {
-    const db = getDb();
-    let dbOp = null;
+//   save() {
+//     const db = getDb();
+//     let dbOp = null;
 
-    if (typeof db !== "string") {
-      if (this._id) {
-        // Update Product
-        dbOp = db.collection("products").updateOne(
-          { _id: this._id },
-          {
-            $set: this,
-          }
-        );
-      } else {
-        dbOp = db.collection("products").insertOne({
-          title: this.title,
-          price: this.price,
-          description: this.description,
-          imageUrl: this.imageUrl,
-          userId: this?.userId,
-        });
-      }
-      if (dbOp) {
-        return dbOp
-          .then((result) => console.log("Logging result", result))
-          .catch((err: Error) => console.log(err));
-      }
-      return Promise.resolve();
-    }
-    return Promise.resolve();
-  }
+//     if (typeof db !== "string") {
+//       if (this._id) {
+//         // Update Product
+//         dbOp = db.collection("products").updateOne(
+//           { _id: this._id },
+//           {
+//             $set: this,
+//           }
+//         );
+//       } else {
+//         dbOp = db.collection("products").insertOne({
+//           title: this.title,
+//           price: this.price,
+//           description: this.description,
+//           imageUrl: this.imageUrl,
+//           userId: this?.userId,
+//         });
+//       }
+//       if (dbOp) {
+//         return dbOp
+//           .then((result) => console.log("Logging result", result))
+//           .catch((err: Error) => console.log(err));
+//       }
+//       return Promise.resolve();
+//     }
+//     return Promise.resolve();
+//   }
 
-  static async fetchAll() {
-    const db = getDb();
+//   static async fetchAll() {
+//     const db = getDb();
 
-    if (typeof db !== "string") {
-      // return db
-      //   .collection("products")
-      //   .find()
-      //   .toArray()
-      //   .then((products) => {
-      //     // console.log("Logging Products", products);
-      //     return products;
-      //   })
-      //   .catch((err) => console.log("logging error", err));
-      try {
-        return await db.collection("products").find().toArray();
-      } catch (error) {
-        console.log("logging error", error);
-      }
-    }
-    return Promise.resolve();
-  }
+//     if (typeof db !== "string") {
+//       try {
+//         return await db.collection("products").find().toArray();
+//       } catch (error) {
+//         console.log("logging error", error);
+//       }
+//     }
+//     return Promise.resolve();
+//   }
 
-  static findById(prodId: string) {
-    const db = getDb();
+//   static findById(prodId: string) {
+//     const db = getDb();
 
-    if (typeof db !== "string") {
-      return db
-        .collection("products")
-        .find({ _id: new ObjectId(prodId) })
-        .next();
-      // .then((product: any) => {
-      //   console.log("single product", product);
-      //   return product;
-      // })
-      // .catch((err) => console.log("Logging find by id error", err));
-    }
-    return Promise.resolve();
-  }
+//     if (typeof db !== "string") {
+//       return db
+//         .collection("products")
+//         .find({ _id: new ObjectId(prodId) })
+//         .next();
+//       // .then((product: any) => {
+//       //   console.log("single product", product);
+//       //   return product;
+//       // })
+//       // .catch((err) => console.log("Logging find by id error", err));
+//     }
+//     return Promise.resolve();
+//   }
 
-  static deleteById(prodId: string) {
-    const db = getDb();
+//   static deleteById(prodId: string) {
+//     const db = getDb();
 
-    if (typeof db !== "string") {
-      return db
-        .collection("products")
-        .deleteOne({ _id: new ObjectId(prodId) })
-        .then((result) => console.log("deleted product", result))
-        .catch((err) => console.log("Logging error", err));
-    }
-    return Promise.resolve();
-  }
-}
+//     if (typeof db !== "string") {
+//       return db
+//         .collection("products")
+//         .deleteOne({ _id: new ObjectId(prodId) })
+//         .then((result) => console.log("deleted product", result))
+//         .catch((err) => console.log("Logging error", err));
+//     }
+//     return Promise.resolve();
+//   }
+// }
 
-export default Product;
+import { Schema, model } from "mongoose";
+
+const productSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  imageUrl: {
+    type: String,
+    required: true,
+  },
+});
+
+export default model("Product", productSchema);
