@@ -20,6 +20,7 @@ const postAddProduct = (req, res, _next) => {
         price,
         description,
         imageUrl,
+        userId: req === null || req === void 0 ? void 0 : req.user,
     });
     product
         .save()

@@ -30,6 +30,7 @@ export const postAddProduct = (
     price,
     description,
     imageUrl,
+    userId: req?.user,
   });
   product
     .save()
