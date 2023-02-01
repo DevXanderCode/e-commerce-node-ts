@@ -19,32 +19,30 @@ export const getAddProduct = (
   });
 };
 
-// export const postAddProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const { title, imageUrl, description, price } = req?.body;
-//   const product = new Product(
-//     title,
-//     price,
-//     description,
-//     imageUrl,
-//     "",
-//     req.user!._id
-//   );
-//   product
-//     .save()
-//     .then(() => res.redirect("/"))
-//     .catch((err) => console.error(err));
-//   // req.user
-//   //   .createProduct({ title, price, imageUrl, description })
-//   //   .then(() => res.redirect("/"))
-//   //   .catch((err: Error) => console.error(err));
-//   // Product.create({ title, price, imageUrl, description })
-//   //   .then(() => res.redirect("/"))
-//   //   .catch((err) => console.error(err));
-// };
+export const postAddProduct = (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const { title, imageUrl, description, price } = req?.body;
+  const product = new Product({
+    title,
+    price,
+    description,
+    imageUrl,
+  });
+  product
+    .save()
+    .then(() => res.redirect("/admin/product"))
+    .catch((err) => console.error(err));
+  // req.user
+  //   .createProduct({ title, price, imageUrl, description })
+  //   .then(() => res.redirect("/"))
+  //   .catch((err: Error) => console.error(err));
+  // Product.create({ title, price, imageUrl, description })
+  //   .then(() => res.redirect("/"))
+  //   .catch((err) => console.error(err));
+};
 
 /**
  * We're checking if the editMode query parameter is present in the URL, if it is, we're fetching the
@@ -160,22 +158,22 @@ export const getAddProduct = (
  * @param {NextFunction} _next - NextFunction - This is a function that is used to call the next
  * middleware in the stack.
  */
-// export const getAdminProducts = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   // req.user
-//   //   .getProducts()
-//   Product.fetchAll()
-//     .then((result) => {
-//       res.render("admin/products", {
-//         prods: result,
-//         pageTitle: "Admin Products",
-//         path: "/admin/products",
-//         // hasProduct: products?.length > 0,
-//         activeShop: true,
-//       });
-//     })
-//     .catch((err: Error) => console.error(err));
-// };
+export const getAdminProducts = (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  // req.user
+  //   .getProducts()
+  Product.fetchAll()
+    .then((result) => {
+      res.render("admin/products", {
+        prods: result,
+        pageTitle: "Admin Products",
+        path: "/admin/products",
+        // hasProduct: products?.length > 0,
+        activeShop: true,
+      });
+    })
+    .catch((err: Error) => console.error(err));
+};

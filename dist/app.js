@@ -54,20 +54,20 @@ app.set("views", path_1.default.join(path_2.default, "..", "views"));
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public")));
-app.use((req, _res, next) => {
-    // User.findById("63d93aea87555b1d5bb96663")
-    //   .then((userData: any) => {
-    //     req["user"] = new User(
-    //       userData?.name,
-    //       userData?.email,
-    //       userData?.cart,
-    //       userData?._id
-    //     );
-    //     next();
-    //   })
-    //   .catch((err) => console.log("Logging catch user error", err));
-    next();
-});
+// app.use((req: Request, _res: Response, next: NextFunction) => {
+//   // User.findById("63d93aea87555b1d5bb96663")
+//   //   .then((userData: any) => {
+//   //     req["user"] = new User(
+//   //       userData?.name,
+//   //       userData?.email,
+//   //       userData?.cart,
+//   //       userData?._id
+//   //     );
+//   //     next();
+//   //   })
+//   //   .catch((err) => console.log("Logging catch user error", err));
+//   next();
+// });
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
 app.use(error_1.get404Page);
@@ -115,7 +115,7 @@ mongoose_1.default
     .connect("mongodb://localhost:27017/shop")
     .then((result) => {
     console.log("App Connected to Database");
-    app.listen(() => {
+    app.listen(3000, () => {
         console.log("Server listening at port 3000");
     });
 })

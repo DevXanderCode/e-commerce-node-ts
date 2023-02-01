@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAddProduct = void 0;
+exports.getAdminProducts = exports.postAddProduct = exports.getAddProduct = void 0;
+const models_1 = require("../models");
 // import { Model } from "sequelize-typescript";
 // import Product from "../models/product";
 // import { Product as ProductInterface } from "../types";
@@ -12,32 +13,27 @@ const getAddProduct = (_req, res, _next) => {
     });
 };
 exports.getAddProduct = getAddProduct;
-// export const postAddProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const { title, imageUrl, description, price } = req?.body;
-//   const product = new Product(
-//     title,
-//     price,
-//     description,
-//     imageUrl,
-//     "",
-//     req.user!._id
-//   );
-//   product
-//     .save()
-//     .then(() => res.redirect("/"))
-//     .catch((err) => console.error(err));
-//   // req.user
-//   //   .createProduct({ title, price, imageUrl, description })
-//   //   .then(() => res.redirect("/"))
-//   //   .catch((err: Error) => console.error(err));
-//   // Product.create({ title, price, imageUrl, description })
-//   //   .then(() => res.redirect("/"))
-//   //   .catch((err) => console.error(err));
-// };
+const postAddProduct = (req, res, _next) => {
+    const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const product = new models_1.Product({
+        title,
+        price,
+        description,
+        imageUrl,
+    });
+    product
+        .save()
+        .then(() => res.redirect("/admin/product"))
+        .catch((err) => console.error(err));
+    // req.user
+    //   .createProduct({ title, price, imageUrl, description })
+    //   .then(() => res.redirect("/"))
+    //   .catch((err: Error) => console.error(err));
+    // Product.create({ title, price, imageUrl, description })
+    //   .then(() => res.redirect("/"))
+    //   .catch((err) => console.error(err));
+};
+exports.postAddProduct = postAddProduct;
 /**
  * We're checking if the editMode query parameter is present in the URL, if it is, we're fetching the
  * product from the database and rendering the edit-product view
@@ -146,22 +142,19 @@ exports.getAddProduct = getAddProduct;
  * @param {NextFunction} _next - NextFunction - This is a function that is used to call the next
  * middleware in the stack.
  */
-// export const getAdminProducts = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   // req.user
-//   //   .getProducts()
-//   Product.fetchAll()
-//     .then((result) => {
-//       res.render("admin/products", {
-//         prods: result,
-//         pageTitle: "Admin Products",
-//         path: "/admin/products",
-//         // hasProduct: products?.length > 0,
-//         activeShop: true,
-//       });
-//     })
-//     .catch((err: Error) => console.error(err));
-// };
+const getAdminProducts = (req, res, _next) => {
+    // req.user
+    //   .getProducts()
+    models_1.Product.fetchAll()
+        .then((result) => {
+        res.render("admin/products", {
+            prods: result,
+            pageTitle: "Admin Products",
+            path: "/admin/products",
+            // hasProduct: products?.length > 0,
+            activeShop: true,
+        });
+    })
+        .catch((err) => console.error(err));
+};
+exports.getAdminProducts = getAdminProducts;

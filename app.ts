@@ -39,21 +39,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-app.use((req: Request, _res: Response, next: NextFunction) => {
-  // User.findById("63d93aea87555b1d5bb96663")
-  //   .then((userData: any) => {
-  //     req["user"] = new User(
-  //       userData?.name,
-  //       userData?.email,
-  //       userData?.cart,
-  //       userData?._id
-  //     );
+// app.use((req: Request, _res: Response, next: NextFunction) => {
+//   // User.findById("63d93aea87555b1d5bb96663")
+//   //   .then((userData: any) => {
+//   //     req["user"] = new User(
+//   //       userData?.name,
+//   //       userData?.email,
+//   //       userData?.cart,
+//   //       userData?._id
+//   //     );
 
-  //     next();
-  //   })
-  //   .catch((err) => console.log("Logging catch user error", err));
-  next();
-});
+//   //     next();
+//   //   })
+//   //   .catch((err) => console.log("Logging catch user error", err));
+//   next();
+// });
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -107,7 +107,7 @@ mongoose
   .connect("mongodb://localhost:27017/shop")
   .then((result) => {
     console.log("App Connected to Database");
-    app.listen(() => {
+    app.listen(3000, () => {
       console.log("Server listening at port 3000");
     });
   })

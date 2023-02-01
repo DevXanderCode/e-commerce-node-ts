@@ -5,8 +5,8 @@ import express, { Router } from "express";
 // import rootDir from "../util/path";
 import {
   getAddProduct,
-  // getAdminProducts,
-  // postAddProduct,
+  getAdminProducts,
+  postAddProduct,
   // getEditProduct,
   // postEditProduct,
   // postDeleteProduct,
@@ -15,10 +15,10 @@ import {
 const router: Router = express.Router();
 
 // /admin/add-product ==> Get
-// router.get("/add-product", getAddProduct);
+router.get("/add-product", getAddProduct);
 
 // /admin/add-product ==> post
-// router.post("/add-product", postAddProduct);
+router.post("/add-product", postAddProduct);
 
 // /admin/edit-product/:productId
 // router.get("/edit-product/:productId", getEditProduct);
