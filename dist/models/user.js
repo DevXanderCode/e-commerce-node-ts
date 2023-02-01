@@ -105,11 +105,10 @@ class User {
         return Promise.resolve();
     }
     deleteCartItem(prodId) {
+        var _a;
         const db = (0, database_1.getDb)();
         if (typeof db !== "string") {
-            const updatedCartItems = [...this.cart.items];
-            const cartProductIndex = this.cart.items.findIndex((cp) => { var _a; return ((_a = cp === null || cp === void 0 ? void 0 : cp.productId) === null || _a === void 0 ? void 0 : _a.toString()) === (prodId === null || prodId === void 0 ? void 0 : prodId.toString()); });
-            updatedCartItems.splice(cartProductIndex, 1);
+            const updatedCartItems = (_a = this.cart.items) === null || _a === void 0 ? void 0 : _a.filter((item) => { var _a; return ((_a = item === null || item === void 0 ? void 0 : item.productId) === null || _a === void 0 ? void 0 : _a.toString()) !== prodId.toString(); });
             return db
                 .collection("users")
                 .updateOne({ _id: new mongodb_1.ObjectId(this === null || this === void 0 ? void 0 : this._id) }, { $set: { cart: { items: updatedCartItems } } })
@@ -118,6 +117,21 @@ class User {
             })
                 .catch((err) => {
                 console.log("Logging delete cart error", err);
+            });
+        }
+        return Promise.resolve();
+    }
+    addOrder() {
+        const db = (0, database_1.getDb)();
+        if (typeof db !== "string") {
+            return db
+                .collection("orders")
+                .insertOne(this.cart)
+                .then((result) => {
+                this.cart = { items: [] };
+                return db
+                    .collection("user")
+                    .updateOne({ _id: new mongodb_1.ObjectId(this === null || this === void 0 ? void 0 : this._id) }, { $set: { cart: { items: [] } } });
             });
         }
         return Promise.resolve();

@@ -126,12 +126,9 @@ class User {
     const db = getDb();
 
     if (typeof db !== "string") {
-      const updatedCartItems = [...this.cart.items];
-      const cartProductIndex = this.cart.items.findIndex(
-        (cp) => cp?.productId?.toString() === prodId?.toString()
+      const updatedCartItems = this.cart.items?.filter(
+        (item) => item?.productId?.toString() !== prodId.toString()
       );
-
-      updatedCartItems.splice(cartProductIndex, 1);
 
       return db
         .collection("users")
@@ -144,6 +141,26 @@ class User {
         })
         .catch((err) => {
           console.log("Logging delete cart error", err);
+        });
+    }
+    return Promise.resolve();
+  }
+
+  addOrder() {
+    const db = getDb();
+
+    if (typeof db !== "string") {
+      return db
+        .collection("orders")
+        .insertOne(this.cart)
+        .then((result) => {
+          this.cart = { items: [] };
+          return db
+            .collection("user")
+            .updateOne(
+              { _id: new ObjectId(this?._id) },
+              { $set: { cart: { items: [] } } }
+            );
         });
     }
     return Promise.resolve();
