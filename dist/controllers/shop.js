@@ -1,6 +1,15 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postOrder = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.getOrders = exports.postOrder = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -227,20 +236,19 @@ const postOrder = (req, res, _next) => {
     // }
 };
 exports.postOrder = postOrder;
-// export const getOrders = async (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   try {
-//     const orders = await req.user!.getOrders();
-//     console.log("Orders ==> ", JSON.stringify(orders, null, 2));
-//     res.render("shop/orders", {
-//       pageTitle: "My Orders",
-//       path: "/orders",
-//       orders: orders,
-//     });
-//   } catch (error) {
-//     console.log("Logging get orders error", error);
-//   }
-// };
+const getOrders = (req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const orders = yield models_1.Order.find({ "user.userId": (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a._id });
+        console.log("Orders ==> ", JSON.stringify(orders, null, 2));
+        res.render("shop/orders", {
+            pageTitle: "My Orders",
+            path: "/orders",
+            orders: orders,
+        });
+    }
+    catch (error) {
+        console.log("Logging get orders error", error);
+    }
+});
+exports.getOrders = getOrders;
