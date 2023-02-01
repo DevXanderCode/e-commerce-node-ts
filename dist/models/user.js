@@ -37,9 +37,11 @@ const database_1 = require("../util/database");
 //   { sequelize, tableName: "users" }
 // );
 class User {
-    constructor(name, email) {
+    constructor(name, email, cart, _id) {
         this.name = name;
         this.email = email;
+        this.cart = cart;
+        this._id = _id;
     }
     save() {
         const db = (0, database_1.getDb)();
@@ -47,8 +49,18 @@ class User {
             return db
                 .collection("users")
                 .insertOne({ name: this === null || this === void 0 ? void 0 : this.name, email: this === null || this === void 0 ? void 0 : this.name });
-            // .then((result) => console.log("created user", result))
+            // .then((result) => {console.log("created user", result); return result;})
             // .catch((err) => console.log("Logging add user error", err));
+        }
+        return Promise.resolve();
+    }
+    addToCart(product) {
+        const db = (0, database_1.getDb)();
+        if (typeof db !== "string") {
+            const updatedCart = { items: [Object.assign(Object.assign({}, product), { quantity: 1 })] };
+            return db
+                .collection("user")
+                .updateOne({ _id: new mongodb_1.ObjectId(this._id) }, { $set: { cart: updatedCart } });
         }
         return Promise.resolve();
     }

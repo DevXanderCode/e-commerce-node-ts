@@ -8,6 +8,7 @@
 
 import { ObjectId } from "mongodb";
 import { getDb } from "../util/database";
+import { Product as ProductType } from "../types";
 
 // // import sequelize from "../util/database";
 
@@ -40,7 +41,12 @@ import { getDb } from "../util/database";
 // );
 
 class User {
-  constructor(public name: string, public email: string) {}
+  constructor(
+    public name: string,
+    public email: string,
+    public cart: any[],
+    public _id: string
+  ) {}
 
   save() {
     const db = getDb();
@@ -49,8 +55,24 @@ class User {
       return db
         .collection("users")
         .insertOne({ name: this?.name, email: this?.name });
-      // .then((result) => console.log("created user", result))
+      // .then((result) => {console.log("created user", result); return result;})
       // .catch((err) => console.log("Logging add user error", err));
+    }
+    return Promise.resolve();
+  }
+
+  addToCart(product: ProductType) {
+    const db = getDb();
+
+    if (typeof db !== "string") {
+      const updatedCart = { items: [{ ...product, quantity: 1 }] };
+
+      return db
+        .collection("user")
+        .updateOne(
+          { _id: new ObjectId(this._id) },
+          { $set: { cart: updatedCart } }
+        );
     }
     return Promise.resolve();
   }

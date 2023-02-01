@@ -16,12 +16,15 @@ export interface Product {
 declare global {
   namespace Express {
     interface Request {
-      user: User;
+      user?: User & { _id: string };
     }
   }
 }
 
-// export interface UserRequest extends Request {
-//   user: User;
-//   // [key: string]: any;
-// }
+export interface UserRequest extends Request {
+  // user?: {
+  //   name?: string;
+  //   email?: string;
+  // };
+  [key: string]: any;
+}

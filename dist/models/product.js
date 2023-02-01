@@ -159,12 +159,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb_1 = require("mongodb");
 const database_1 = require("../util/database");
 class Product {
-    constructor(title, price, description, imageUrl, _id) {
+    constructor(title, price, description, imageUrl, _id, userId) {
         this.title = title;
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
         this._id = _id;
+        this.userId = userId;
         this._id = _id ? new mongodb_1.ObjectId(_id) : "";
     }
     save() {
@@ -183,6 +184,7 @@ class Product {
                     price: this.price,
                     description: this.description,
                     imageUrl: this.imageUrl,
+                    userId: this === null || this === void 0 ? void 0 : this.userId,
                 });
             }
             if (dbOp) {

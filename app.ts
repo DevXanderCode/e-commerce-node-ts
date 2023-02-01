@@ -10,8 +10,8 @@ import rootDir from "./util/path";
 import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
 // import sequelize from "./util/database";
-// import { User, Product, Cart, CartItem, Order, OrderItem } from "./models";
-// import { UserRequest } from "./types";
+import { User, Product, Cart, CartItem, Order, OrderItem } from "./models";
+import { UserRequest } from "./types";
 import { mongoConnect } from "./util/database";
 
 dotenv.config();
@@ -39,13 +39,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
-  // User.findByPk(1)
-  //   .then((user) => {
-  //     req.user = user!;
-  //     next();
-  //   })
-  //   .catch((err) => console.log("Logging catch user error", err));
-  next();
+  User.findById("63d93aea87555b1d5bb96663")
+    .then((userData: any) => {
+      req["user"] = userData;
+
+      next();
+    })
+    .catch((err) => console.log("Logging catch user error", err));
 });
 
 app.use("/admin", adminRoutes);

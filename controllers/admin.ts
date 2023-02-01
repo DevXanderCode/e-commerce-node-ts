@@ -25,7 +25,14 @@ export const postAddProduct = (
   _next: NextFunction
 ) => {
   const { title, imageUrl, description, price } = req?.body;
-  const product = new Product(title, price, description, imageUrl);
+  const product = new Product(
+    title,
+    price,
+    description,
+    imageUrl,
+    "",
+    req.user!._id
+  );
   product
     .save()
     .then(() => res.redirect("/"))

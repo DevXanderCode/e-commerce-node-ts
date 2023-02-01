@@ -180,7 +180,8 @@ class Product {
     public price: number,
     public description: string,
     public imageUrl: string,
-    private _id?: string | ObjectId
+    private _id?: string | ObjectId | null,
+    public userId?: string | null
   ) {
     this._id = _id ? new ObjectId(_id) : "";
   }
@@ -204,6 +205,7 @@ class Product {
           price: this.price,
           description: this.description,
           imageUrl: this.imageUrl,
+          userId: this?.userId,
         });
       }
       if (dbOp) {

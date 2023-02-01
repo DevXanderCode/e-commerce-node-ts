@@ -36,8 +36,7 @@ const path_2 = __importDefault(require("./util/path"));
 const error_1 = require("./controllers/error");
 // import ternary from "./util/helpers/ternary";
 // import sequelize from "./util/database";
-// import { User, Product, Cart, CartItem, Order, OrderItem } from "./models";
-// import { UserRequest } from "./types";
+const models_1 = require("./models");
 const database_1 = require("./util/database");
 dotenv.config();
 const app = (0, express_1.default)();
@@ -59,13 +58,12 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public")));
 app.use((req, _res, next) => {
-    // User.findByPk(1)
-    //   .then((user) => {
-    //     req.user = user!;
-    //     next();
-    //   })
-    //   .catch((err) => console.log("Logging catch user error", err));
-    next();
+    models_1.User.findById("63d93aea87555b1d5bb96663")
+        .then((userData) => {
+        req["user"] = userData;
+        next();
+    })
+        .catch((err) => console.log("Logging catch user error", err));
 });
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
