@@ -7,8 +7,8 @@ import {
   getAddProduct,
   getAdminProducts,
   postAddProduct,
-  // getEditProduct,
-  // postEditProduct,
+  getEditProduct,
+  postEditProduct,
   // postDeleteProduct,
 } from "../controllers/admin";
 
@@ -21,12 +21,12 @@ router.get("/add-product", getAddProduct);
 router.post("/add-product", postAddProduct);
 
 // /admin/edit-product/:productId
-// router.get("/edit-product/:productId", getEditProduct);
+router.get("/edit-product/:productId", getEditProduct);
 
 //  /admin/products ==> Get
 router.get("/products", getAdminProducts);
 
-// router.post("/edit-product", postEditProduct);
+router.post("/edit-product", postEditProduct);
 
 // router.post("/delete-product", postDeleteProduct);
 

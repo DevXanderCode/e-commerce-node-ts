@@ -54,36 +54,36 @@ export const postAddProduct = (
  * @param {NextFunction} _next - NextFunction
  * @returns The product object
  */
-// export const getEditProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const editMode = req.query.edit;
+export const getEditProduct = (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const editMode = req.query.edit;
 
-//   if (!editMode) {
-//     return res.redirect("/");
-//   }
-//   const prodId = req.params.productId;
-//   // req.user
-//   //   .getProducts({ where: { id: prodId } })
-//   Product.findById(prodId)
-//     .then((product) => {
-//       // console.log("Edit product", JSON .stringify(product, null, 2));
+  if (!editMode) {
+    return res.redirect("/");
+  }
+  const prodId = req.params.productId;
+  // req.user
+  //   .getProducts({ where: { id: prodId } })
+  Product.findById(prodId)
+    .then((product) => {
+      // console.log("Edit product", JSON .stringify(product, null, 2));
 
-//       if (product) {
-//         res.render("admin/edit-product", {
-//           pageTitle: "Edit Product",
-//           path: "/admin/edit-product",
-//           editing: editMode,
-//           product,
-//         });
-//       } else {
-//         res.redirect("/");
-//       }
-//     })
-//     .catch((err: Error) => console.log(err));
-// };
+      if (product) {
+        res.render("admin/edit-product", {
+          pageTitle: "Edit Product",
+          path: "/admin/edit-product",
+          editing: editMode,
+          product,
+        });
+      } else {
+        res.redirect("/");
+      }
+    })
+    .catch((err: Error) => console.log(err));
+};
 
 /**
  * We're using the findByPk() method to find the product with the given id, then we're updating the
@@ -95,29 +95,37 @@ export const postAddProduct = (
  * @param {NextFunction} _next - NextFunction - This is a function that we can call to pass control to
  * the next middleware function in the stack.
  */
-// export const postEditProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const { productId: prodId, title, imageUrl, description, price } = req?.body;
-//   const product = new Product(title, price, description, imageUrl, prodId);
-//   // const updatedProduct = new Product(
-//   //   prodId,
-//   //   title,
-//   //   imageUrl,
-//   //   description,
-//   //   price
-//   // );
-//   // updatedProduct.save();
+export const postEditProduct = (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const { productId: prodId, title, imageUrl, description, price } = req?.body;
+  // const product = new Product(title, price, description, imageUrl, prodId);
+  // const updatedProduct = new Product(
+  //   prodId,
+  //   title,
+  //   imageUrl,
+  //   description,
+  //   price
+  // );
+  // updatedProduct.save();
 
-//   product
-//     .save()
-//     .then(() => {
-//       res.redirect("/admin/products");
-//     })
-//     .catch((err: any) => console.log(err));
-// };
+  Product.findById(prodId)
+    .then((product) => {
+      if (product instanceof Product) {
+        product.title = title;
+        product.price = price;
+        product.description = description;
+        product.imageUrl = imageUrl;
+        return product.save();
+      }
+    })
+    .then(() => {
+      res.redirect("/admin/products");
+    })
+    .catch((err: any) => console.log(err));
+};
 
 /**
  * We're using the productId from the request body to find the product in the database, then we're

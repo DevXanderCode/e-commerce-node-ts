@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIndex = exports.getProducts = void 0;
+exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -34,23 +34,21 @@ const getProducts = (_req, res, _next) => {
         .catch((err) => console.error("Logging err", err));
 };
 exports.getProducts = getProducts;
-// export const getProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const prodId = req?.params?.productId;
-//   Product.findById(prodId)
-//     .then((result) => {
-//       console.log("Logging some product ", result);
-//       res.render("shop/product-detail", {
-//         pageTitle: "Product Details",
-//         product: result,
-//         path: "/products",
-//       });
-//     })
-//     .catch((err) => console.error(err));
-// };
+const getProduct = (req, res, _next) => {
+    var _a;
+    const prodId = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.productId;
+    models_1.Product.findById(prodId)
+        .then((result) => {
+        console.log("Logging some product ", result);
+        res.render("shop/product-detail", {
+            pageTitle: "Product Details",
+            product: result,
+            path: "/products",
+        });
+    })
+        .catch((err) => console.error(err));
+};
+exports.getProduct = getProduct;
 const getIndex = (_req, res, _next) => {
     models_1.Product.find()
         .then((products) => {

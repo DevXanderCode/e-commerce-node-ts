@@ -40,23 +40,23 @@ export const getProducts = (
     .catch((err) => console.error("Logging err", err));
 };
 
-// export const getProduct = (
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   const prodId = req?.params?.productId;
-//   Product.findById(prodId)
-//     .then((result) => {
-//       console.log("Logging some product ", result);
-//       res.render("shop/product-detail", {
-//         pageTitle: "Product Details",
-//         product: result,
-//         path: "/products",
-//       });
-//     })
-//     .catch((err) => console.error(err));
-// };
+export const getProduct = (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const prodId = req?.params?.productId;
+  Product.findById(prodId)
+    .then((result) => {
+      console.log("Logging some product ", result);
+      res.render("shop/product-detail", {
+        pageTitle: "Product Details",
+        product: result,
+        path: "/products",
+      });
+    })
+    .catch((err) => console.error(err));
+};
 
 export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
   Product.find()
