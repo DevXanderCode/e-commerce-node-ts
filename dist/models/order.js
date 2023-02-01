@@ -28,15 +28,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // );
 const mongoose_1 = require("mongoose");
 const orderSchema = new mongoose_1.Schema({
-    productId: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: "Product",
-        required: true,
-    },
-    quantity: {
-        type: Number,
-        required: true,
-    },
+    products: [
+        {
+            product: {
+                type: Object,
+                required: true,
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            },
+        },
+    ],
     user: {
         userId: {
             type: mongoose_1.Schema.Types.ObjectId,

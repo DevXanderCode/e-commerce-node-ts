@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.postOrder = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -85,10 +85,9 @@ exports.getIndex = getIndex;
 const getCart = (req, res, _next) => {
     req.user
         .populate("cart.items.productId")
-        // .execPopulate()
         .then((user) => {
+        // console.log("Logging cart", JSON.stringify(user, null, 2));
         var _a;
-        console.log("Logging cart", JSON.stringify(user, null, 2));
         const products = (_a = user === null || user === void 0 ? void 0 : user.cart) === null || _a === void 0 ? void 0 : _a.items;
         res.render("shop/cart", {
             pageTitle: "My Cart",
@@ -190,18 +189,44 @@ exports.postCartDeleteProduct = postCartDeleteProduct;
 //     path: "/checkout",
 //   });
 // };
-// export const postOrder = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     await req?.user?.addOrder();
-//     res.redirect("/orders");
-//   } catch (error) {
-//     console.log("Logging error", error);
-//   }
-// };
+const postOrder = (req, res, _next) => {
+    req.user
+        .populate("cart.items.productId")
+        .then((user) => {
+        // console.log("Logging cart", JSON.stringify(user, null, 2));
+        var _a, _b;
+        const products = (_a = user === null || user === void 0 ? void 0 : user.cart) === null || _a === void 0 ? void 0 : _a.items.map((i) => {
+            var _a;
+            return ({
+                quantity: i === null || i === void 0 ? void 0 : i.quantity,
+                product: Object.assign({}, (_a = i === null || i === void 0 ? void 0 : i.productId) === null || _a === void 0 ? void 0 : _a._doc),
+            });
+        });
+        const order = new models_1.Order({
+            user: {
+                name: (_b = req === null || req === void 0 ? void 0 : req.user) === null || _b === void 0 ? void 0 : _b.name,
+                userId: req === null || req === void 0 ? void 0 : req.user,
+            },
+            products,
+        });
+        return order.save();
+    })
+        .then((_result) => {
+        var _a;
+        return (_a = req.user) === null || _a === void 0 ? void 0 : _a.clearCart();
+    })
+        .then(() => {
+        res.redirect("/orders");
+    })
+        .catch((err) => console.log("Post order error ", err));
+    // try {
+    //   await req?.user?.addOrder();
+    //   res.redirect("/orders");
+    // } catch (error) {
+    //   console.log("Logging error", error);
+    // }
+};
+exports.postOrder = postOrder;
 // export const getOrders = async (
 //   req: Request,
 //   res: Response,

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, Router } from "express";
 
 import { Product as ProductInterface } from "../types";
-import { Product } from "../models";
+import { Product, Order } from "../models";
 
 // export const products: Product[] = [];
 
@@ -94,9 +94,8 @@ export const getIndex = (_req: Request, res: Response, _next: NextFunction) => {
 export const getCart = (req: Request, res: Response, _next: NextFunction) => {
   req.user
     .populate("cart.items.productId")
-    // .execPopulate()
     .then((user: any) => {
-      console.log("Logging cart", JSON.stringify(user, null, 2));
+      // console.log("Logging cart", JSON.stringify(user, null, 2));
 
       const products = user?.cart?.items;
 
@@ -210,18 +209,40 @@ export const postCartDeleteProduct = (
 //   });
 // };
 
-// export const postOrder = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     await req?.user?.addOrder();
-//     res.redirect("/orders");
-//   } catch (error) {
-//     console.log("Logging error", error);
-//   }
-// };
+export const postOrder = (req: Request, res: Response, _next: NextFunction) => {
+  req.user
+    .populate("cart.items.productId")
+    .then((user: any) => {
+      // console.log("Logging cart", JSON.stringify(user, null, 2));
+
+      const products = user?.cart?.items.map((i: any) => ({
+        quantity: i?.quantity,
+        product: { ...i?.productId?._doc },
+      }));
+
+      const order = new Order({
+        user: {
+          name: req?.user?.name,
+          userId: req?.user,
+        },
+        products,
+      });
+      return order.save();
+    })
+    .then((_result: any) => {
+      return req.user?.clearCart();
+    })
+    .then(() => {
+      res.redirect("/orders");
+    })
+    .catch((err: any) => console.log("Post order error ", err));
+  // try {
+  //   await req?.user?.addOrder();
+  //   res.redirect("/orders");
+  // } catch (error) {
+  //   console.log("Logging error", error);
+  // }
+};
 
 // export const getOrders = async (
 //   req: Request,

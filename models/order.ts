@@ -30,15 +30,18 @@
 import { Schema, model } from "mongoose";
 
 const orderSchema = new Schema({
-  productId: {
-    type: Schema.Types.ObjectId,
-    ref: "Product",
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    required: true,
-  },
+  products: [
+    {
+      product: {
+        type: Object,
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
   user: {
     userId: {
       type: Schema.Types.ObjectId,

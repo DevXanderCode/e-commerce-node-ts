@@ -13,7 +13,7 @@ import {
   getProduct,
   postCart,
   postCartDeleteProduct,
-  // postOrder,
+  postOrder,
 } from "../controllers/shop";
 
 const router: Router = express.Router();
@@ -32,7 +32,7 @@ router.get("/products/:productId", getProduct);
 
 // router.get("/orders", getOrders);
 
-// router.post("/create-order", postOrder);
+router.post("/create-order", postOrder);
 
 router.get("/", getIndex);
 

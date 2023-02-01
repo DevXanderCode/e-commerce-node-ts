@@ -264,6 +264,12 @@ userSchema.methods.removeFromCart = function (prodId: string) {
   return this.save();
 };
 
+userSchema.methods.clearCart = function () {
+  this.cart = { items: [] };
+
+  return this.save;
+};
+
 // userSchema.methods.getCart = function () {
 //   const productIds = this?.cart?.items.map((item: any) => item?.productId);
 

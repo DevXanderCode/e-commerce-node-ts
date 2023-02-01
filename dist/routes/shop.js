@@ -16,6 +16,6 @@ router.get("/products", shop_1.getProducts);
 router.get("/products/:productId", shop_1.getProduct);
 // router.get("/checkout", getCheckout);
 // router.get("/orders", getOrders);
-// router.post("/create-order", postOrder);
+router.post("/create-order", shop_1.postOrder);
 router.get("/", shop_1.getIndex);
 exports.default = router;
