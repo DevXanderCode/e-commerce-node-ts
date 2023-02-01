@@ -111,7 +111,7 @@ exports.postEditProduct = postEditProduct;
 const postDeleteProduct = (req, res, _next) => {
     var _a;
     const prodId = (_a = req.body) === null || _a === void 0 ? void 0 : _a.productId;
-    models_1.Product.deleteOne({ _id: prodId })
+    models_1.Product.findByIdAndRemove(prodId)
         .then(() => {
         console.log("Product deleted");
         res.redirect("/admin/products");

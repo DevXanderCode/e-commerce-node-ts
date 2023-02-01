@@ -179,6 +179,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //     return Promise.resolve();
 //   }
 // }
-class User {
-}
-exports.default = User;
+const mongoose_1 = require("mongoose");
+const userSchema = new mongoose_1.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+    },
+    cart: {
+        items: [
+            {
+                productId: { type: mongoose_1.Schema.Types.ObjectId, required: true },
+                quantity: { type: Number, required: true },
+            },
+        ],
+    },
+});
+exports.default = (0, mongoose_1.model)("User", userSchema);
