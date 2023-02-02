@@ -73,6 +73,7 @@ app.use((req, _res, next) => {
 });
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
+app.use(routes_1.authRoutes);
 app.use(error_1.get404Page);
 // Associations
 // Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
