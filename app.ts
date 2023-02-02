@@ -6,7 +6,7 @@ import * as dotenv from "dotenv";
 import mongoose from "mongoose";
 // import { create, engine } from "express-handlebars";
 
-import { adminRoutes, shopRoutes } from "./routes";
+import { adminRoutes, shopRoutes, authRoutes } from "./routes";
 import rootDir from "./util/path";
 import { get404Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
@@ -57,6 +57,7 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.use(get404Page);
 
