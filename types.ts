@@ -17,6 +17,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: User & { _id: string };
+      isLoggedIn?: Boolean;
     }
   }
 }

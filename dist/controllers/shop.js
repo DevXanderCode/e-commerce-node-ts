@@ -28,7 +28,7 @@ const models_1 = require("../models");
  * the request.
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
-const getProducts = (_req, res, _next) => {
+const getProducts = (req, res, _next) => {
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
     return models_1.Product.find()
@@ -38,6 +38,7 @@ const getProducts = (_req, res, _next) => {
             pageTitle: "All products",
             path: "/products",
             activeShop: true,
+            isAuthenticated: req.isLoggedIn,
         });
     })
         .catch((err) => console.error("Logging err", err));
@@ -53,12 +54,13 @@ const getProduct = (req, res, _next) => {
             pageTitle: "Product Details",
             product: result,
             path: "/products",
+            isAuthenticated: req.isLoggedIn,
         });
     })
         .catch((err) => console.error(err));
 };
 exports.getProduct = getProduct;
-const getIndex = (_req, res, _next) => {
+const getIndex = (req, res, _next) => {
     models_1.Product.find()
         .then((products) => {
         res.render("shop/index", {
@@ -66,6 +68,7 @@ const getIndex = (_req, res, _next) => {
             pageTitle: "Shop",
             path: "/",
             activeShop: true,
+            isAuthenticated: req.isLoggedIn,
         });
     })
         .catch((err) => console.log(err));
@@ -102,6 +105,7 @@ const getCart = (req, res, _next) => {
             pageTitle: "My Cart",
             path: "/cart",
             prods: products,
+            isAuthenticated: req.isLoggedIn,
         });
     })
         .catch((err) => console.log("get cart Errror", err));
@@ -245,6 +249,7 @@ const getOrders = (req, res, _next) => __awaiter(void 0, void 0, void 0, functio
             pageTitle: "My Orders",
             path: "/orders",
             orders: orders,
+            isAuthenticated: req.isLoggedIn,
         });
     }
     catch (error) {

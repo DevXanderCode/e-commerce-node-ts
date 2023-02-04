@@ -8,7 +8,7 @@ import { Product } from "../models";
 // import { Product as ProductInterface } from "../types";
 
 export const getAddProduct = (
-  _req: Request,
+  req: Request,
   res: Response,
   _next: NextFunction
 ) => {
@@ -16,6 +16,7 @@ export const getAddProduct = (
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
+    isAuthenticated: req.isLoggedIn,
   });
 };
 
@@ -78,6 +79,7 @@ export const getEditProduct = (
           path: "/admin/edit-product",
           editing: editMode,
           product,
+          isAuthenticated: req.isLoggedIn,
         });
       } else {
         res.redirect("/");
@@ -173,6 +175,7 @@ export const getAdminProducts = (
         path: "/admin/products",
         // hasProduct: products?.length > 0,
         activeShop: true,
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((err: Error) => console.error(err));
