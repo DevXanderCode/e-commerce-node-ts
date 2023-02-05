@@ -4,6 +4,8 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import mongoose from "mongoose";
+import session from "express-session";
+import mongoDbStore from "connect-mongodb-session";
 // import { create, engine } from "express-handlebars";
 
 import { adminRoutes, shopRoutes, authRoutes } from "./routes";
@@ -17,7 +19,14 @@ import { mongoConnect } from "./util/database";
 
 dotenv.config();
 
+const MONGODB_URI = "mongodb://localhost:27017/shop";
+
 const app: Express = express();
+const MongoDBStore = mongoDbStore(session);
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 
 // For handleBars
 // app.engine(
@@ -38,6 +47,14 @@ app.set("views", path.join(rootDir, "..", "views"));
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express.static(path.join(__dirname, "..", "public")));
+app.use(
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store,
+  })
+);
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
   User.findById("63da8a48e804c4c4200bf875")
@@ -105,7 +122,7 @@ app.use(get404Page);
 // });
 
 mongoose
-  .connect("mongodb://localhost:27017/shop")
+  .connect(MONGODB_URI)
   .then((result) => {
     console.log("App Connected to Database");
     User.findOne().then((usr) => {

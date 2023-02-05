@@ -1,4 +1,5 @@
-// import { Request } from "express";
+// import { Request as ExpressRequest } from "express";
+import session from "express-session";
 import { User } from "./models";
 
 export interface Product {
@@ -19,6 +20,12 @@ declare global {
       user?: User & { _id: string };
       isLoggedIn?: Boolean;
     }
+  }
+}
+
+declare module "express-session" {
+  interface SessionData {
+    isLoggedIn?: Boolean;
   }
 }
 
