@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postLogin = exports.getLogin = void 0;
+exports.postLogout = exports.postLogin = exports.getLogin = void 0;
+const models_1 = require("../models");
 const getLogin = (req, res, next) => {
     var _a;
     //   const isLoggedIn = req.get("Cookie")?.split(";")[0]?.trim().split("=")[1];
@@ -14,7 +15,19 @@ const getLogin = (req, res, next) => {
 exports.getLogin = getLogin;
 const postLogin = (req, res, next) => {
     //   res.setHeader("Set-Cookie", "loggedIn=true");
-    req.session.isLoggedIn = true;
-    res.redirect("/");
+    models_1.User.findById("63da8a48e804c4c4200bf875")
+        .then((user) => {
+        req.session.isLoggedIn = true;
+        req.session.user = user;
+        res.redirect("/");
+    })
+        .catch((err) => console.log("post Login error", err));
 };
 exports.postLogin = postLogin;
+const postLogout = (req, res, next) => {
+    req.session.destroy((err) => {
+        console.log("Post logout error", err);
+        res.redirect("/");
+    });
+};
+exports.postLogout = postLogout;

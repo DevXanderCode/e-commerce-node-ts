@@ -38,7 +38,7 @@ const getProducts = (req, res, _next) => {
             pageTitle: "All products",
             path: "/products",
             activeShop: true,
-            isAuthenticated: req.isLoggedIn,
+            isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.error("Logging err", err));
@@ -54,7 +54,7 @@ const getProduct = (req, res, _next) => {
             pageTitle: "Product Details",
             product: result,
             path: "/products",
-            isAuthenticated: req.isLoggedIn,
+            isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.error(err));
@@ -68,7 +68,7 @@ const getIndex = (req, res, _next) => {
             pageTitle: "Shop",
             path: "/",
             activeShop: true,
-            isAuthenticated: req.isLoggedIn,
+            isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.log(err));
@@ -105,7 +105,7 @@ const getCart = (req, res, _next) => {
             pageTitle: "My Cart",
             path: "/cart",
             prods: products,
-            isAuthenticated: req.isLoggedIn,
+            isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.log("get cart Errror", err));
@@ -249,7 +249,7 @@ const getOrders = (req, res, _next) => __awaiter(void 0, void 0, void 0, functio
             pageTitle: "My Orders",
             path: "/orders",
             orders: orders,
-            isAuthenticated: req.isLoggedIn,
+            isAuthenticated: req.session.isLoggedIn,
         });
     }
     catch (error) {

@@ -35,7 +35,7 @@ export const getProducts = (
         pageTitle: "All products",
         path: "/products",
         activeShop: true,
-        isAuthenticated: req.isLoggedIn,
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.error("Logging err", err));
@@ -54,7 +54,7 @@ export const getProduct = (
         pageTitle: "Product Details",
         product: result,
         path: "/products",
-        isAuthenticated: req.isLoggedIn,
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.error(err));
@@ -68,7 +68,7 @@ export const getIndex = (req: Request, res: Response, _next: NextFunction) => {
         pageTitle: "Shop",
         path: "/",
         activeShop: true,
-        isAuthenticated: req.isLoggedIn,
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -106,7 +106,7 @@ export const getCart = (req: Request, res: Response, _next: NextFunction) => {
         pageTitle: "My Cart",
         path: "/cart",
         prods: products,
-        isAuthenticated: req.isLoggedIn,
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err: Error) => console.log("get cart Errror", err));
@@ -260,7 +260,7 @@ export const getOrders = async (
       pageTitle: "My Orders",
       path: "/orders",
       orders: orders,
-      isAuthenticated: req.isLoggedIn,
+      isAuthenticated: req.session.isLoggedIn,
     });
   } catch (error) {
     console.log("Logging get orders error", error);
