@@ -24,23 +24,46 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
         if (err) {
           console.log("Session save error", err);
         }
-        res.redirect("/");
+        res.redirect("/login");
       });
     })
     .catch((err) => console.log("post Login error", err));
-};
-
-export const postLogout = (req: Request, res: Response, next: NextFunction) => {
-  req.session.destroy((err) => {
-    console.log("Post logout error", err);
-    res.redirect("/");
-  });
 };
 
 export const getSignup = (req: Request, res: Response, next: NextFunction) => {
   res.render("auth/signup", {
     pageTitle: "Signup",
     path: "/signup",
-    isAuthenticated: req.session.isLoggedIn,
+    isAuthenticated: false,
+  });
+};
+
+export const postSignup = (req: Request, res: Response, next: NextFunction) => {
+  const { email, password, confirmPassword } = req.body;
+  console.log("Logging email password", email, password);
+
+  User.findOne({ email })
+    .then((userDoc: any): any => {
+      console;
+      if (userDoc) {
+        return res.redirect("/signup");
+      }
+      const user = new User({ email, password, cart: { items: [] } });
+
+      return user.save();
+    })
+    .then((result) => {
+      console.log("saved ===>>", result);
+      res.redirect("/");
+    })
+    .catch((err) => {
+      console.log(`Logging find user with email(${email}) err ==> ${err}`);
+    });
+};
+
+export const postLogout = (req: Request, res: Response, next: NextFunction) => {
+  req.session.destroy((err) => {
+    console.log("Post logout error", err);
+    res.redirect("/");
   });
 };

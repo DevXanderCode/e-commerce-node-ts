@@ -4,16 +4,19 @@ import {
   getSignup,
   postLogin,
   postLogout,
+  postSignup,
 } from "../controllers/auth";
 
 const router: Router = Router();
 
 router.get("/login", getLogin);
 
+router.get("/signup", getSignup);
+
 router.post("/login", postLogin);
 
-router.post("/logout", postLogout);
+router.post("/signup", postSignup);
 
-router.get("/signup", getSignup);
+router.post("/logout", postLogout);
 
 export default router;

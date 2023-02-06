@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSignup = exports.postLogout = exports.postLogin = exports.getLogin = void 0;
+exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
 const models_1 = require("../models");
 const getLogin = (req, res, next) => {
     var _a;
@@ -23,12 +23,41 @@ const postLogin = (req, res, next) => {
             if (err) {
                 console.log("Session save error", err);
             }
-            res.redirect("/");
+            res.redirect("/login");
         });
     })
         .catch((err) => console.log("post Login error", err));
 };
 exports.postLogin = postLogin;
+const getSignup = (req, res, next) => {
+    res.render("auth/signup", {
+        pageTitle: "Signup",
+        path: "/signup",
+        isAuthenticated: false,
+    });
+};
+exports.getSignup = getSignup;
+const postSignup = (req, res, next) => {
+    const { email, password, confirmPassword } = req.body;
+    console.log("Logging email password", email, password);
+    models_1.User.findOne({ email })
+        .then((userDoc) => {
+        console;
+        if (userDoc) {
+            return res.redirect("/signup");
+        }
+        const user = new models_1.User({ email, password, cart: { items: [] } });
+        return user.save();
+    })
+        .then((result) => {
+        console.log("saved ===>>", result);
+        res.redirect("/");
+    })
+        .catch((err) => {
+        console.log(`Logging find user with email(${email}) err ==> ${err}`);
+    });
+};
+exports.postSignup = postSignup;
 const postLogout = (req, res, next) => {
     req.session.destroy((err) => {
         console.log("Post logout error", err);
@@ -36,11 +65,3 @@ const postLogout = (req, res, next) => {
     });
 };
 exports.postLogout = postLogout;
-const getSignup = (req, res, next) => {
-    res.render("auth/signup", {
-        pageTitle: "Signup",
-        path: "/signup",
-        isAuthenticated: req.session.isLoggedIn,
-    });
-};
-exports.getSignup = getSignup;

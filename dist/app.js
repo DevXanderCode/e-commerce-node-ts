@@ -134,16 +134,16 @@ mongoose_1.default
     .connect(MONGODB_URI)
     .then((result) => {
     console.log("App Connected to Database");
-    models_1.User.findOne().then((usr) => {
-        if (!usr) {
-            const user = new models_1.User({
-                name: "Alex",
-                email: "DevXande@test.com",
-                cart: { items: [] },
-            });
-            user.save();
-        }
-    });
+    // User.findOne().then((usr) => {
+    //   if (!usr) {
+    //     const user = new User({
+    //       name: "Alex",
+    //       email: "DevXande@test.com",
+    //       cart: { items: [] },
+    //     });
+    //     user.save();
+    //   }
+    // });
     app.listen(3000, () => {
         console.log("Server listening at port 3000");
     });
