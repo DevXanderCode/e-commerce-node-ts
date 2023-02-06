@@ -15,13 +15,14 @@ const getAddProduct = (req, res, _next) => {
 };
 exports.getAddProduct = getAddProduct;
 const postAddProduct = (req, res, _next) => {
+    var _a;
     const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
     const product = new models_1.Product({
         title,
         price,
         description,
         imageUrl,
-        userId: req === null || req === void 0 ? void 0 : req.user,
+        userId: (_a = req === null || req === void 0 ? void 0 : req.session) === null || _a === void 0 ? void 0 : _a.user,
     });
     product
         .save()

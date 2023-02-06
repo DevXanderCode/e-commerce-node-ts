@@ -95,6 +95,8 @@ exports.getIndex = getIndex;
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
 const getCart = (req, res, _next) => {
+    // if (req.session.user) {
+    // return
     req.user
         .populate("cart.items.productId")
         .then((user) => {
@@ -109,6 +111,8 @@ const getCart = (req, res, _next) => {
         });
     })
         .catch((err) => console.log("get cart Errror", err));
+    // }
+    // return Promise.resolve();
 };
 exports.getCart = getCart;
 /**
@@ -241,9 +245,9 @@ const postOrder = (req, res, _next) => {
 };
 exports.postOrder = postOrder;
 const getOrders = (req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     try {
-        const orders = yield models_1.Order.find({ "user.userId": (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a._id });
+        const orders = yield models_1.Order.find({ "user.userId": (_b = (_a = req === null || req === void 0 ? void 0 : req.session) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id });
         console.log("Orders ==> ", JSON.stringify(orders, null, 2));
         res.render("shop/orders", {
             pageTitle: "My Orders",

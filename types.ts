@@ -26,7 +26,7 @@ declare global {
 declare module "express-session" {
   interface SessionData {
     isLoggedIn?: Boolean;
-    user?: typeof User & { _id: string };
+    user: User & { _id: string };
   }
 }
 

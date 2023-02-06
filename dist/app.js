@@ -72,7 +72,8 @@ app.use((0, express_session_1.default)({
     store,
 }));
 app.use((req, _res, next) => {
-    models_1.User.findById("63da8a48e804c4c4200bf875")
+    var _a, _b;
+    models_1.User.findById((_b = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id)
         .then((userData) => {
         req["user"] = userData;
         // new User(

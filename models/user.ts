@@ -201,10 +201,7 @@
 //   }
 // }
 
-import console from "console";
 import { Schema, model } from "mongoose";
-import product from "./product";
-import Product from "./product";
 
 const userSchema = new Schema({
   name: {

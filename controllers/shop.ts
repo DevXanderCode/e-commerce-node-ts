@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, Router } from "express";
 
 import { Product as ProductInterface } from "../types";
-import { Product, Order } from "../models";
+import { Product, Order, User } from "../models";
 
 // export const products: Product[] = [];
 
@@ -95,6 +95,8 @@ export const getIndex = (req: Request, res: Response, _next: NextFunction) => {
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
 export const getCart = (req: Request, res: Response, _next: NextFunction) => {
+  // if (req.session.user) {
+  // return
   req.user
     .populate("cart.items.productId")
     .then((user: any) => {
@@ -110,6 +112,8 @@ export const getCart = (req: Request, res: Response, _next: NextFunction) => {
       });
     })
     .catch((err: Error) => console.log("get cart Errror", err));
+  // }
+  // return Promise.resolve();
 };
 
 /**
@@ -254,7 +258,7 @@ export const getOrders = async (
   _next: NextFunction
 ) => {
   try {
-    const orders = await Order.find({ "user.userId": req?.user?._id });
+    const orders = await Order.find({ "user.userId": req?.session?.user?._id });
     console.log("Orders ==> ", JSON.stringify(orders, null, 2));
     res.render("shop/orders", {
       pageTitle: "My Orders",

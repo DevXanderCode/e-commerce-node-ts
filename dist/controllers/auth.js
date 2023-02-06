@@ -17,8 +17,10 @@ const postLogin = (req, res, next) => {
     //   res.setHeader("Set-Cookie", "loggedIn=true");
     models_1.User.findById("63da8a48e804c4c4200bf875")
         .then((user) => {
+        if (user) {
+            req.session.user = user;
+        }
         req.session.isLoggedIn = true;
-        req.session.user = user;
         res.redirect("/");
     })
         .catch((err) => console.log("post Login error", err));
