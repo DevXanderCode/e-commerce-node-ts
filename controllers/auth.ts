@@ -17,12 +17,15 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
 
   User.findById("63da8a48e804c4c4200bf875")
     .then((user: any) => {
-      if (user as typeof User) {
-        req.session.user = user;
-      }
-      req.session.isLoggedIn = true;
+      req.session.user = user;
 
-      res.redirect("/");
+      req.session.isLoggedIn = true;
+      req.session.save((err) => {
+        if (err) {
+          console.log("Session save error", err);
+        }
+        res.redirect("/");
+      });
     })
     .catch((err) => console.log("post Login error", err));
 };
