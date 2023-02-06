@@ -31,6 +31,8 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv = __importStar(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const express_session_1 = __importDefault(require("express-session"));
+const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 // import { create, engine } from "express-handlebars";
 const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
@@ -39,7 +41,13 @@ const error_1 = require("./controllers/error");
 // import sequelize from "./util/database";
 const models_1 = require("./models");
 dotenv.config();
+const MONGODB_URI = "mongodb://localhost:27017/shop";
 const app = (0, express_1.default)();
+const MongoDBStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
+const store = new MongoDBStore({
+    uri: MONGODB_URI,
+    collection: "sessions",
+});
 // For handleBars
 // app.engine(
 //   "hbs",
@@ -57,8 +65,15 @@ app.set("views", path_1.default.join(path_2.default, "..", "views"));
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public")));
+app.use((0, express_session_1.default)({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store,
+}));
 app.use((req, _res, next) => {
-    models_1.User.findById("63da8a48e804c4c4200bf875")
+    var _a, _b;
+    models_1.User.findById((_b = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id)
         .then((userData) => {
         req["user"] = userData;
         // new User(
@@ -116,7 +131,7 @@ app.use(error_1.get404Page);
 //   });
 // });
 mongoose_1.default
-    .connect("mongodb://localhost:27017/shop")
+    .connect(MONGODB_URI)
     .then((result) => {
     console.log("App Connected to Database");
     models_1.User.findOne().then((usr) => {

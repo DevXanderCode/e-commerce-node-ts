@@ -28,7 +28,7 @@ const models_1 = require("../models");
  * the request.
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
-const getProducts = (_req, res, _next) => {
+const getProducts = (req, res, _next) => {
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
     return models_1.Product.find()
@@ -38,6 +38,7 @@ const getProducts = (_req, res, _next) => {
             pageTitle: "All products",
             path: "/products",
             activeShop: true,
+            isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.error("Logging err", err));
@@ -53,12 +54,13 @@ const getProduct = (req, res, _next) => {
             pageTitle: "Product Details",
             product: result,
             path: "/products",
+            isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.error(err));
 };
 exports.getProduct = getProduct;
-const getIndex = (_req, res, _next) => {
+const getIndex = (req, res, _next) => {
     models_1.Product.find()
         .then((products) => {
         res.render("shop/index", {
@@ -66,6 +68,7 @@ const getIndex = (_req, res, _next) => {
             pageTitle: "Shop",
             path: "/",
             activeShop: true,
+            isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.log(err));
@@ -92,6 +95,8 @@ exports.getIndex = getIndex;
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
 const getCart = (req, res, _next) => {
+    // if (req.session.user) {
+    // return
     req.user
         .populate("cart.items.productId")
         .then((user) => {
@@ -102,9 +107,12 @@ const getCart = (req, res, _next) => {
             pageTitle: "My Cart",
             path: "/cart",
             prods: products,
+            isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.log("get cart Errror", err));
+    // }
+    // return Promise.resolve();
 };
 exports.getCart = getCart;
 /**
@@ -237,14 +245,15 @@ const postOrder = (req, res, _next) => {
 };
 exports.postOrder = postOrder;
 const getOrders = (req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     try {
-        const orders = yield models_1.Order.find({ "user.userId": (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a._id });
+        const orders = yield models_1.Order.find({ "user.userId": (_b = (_a = req === null || req === void 0 ? void 0 : req.session) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id });
         console.log("Orders ==> ", JSON.stringify(orders, null, 2));
         res.render("shop/orders", {
             pageTitle: "My Orders",
             path: "/orders",
             orders: orders,
+            isAuthenticated: req.session.isLoggedIn,
         });
     }
     catch (error) {

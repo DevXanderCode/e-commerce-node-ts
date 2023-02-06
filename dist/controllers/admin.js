@@ -5,11 +5,12 @@ const models_1 = require("../models");
 // import { Model } from "sequelize-typescript";
 // import Product from "../models/product";
 // import { Product as ProductInterface } from "../types";
-const getAddProduct = (_req, res, _next) => {
+const getAddProduct = (req, res, _next) => {
     res.render("admin/edit-product", {
         pageTitle: "Add Product",
         path: "/admin/add-product",
         editing: false,
+        isAuthenticated: req.session.isLoggedIn,
     });
 };
 exports.getAddProduct = getAddProduct;
@@ -62,6 +63,7 @@ const getEditProduct = (req, res, _next) => {
                 path: "/admin/edit-product",
                 editing: editMode,
                 product,
+                isAuthenticated: req.session.isLoggedIn,
             });
         }
         else {
@@ -146,6 +148,7 @@ const getAdminProducts = (req, res, _next) => {
             path: "/admin/products",
             // hasProduct: products?.length > 0,
             activeShop: true,
+            isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.error(err));
