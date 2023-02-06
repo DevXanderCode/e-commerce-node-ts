@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postLogout = exports.postLogin = exports.getLogin = void 0;
+exports.getSignup = exports.postLogout = exports.postLogin = exports.getLogin = void 0;
 const models_1 = require("../models");
 const getLogin = (req, res, next) => {
     var _a;
@@ -36,3 +36,11 @@ const postLogout = (req, res, next) => {
     });
 };
 exports.postLogout = postLogout;
+const getSignup = (req, res, next) => {
+    res.render("auth/signup", {
+        pageTitle: "Signup",
+        path: "/signup",
+        isAuthenticated: req.session.isLoggedIn,
+    });
+};
+exports.getSignup = getSignup;
