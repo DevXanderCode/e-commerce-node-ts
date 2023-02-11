@@ -47,19 +47,19 @@ const postSignup = (req, res, next) => {
         if (userDoc) {
             return res.redirect("/signup");
         }
-        return (0, bcryptjs_1.hash)(password, 12);
-    })
-        .then((hashedPassword) => {
-        const user = new models_1.User({
-            email,
-            password: hashedPassword,
-            cart: { items: [] },
+        return (0, bcryptjs_1.hash)(password, 12)
+            .then((hashedPassword) => {
+            const user = new models_1.User({
+                email,
+                password: hashedPassword,
+                cart: { items: [] },
+            });
+            return user.save();
+        })
+            .then((result) => {
+            console.log("saved ===>>", result);
+            res.redirect("/login");
         });
-        return user.save();
-    })
-        .then((result) => {
-        console.log("saved ===>>", result);
-        res.redirect("/");
     })
         .catch((err) => {
         console.log(`Logging find user with email(${email}) err ==> ${err}`);

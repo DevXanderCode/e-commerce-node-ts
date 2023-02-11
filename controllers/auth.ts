@@ -49,21 +49,22 @@ export const postSignup = (req: Request, res: Response, next: NextFunction) => {
       if (userDoc) {
         return res.redirect("/signup");
       }
-      return hash(password, 12);
-    })
-    .then((hashedPassword) => {
-      const user = new User({
-        email,
-        password: hashedPassword,
-        cart: { items: [] },
-      });
+      return hash(password, 12)
+        .then((hashedPassword) => {
+          const user = new User({
+            email,
+            password: hashedPassword,
+            cart: { items: [] },
+          });
 
-      return user.save();
+          return user.save();
+        })
+        .then((result) => {
+          console.log("saved ===>>", result);
+          res.redirect("/login");
+        });
     })
-    .then((result) => {
-      console.log("saved ===>>", result);
-      res.redirect("/");
-    })
+
     .catch((err) => {
       console.log(`Logging find user with email(${email}) err ==> ${err}`);
     });
