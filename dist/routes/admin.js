@@ -6,15 +6,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // import rootDir from "../util/path";
 const admin_1 = require("../controllers/admin");
+const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
 // /admin/add-product ==> Get
-router.get("/add-product", admin_1.getAddProduct);
+router.get("/add-product", middleware_1.isAuth, admin_1.getAddProduct);
 // /admin/add-product ==> post
-router.post("/add-product", admin_1.postAddProduct);
+router.post("/add-product", middleware_1.isAuth, admin_1.postAddProduct);
 // /admin/edit-product/:productId
-router.get("/edit-product/:productId", admin_1.getEditProduct);
+router.get("/edit-product/:productId", middleware_1.isAuth, admin_1.getEditProduct);
 //  /admin/products ==> Get
-router.get("/products", admin_1.getAdminProducts);
-router.post("/edit-product", admin_1.postEditProduct);
-router.post("/delete-product", admin_1.postDeleteProduct);
+router.get("/products", middleware_1.isAuth, admin_1.getAdminProducts);
+router.post("/edit-product", middleware_1.isAuth, admin_1.postEditProduct);
+router.post("/delete-product", middleware_1.isAuth, admin_1.postDeleteProduct);
 exports.default = router;

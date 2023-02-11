@@ -31,7 +31,7 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
               if (err) {
                 console.log("Session save error", err);
               }
-              return res.redirect("/");
+              res.redirect("/");
             });
           }
           res.redirect("/login");

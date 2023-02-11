@@ -11,23 +11,24 @@ import {
   postEditProduct,
   postDeleteProduct,
 } from "../controllers/admin";
+import { isAuth } from "../middleware";
 
 const router: Router = express.Router();
 
 // /admin/add-product ==> Get
-router.get("/add-product", getAddProduct);
+router.get("/add-product", isAuth, getAddProduct);
 
 // /admin/add-product ==> post
-router.post("/add-product", postAddProduct);
+router.post("/add-product", isAuth, postAddProduct);
 
 // /admin/edit-product/:productId
-router.get("/edit-product/:productId", getEditProduct);
+router.get("/edit-product/:productId", isAuth, getEditProduct);
 
 //  /admin/products ==> Get
-router.get("/products", getAdminProducts);
+router.get("/products", isAuth, getAdminProducts);
 
-router.post("/edit-product", postEditProduct);
+router.post("/edit-product", isAuth, postEditProduct);
 
-router.post("/delete-product", postDeleteProduct);
+router.post("/delete-product", isAuth, postDeleteProduct);
 
 export default router;
