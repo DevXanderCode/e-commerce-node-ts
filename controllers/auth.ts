@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { hash } from "bcryptjs";
+import { hash, compare } from "bcryptjs";
 import { User } from "../models";
 
 export const getLogin = (req: Request, res: Response, next: NextFunction) => {
@@ -15,20 +15,46 @@ export const getLogin = (req: Request, res: Response, next: NextFunction) => {
 
 export const postLogin = (req: Request, res: Response, next: NextFunction) => {
   //   res.setHeader("Set-Cookie", "loggedIn=true");
+  const { email, password } = req.body;
 
-  User.findById("63da8a48e804c4c4200bf875")
-    .then((user: any) => {
-      req.session.user = user;
-
-      req.session.isLoggedIn = true;
-      req.session.save((err) => {
-        if (err) {
-          console.log("Session save error", err);
-        }
-        res.redirect("/login");
-      });
+  User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        return res.redirect("/login");
+      }
+      compare(password, user?.password)
+        .then((doMatch) => {
+          if (doMatch) {
+            req.session.user = user;
+            req.session.isLoggedIn = true;
+            return req.session.save((err) => {
+              if (err) {
+                console.log("Session save error", err);
+              }
+              return res.redirect("/");
+            });
+          }
+          res.redirect("/login");
+        })
+        .catch((err) => console.log("got this matching password error", err));
     })
-    .catch((err) => console.log("post Login error", err));
+    .catch((err) =>
+      console.log("Got this error when trying to find a user", err)
+    );
+
+  // User.findById("63da8a48e804c4c4200bf875")
+  //   .then((user: any) => {
+  //     req.session.user = user;
+
+  //     req.session.isLoggedIn = true;
+  //     req.session.save((err) => {
+  //       if (err) {
+  //         console.log("Session save error", err);
+  //       }
+  //       res.redirect("/login");
+  //     });
+  //   })
+  //   .catch((err) => console.log("post Login error", err));
 };
 
 export const getSignup = (req: Request, res: Response, next: NextFunction) => {

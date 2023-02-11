@@ -16,18 +16,41 @@ const getLogin = (req, res, next) => {
 exports.getLogin = getLogin;
 const postLogin = (req, res, next) => {
     //   res.setHeader("Set-Cookie", "loggedIn=true");
-    models_1.User.findById("63da8a48e804c4c4200bf875")
+    const { email, password } = req.body;
+    models_1.User.findOne({ email })
         .then((user) => {
-        req.session.user = user;
-        req.session.isLoggedIn = true;
-        req.session.save((err) => {
-            if (err) {
-                console.log("Session save error", err);
+        if (!user) {
+            return res.redirect("/login");
+        }
+        (0, bcryptjs_1.compare)(password, user === null || user === void 0 ? void 0 : user.password)
+            .then((doMatch) => {
+            if (doMatch) {
+                req.session.user = user;
+                req.session.isLoggedIn = true;
+                return req.session.save((err) => {
+                    if (err) {
+                        console.log("Session save error", err);
+                    }
+                    return res.redirect("/");
+                });
             }
             res.redirect("/login");
-        });
+        })
+            .catch((err) => console.log("got this matching password error", err));
     })
-        .catch((err) => console.log("post Login error", err));
+        .catch((err) => console.log("Got this error when trying to find a user", err));
+    // User.findById("63da8a48e804c4c4200bf875")
+    //   .then((user: any) => {
+    //     req.session.user = user;
+    //     req.session.isLoggedIn = true;
+    //     req.session.save((err) => {
+    //       if (err) {
+    //         console.log("Session save error", err);
+    //       }
+    //       res.redirect("/login");
+    //     });
+    //   })
+    //   .catch((err) => console.log("post Login error", err));
 };
 exports.postLogin = postLogin;
 const getSignup = (req, res, next) => {
