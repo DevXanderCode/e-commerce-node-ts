@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
+const bcryptjs_1 = require("bcryptjs");
 const models_1 = require("../models");
 const getLogin = (req, res, next) => {
     var _a;
@@ -46,7 +47,14 @@ const postSignup = (req, res, next) => {
         if (userDoc) {
             return res.redirect("/signup");
         }
-        const user = new models_1.User({ email, password, cart: { items: [] } });
+        return (0, bcryptjs_1.hash)(password, 12);
+    })
+        .then((hashedPassword) => {
+        const user = new models_1.User({
+            email,
+            password: hashedPassword,
+            cart: { items: [] },
+        });
         return user.save();
     })
         .then((result) => {

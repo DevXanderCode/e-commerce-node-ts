@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { hash } from "bcryptjs";
 import { User } from "../models";
 
 export const getLogin = (req: Request, res: Response, next: NextFunction) => {
@@ -48,7 +49,14 @@ export const postSignup = (req: Request, res: Response, next: NextFunction) => {
       if (userDoc) {
         return res.redirect("/signup");
       }
-      const user = new User({ email, password, cart: { items: [] } });
+      return hash(password, 12);
+    })
+    .then((hashedPassword) => {
+      const user = new User({
+        email,
+        password: hashedPassword,
+        cart: { items: [] },
+      });
 
       return user.save();
     })
