@@ -33,6 +33,7 @@ const dotenv = __importStar(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
+const csurf_1 = __importDefault(require("csurf"));
 // import { create, engine } from "express-handlebars";
 const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
@@ -48,6 +49,7 @@ const store = new MongoDBStore({
     uri: MONGODB_URI,
     collection: "sessions",
 });
+const csrfProtection = (0, csurf_1.default)();
 // For handleBars
 // app.engine(
 //   "hbs",
@@ -71,6 +73,7 @@ app.use((0, express_session_1.default)({
     saveUninitialized: false,
     store,
 }));
+app.use(csrfProtection);
 app.use((req, _res, next) => {
     var _a, _b;
     models_1.User.findById((_b = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id)
@@ -85,6 +88,11 @@ app.use((req, _res, next) => {
         next();
     })
         .catch((err) => console.log("Logging catch user error", err));
+});
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
 });
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);

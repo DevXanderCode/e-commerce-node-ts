@@ -63,7 +63,7 @@ const getEditProduct = (req, res, _next) => {
                 path: "/admin/edit-product",
                 editing: editMode,
                 product,
-                isAuthenticated: req.session.isLoggedIn,
+                // isAuthenticated: req.session.isLoggedIn,
             });
         }
         else {
@@ -148,7 +148,7 @@ const getAdminProducts = (req, res, _next) => {
             path: "/admin/products",
             // hasProduct: products?.length > 0,
             activeShop: true,
-            isAuthenticated: req.session.isLoggedIn,
+            // isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.error(err));

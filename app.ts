@@ -6,6 +6,7 @@ import * as dotenv from "dotenv";
 import mongoose from "mongoose";
 import session from "express-session";
 import mongoDbStore from "connect-mongodb-session";
+import csrf from "csurf";
 // import { create, engine } from "express-handlebars";
 
 import { adminRoutes, shopRoutes, authRoutes } from "./routes";
@@ -27,6 +28,8 @@ const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
+
+const csrfProtection = csrf();
 
 // For handleBars
 // app.engine(
@@ -55,6 +58,7 @@ app.use(
     store,
   })
 );
+app.use(csrfProtection);
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
   User.findById(req.session?.user?._id)
@@ -70,6 +74,13 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
       next();
     })
     .catch((err) => console.log("Logging catch user error", err));
+});
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+
+  next();
 });
 
 app.use("/admin", adminRoutes);
