@@ -46,7 +46,7 @@ const orderSchema = new mongoose_1.Schema({
             ref: "User",
             required: true,
         },
-        name: {
+        email: {
             type: String,
             required: true,
         },

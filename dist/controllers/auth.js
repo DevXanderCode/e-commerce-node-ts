@@ -1,34 +1,109 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postLogout = exports.postLogin = exports.getLogin = void 0;
+exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
+const bcryptjs_1 = require("bcryptjs");
 const models_1 = require("../models");
 const getLogin = (req, res, next) => {
-    var _a;
     //   const isLoggedIn = req.get("Cookie")?.split(";")[0]?.trim().split("=")[1];
-    const isLoggedIn = (_a = req === null || req === void 0 ? void 0 : req.session) === null || _a === void 0 ? void 0 : _a.isLoggedIn;
+    let message = req.flash("error");
+    if (message.length > 0) {
+        message = message[0];
+    }
+    else {
+        message = null;
+    }
     res.render("auth/login", {
         pageTitle: "Login",
         path: "/login",
-        isAuthenticated: isLoggedIn,
+        errorMessage: message,
     });
 };
 exports.getLogin = getLogin;
 const postLogin = (req, res, next) => {
     //   res.setHeader("Set-Cookie", "loggedIn=true");
-    models_1.User.findById("63da8a48e804c4c4200bf875")
+    const { email, password } = req.body;
+    models_1.User.findOne({ email })
         .then((user) => {
-        req.session.user = user;
-        req.session.isLoggedIn = true;
-        req.session.save((err) => {
-            if (err) {
-                console.log("Session save error", err);
+        if (!user) {
+            req.flash("error", "Invalid email or password.");
+            return res.redirect("/login");
+        }
+        (0, bcryptjs_1.compare)(password, user === null || user === void 0 ? void 0 : user.password)
+            .then((doMatch) => {
+            if (doMatch) {
+                req.session.user = user;
+                req.session.isLoggedIn = true;
+                return req.session.save((err) => {
+                    if (err) {
+                        console.log("Session save error", err);
+                    }
+                    res.redirect("/");
+                });
             }
-            res.redirect("/");
-        });
+            req.flash("error", "Invalid email or password.");
+            res.redirect("/login");
+        })
+            .catch((err) => console.log("got this matching password error", err));
     })
-        .catch((err) => console.log("post Login error", err));
+        .catch((err) => console.log("Got this error when trying to find a user", err));
+    // User.findById("63da8a48e804c4c4200bf875")
+    //   .then((user: any) => {
+    //     req.session.user = user;
+    //     req.session.isLoggedIn = true;
+    //     req.session.save((err) => {
+    //       if (err) {
+    //         console.log("Session save error", err);
+    //       }
+    //       res.redirect("/login");
+    //     });
+    //   })
+    //   .catch((err) => console.log("post Login error", err));
 };
 exports.postLogin = postLogin;
+const getSignup = (req, res, next) => {
+    let message = req.flash("error");
+    if (message.length > 0) {
+        message = message[0];
+    }
+    else {
+        message = null;
+    }
+    res.render("auth/signup", {
+        pageTitle: "Signup",
+        path: "/signup",
+        isAuthenticated: false,
+        errorMessage: message,
+    });
+};
+exports.getSignup = getSignup;
+const postSignup = (req, res, next) => {
+    const { email, password, confirmPassword } = req.body;
+    console.log("Logging email password", email, password);
+    models_1.User.findOne({ email })
+        .then((userDoc) => {
+        if (userDoc) {
+            req.flash("error", "E-Mail exist already, please pick a different one.");
+            return res.redirect("/signup");
+        }
+        return (0, bcryptjs_1.hash)(password, 12)
+            .then((hashedPassword) => {
+            const user = new models_1.User({
+                email,
+                password: hashedPassword,
+                cart: { items: [] },
+            });
+            return user.save();
+        })
+            .then((result) => {
+            console.log("saved ===>>", result);
+            res.redirect("/login");
+        });
+    })
+        .catch((err) => {
+        console.log(`Logging find user with email(${email}) err ==> ${err}`);
+    });
+};
+exports.postSignup = postSignup;
 const postLogout = (req, res, next) => {
     req.session.destroy((err) => {
         console.log("Post logout error", err);

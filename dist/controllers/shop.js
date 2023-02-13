@@ -38,7 +38,7 @@ const getProducts = (req, res, _next) => {
             pageTitle: "All products",
             path: "/products",
             activeShop: true,
-            isAuthenticated: req.session.isLoggedIn,
+            // isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.error("Logging err", err));
@@ -54,7 +54,7 @@ const getProduct = (req, res, _next) => {
             pageTitle: "Product Details",
             product: result,
             path: "/products",
-            isAuthenticated: req.session.isLoggedIn,
+            // isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.error(err));
@@ -68,7 +68,8 @@ const getIndex = (req, res, _next) => {
             pageTitle: "Shop",
             path: "/",
             activeShop: true,
-            isAuthenticated: req.session.isLoggedIn,
+            // isAuthenticated: req.session.isLoggedIn,
+            // csrfToken: req.csrfToken(),
         });
     })
         .catch((err) => console.log(err));
@@ -107,7 +108,7 @@ const getCart = (req, res, _next) => {
             pageTitle: "My Cart",
             path: "/cart",
             prods: products,
-            isAuthenticated: req.session.isLoggedIn,
+            // isAuthenticated: req.session.isLoggedIn,
         });
     })
         .catch((err) => console.log("get cart Errror", err));
@@ -221,7 +222,7 @@ const postOrder = (req, res, _next) => {
         });
         const order = new models_1.Order({
             user: {
-                name: (_b = req === null || req === void 0 ? void 0 : req.user) === null || _b === void 0 ? void 0 : _b.name,
+                email: (_b = req === null || req === void 0 ? void 0 : req.user) === null || _b === void 0 ? void 0 : _b.email,
                 userId: req === null || req === void 0 ? void 0 : req.user,
             },
             products,

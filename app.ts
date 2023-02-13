@@ -6,6 +6,8 @@ import * as dotenv from "dotenv";
 import mongoose from "mongoose";
 import session from "express-session";
 import mongoDbStore from "connect-mongodb-session";
+import csrf from "csurf";
+import flash from "connect-flash";
 // import { create, engine } from "express-handlebars";
 
 import { adminRoutes, shopRoutes, authRoutes } from "./routes";
@@ -27,6 +29,8 @@ const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
+
+const csrfProtection = csrf();
 
 // For handleBars
 // app.engine(
@@ -55,6 +59,7 @@ app.use(
     store,
   })
 );
+app.use(csrfProtection);
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
   User.findById(req.session?.user?._id)
@@ -71,6 +76,15 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
     })
     .catch((err) => console.log("Logging catch user error", err));
 });
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+
+  next();
+});
+
+app.use(flash());
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -125,16 +139,16 @@ mongoose
   .connect(MONGODB_URI)
   .then((result) => {
     console.log("App Connected to Database");
-    User.findOne().then((usr) => {
-      if (!usr) {
-        const user = new User({
-          name: "Alex",
-          email: "DevXande@test.com",
-          cart: { items: [] },
-        });
-        user.save();
-      }
-    });
+    // User.findOne().then((usr) => {
+    //   if (!usr) {
+    //     const user = new User({
+    //       name: "Alex",
+    //       email: "DevXande@test.com",
+    //       cart: { items: [] },
+    //     });
+    //     user.save();
+    //   }
+    // });
     app.listen(3000, () => {
       console.log("Server listening at port 3000");
     });
