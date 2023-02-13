@@ -5,10 +5,17 @@ const bcryptjs_1 = require("bcryptjs");
 const models_1 = require("../models");
 const getLogin = (req, res, next) => {
     //   const isLoggedIn = req.get("Cookie")?.split(";")[0]?.trim().split("=")[1];
+    let message = req.flash("error");
+    if (message.length > 0) {
+        message = message[0];
+    }
+    else {
+        message = null;
+    }
     res.render("auth/login", {
         pageTitle: "Login",
         path: "/login",
-        errorMessage: req.flash("error"),
+        errorMessage: message,
     });
 };
 exports.getLogin = getLogin;
@@ -33,6 +40,7 @@ const postLogin = (req, res, next) => {
                     res.redirect("/");
                 });
             }
+            req.flash("error", "Invalid email or password.");
             res.redirect("/login");
         })
             .catch((err) => console.log("got this matching password error", err));
@@ -53,10 +61,18 @@ const postLogin = (req, res, next) => {
 };
 exports.postLogin = postLogin;
 const getSignup = (req, res, next) => {
+    let message = req.flash("error");
+    if (message.length > 0) {
+        message = message[0];
+    }
+    else {
+        message = null;
+    }
     res.render("auth/signup", {
         pageTitle: "Signup",
         path: "/signup",
         isAuthenticated: false,
+        errorMessage: message,
     });
 };
 exports.getSignup = getSignup;
@@ -65,8 +81,8 @@ const postSignup = (req, res, next) => {
     console.log("Logging email password", email, password);
     models_1.User.findOne({ email })
         .then((userDoc) => {
-        console;
         if (userDoc) {
+            req.flash("error", "E-Mail exist already, please pick a different one.");
             return res.redirect("/signup");
         }
         return (0, bcryptjs_1.hash)(password, 12)

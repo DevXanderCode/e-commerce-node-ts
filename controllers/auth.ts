@@ -4,11 +4,18 @@ import { User } from "../models";
 
 export const getLogin = (req: Request, res: Response, next: NextFunction) => {
   //   const isLoggedIn = req.get("Cookie")?.split(";")[0]?.trim().split("=")[1];
+  let message: string | string[] | null = req.flash("error");
+
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
 
   res.render("auth/login", {
     pageTitle: "Login",
     path: "/login",
-    errorMessage: req.flash("error"),
+    errorMessage: message,
   });
 };
 
@@ -34,6 +41,7 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
               res.redirect("/");
             });
           }
+          req.flash("error", "Invalid email or password.");
           res.redirect("/login");
         })
         .catch((err) => console.log("got this matching password error", err));
@@ -58,10 +66,18 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const getSignup = (req: Request, res: Response, next: NextFunction) => {
+  let message: string | string[] | null = req.flash("error");
+
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render("auth/signup", {
     pageTitle: "Signup",
     path: "/signup",
     isAuthenticated: false,
+    errorMessage: message,
   });
 };
 
@@ -71,8 +87,11 @@ export const postSignup = (req: Request, res: Response, next: NextFunction) => {
 
   User.findOne({ email })
     .then((userDoc: any): any => {
-      console;
       if (userDoc) {
+        req.flash(
+          "error",
+          "E-Mail exist already, please pick a different one."
+        );
         return res.redirect("/signup");
       }
       return hash(password, 12)
