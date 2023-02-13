@@ -34,6 +34,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 const csurf_1 = __importDefault(require("csurf"));
+const connect_flash_1 = __importDefault(require("connect-flash"));
 // import { create, engine } from "express-handlebars";
 const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
@@ -94,6 +95,7 @@ app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     next();
 });
+app.use((0, connect_flash_1.default)());
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
 app.use(routes_1.authRoutes);

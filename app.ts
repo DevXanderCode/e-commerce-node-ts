@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import session from "express-session";
 import mongoDbStore from "connect-mongodb-session";
 import csrf from "csurf";
+import flash from "connect-flash";
 // import { create, engine } from "express-handlebars";
 
 import { adminRoutes, shopRoutes, authRoutes } from "./routes";
@@ -82,6 +83,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
   next();
 });
+
+app.use(flash());
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);

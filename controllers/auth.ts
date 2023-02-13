@@ -4,12 +4,11 @@ import { User } from "../models";
 
 export const getLogin = (req: Request, res: Response, next: NextFunction) => {
   //   const isLoggedIn = req.get("Cookie")?.split(";")[0]?.trim().split("=")[1];
-  const isLoggedIn = req?.session?.isLoggedIn;
 
   res.render("auth/login", {
     pageTitle: "Login",
     path: "/login",
-    isAuthenticated: isLoggedIn,
+    errorMessage: req.flash("error"),
   });
 };
 
@@ -20,6 +19,7 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
   User.findOne({ email })
     .then((user) => {
       if (!user) {
+        req.flash("error", "Invalid email or password.");
         return res.redirect("/login");
       }
       compare(password, user?.password)

@@ -222,7 +222,7 @@ const postOrder = (req, res, _next) => {
         });
         const order = new models_1.Order({
             user: {
-                name: (_b = req === null || req === void 0 ? void 0 : req.user) === null || _b === void 0 ? void 0 : _b.name,
+                email: (_b = req === null || req === void 0 ? void 0 : req.user) === null || _b === void 0 ? void 0 : _b.email,
                 userId: req === null || req === void 0 ? void 0 : req.user,
             },
             products,
