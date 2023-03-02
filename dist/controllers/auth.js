@@ -22,11 +22,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postReset = exports.getReset = exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
+exports.getNewPassword = exports.postReset = exports.getReset = exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
 const bcryptjs_1 = require("bcryptjs");
 const dotenv = __importStar(require("dotenv"));
 const crypto_1 = __importDefault(require("crypto"));
@@ -176,12 +185,13 @@ const postReset = (req, res, next) => {
                 return res.redirect("/reset");
             }
             user.resetToken = token;
-            user.resetTokenExpiration = Date.now() + 3600000;
+            user.resetTokenExpiration = new Date(Date.now() + 3600000);
             return user.save();
         })
             .then((result) => {
             res.redirect("/");
-            (0, mailjet_1.sendEmail)(email, "User", "Password Reset", `<p>You requested a Password reset</p><p>Click this <a href='http://localhost:3000/reset/${token}'>Link</a> to set a  new password</p>`);
+            (0, mailjet_1.sendEmail)(email, "User", "Password Reset", `<p>You requested a Password reset</p>
+          <p>Click this <a href='http://localhost:3000/reset/${token}'>Link</a> to set a  new password</p>`);
         })
             .catch((err) => {
             console.log("error", err);
@@ -189,3 +199,29 @@ const postReset = (req, res, next) => {
     });
 };
 exports.postReset = postReset;
+const getNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.params.token;
+    let message = req.flash("error");
+    try {
+        const user = yield models_1.User.findOne({
+            resetToken: token,
+            resetTokenExpiration: { $gt: Date.now() },
+        });
+        if (message.length > 0) {
+            message = message[0];
+        }
+        else {
+            message = null;
+        }
+        res.render("auth/new-password", {
+            pageTitle: "Set New Password",
+            path: "/new-password",
+            errorMessage: message,
+            userId: user === null || user === void 0 ? void 0 : user._id.toString(),
+        });
+    }
+    catch (error) {
+        console.log("error", error);
+    }
+});
+exports.getNewPassword = getNewPassword;

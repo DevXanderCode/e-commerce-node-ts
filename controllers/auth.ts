@@ -168,7 +168,7 @@ export const postReset = (req: Request, res: Response, next: NextFunction) => {
         }
 
         user.resetToken = token;
-        user.resetTokenExpiration = Date.now() + 3600000;
+        user.resetTokenExpiration = new Date(Date.now() + 3600000);
 
         return user.save();
       })
@@ -178,11 +178,43 @@ export const postReset = (req: Request, res: Response, next: NextFunction) => {
           email,
           "User",
           "Password Reset",
-          `<p>You requested a Password reset</p><p>Click this <a href='http://localhost:3000/reset/${token}'>Link</a> to set a  new password</p>`
+          `<p>You requested a Password reset</p>
+          <p>Click this <a href='http://localhost:3000/reset/${token}'>Link</a> to set a  new password</p>`
         );
       })
       .catch((err) => {
         console.log("error", err);
       });
   });
+};
+
+export const getNewPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.params.token;
+  let message: string | string[] | null = req.flash("error");
+
+  try {
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiration: { $gt: Date.now() },
+    });
+
+    if (message.length > 0) {
+      message = message[0];
+    } else {
+      message = null;
+    }
+
+    res.render("auth/new-password", {
+      pageTitle: "Set New Password",
+      path: "/new-password",
+      errorMessage: message,
+      userId: user?._id.toString(),
+    });
+  } catch (error) {
+    console.log("error", error);
+  }
 };

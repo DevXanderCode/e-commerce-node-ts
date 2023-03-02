@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import {
   getLogin,
+  getNewPassword,
   getReset,
   getSignup,
   postLogin,
@@ -16,6 +17,8 @@ router.get("/login", getLogin);
 router.get("/signup", getSignup);
 
 router.get("/reset", getReset);
+
+router.get("/reset/:token", getNewPassword);
 
 router.post("/login", postLogin);
 
