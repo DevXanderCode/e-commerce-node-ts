@@ -107,17 +107,21 @@ export const postEditProduct = (
 
   Product.findById(prodId)
     .then((product) => {
+      if (product?.userId.toString() !== req.user._id.toString()) {
+        res.redirect("/");
+        return;
+      }
       if (product instanceof Product) {
         product.title = title;
         product.price = price;
         product.description = description;
         product.imageUrl = imageUrl;
-        return product.save();
+        return product.save().then(() => {
+          res.redirect("/admin/products");
+        });
       }
     })
-    .then(() => {
-      res.redirect("/admin/products");
-    })
+
     .catch((err: any) => console.log(err));
 };
 
@@ -137,7 +141,7 @@ export const postDeleteProduct = (
   _next: NextFunction
 ) => {
   const prodId = req.body?.productId;
-  Product.findByIdAndRemove(prodId)
+  Product.deleteOne({ _id: prodId, userId: req.user._id })
     .then(() => {
       console.log("Product deleted");
       res.redirect("/admin/products");
@@ -167,7 +171,7 @@ export const getAdminProducts = (
 ) => {
   // req.user
   //   .getProducts()
-  Product.find()
+  Product.find({ userId: req.user._id })
     .then((result) => {
       res.render("admin/products", {
         prods: result,
@@ -178,5 +182,5 @@ export const getAdminProducts = (
         // isAuthenticated: req.session.isLoggedIn,
       });
     })
-    .catch((err: Error) => console.error(err));
+    .catch((err: Error) => console.error("get Admin product error", err));
 };

@@ -87,16 +87,19 @@ const postEditProduct = (req, res, _next) => {
     const { productId: prodId, title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
     models_1.Product.findById(prodId)
         .then((product) => {
+        if ((product === null || product === void 0 ? void 0 : product.userId.toString()) !== req.user._id.toString()) {
+            res.redirect("/");
+            return;
+        }
         if (product instanceof models_1.Product) {
             product.title = title;
             product.price = price;
             product.description = description;
             product.imageUrl = imageUrl;
-            return product.save();
+            return product.save().then(() => {
+                res.redirect("/admin/products");
+            });
         }
-    })
-        .then(() => {
-        res.redirect("/admin/products");
     })
         .catch((err) => console.log(err));
 };
@@ -114,7 +117,7 @@ exports.postEditProduct = postEditProduct;
 const postDeleteProduct = (req, res, _next) => {
     var _a;
     const prodId = (_a = req.body) === null || _a === void 0 ? void 0 : _a.productId;
-    models_1.Product.findByIdAndRemove(prodId)
+    models_1.Product.deleteOne({ _id: prodId, userId: req.user._id })
         .then(() => {
         console.log("Product deleted");
         res.redirect("/admin/products");
@@ -140,7 +143,7 @@ exports.postDeleteProduct = postDeleteProduct;
 const getAdminProducts = (req, res, _next) => {
     // req.user
     //   .getProducts()
-    models_1.Product.find()
+    models_1.Product.find({ userId: req.user._id })
         .then((result) => {
         res.render("admin/products", {
             prods: result,
@@ -151,6 +154,6 @@ const getAdminProducts = (req, res, _next) => {
             // isAuthenticated: req.session.isLoggedIn,
         });
     })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error("get Admin product error", err));
 };
 exports.getAdminProducts = getAdminProducts;

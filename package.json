@@ -41,6 +41,8 @@
     "mongodb": "^4.10.0",
     "mongoose": "^6.9.0",
     "mysql2": "^2.3.3",
+    "node-mailjet": "^6.0.2",
+    "nodemailer": "^6.9.1",
     "pug": "^3.0.2",
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.21.4"

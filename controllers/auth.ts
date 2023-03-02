@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { hash, compare } from "bcryptjs";
+import * as dotenv from "dotenv";
+import crypto from "crypto";
 import { User } from "../models";
+import { sendEmail } from "../externals/mailjet";
+
+dotenv.config();
 
 export const getLogin = (req: Request, res: Response, next: NextFunction) => {
   //   const isLoggedIn = req.get("Cookie")?.split(";")[0]?.trim().split("=")[1];
@@ -83,7 +88,7 @@ export const getSignup = (req: Request, res: Response, next: NextFunction) => {
 
 export const postSignup = (req: Request, res: Response, next: NextFunction) => {
   const { email, password, confirmPassword } = req.body;
-  console.log("Logging email password", email, password);
+  // console.log("Logging email password", email, password);
 
   User.findOne({ email })
     .then((userDoc: any): any => {
@@ -105,8 +110,16 @@ export const postSignup = (req: Request, res: Response, next: NextFunction) => {
           return user.save();
         })
         .then((result) => {
-          console.log("saved ===>>", result);
           res.redirect("/login");
+
+          return sendEmail(email, "user")
+            .then((response) => {
+              // res.redirect("/login");
+              console.log("email sent", response.response.status);
+            })
+            .catch((err) =>
+              console.log("Logging mailjet error", err.statusCode)
+            );
         });
     })
 
@@ -120,4 +133,128 @@ export const postLogout = (req: Request, res: Response, next: NextFunction) => {
     console.log("Post logout error", err);
     res.redirect("/");
   });
+};
+
+export const getReset = (req: Request, res: Response, next: NextFunction) => {
+  let message: string | string[] | null = req.flash("error");
+
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  res.render("auth/reset", {
+    pageTitle: "Reset Password",
+    path: "/reset",
+    errorMessage: message,
+  });
+};
+
+export const postReset = (req: Request, res: Response, next: NextFunction) => {
+  const { email } = req.body;
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log("Token generation error", err);
+      return res.redirect("/reset");
+    }
+
+    let token = buffer.toString("hex");
+
+    User.findOne({ email: email })
+      .then((user: any) => {
+        if (!user) {
+          req.flash("error", "No Account with email found!");
+          return res.redirect("/reset");
+        }
+
+        user.resetToken = token;
+        user.resetTokenExpiration = new Date(Date.now() + 3600000);
+
+        return user.save();
+      })
+      .then((result) => {
+        res.redirect("/");
+        sendEmail(
+          email,
+          "User",
+          "Password Reset",
+          `<p>You requested a Password reset</p>
+          <p>Click this <a href='http://localhost:3000/reset/${token}'>Link</a> to set a  new password</p>`
+        );
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  });
+};
+
+export const getNewPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.params.token;
+  let message: string | string[] | null = req.flash("error");
+
+  try {
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiration: { $gt: Date.now() },
+    });
+
+    if (message.length > 0) {
+      message = message[0];
+    } else {
+      message = null;
+    }
+
+    res.render("auth/new-password", {
+      pageTitle: "Set New Password",
+      path: "/new-password",
+      errorMessage: message,
+      userId: user?._id.toString(),
+      passwordToken: token,
+    });
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+export const postNewPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { password: newPassword, userId, passwordToken } = req.body;
+
+  try {
+    const user = await User.findOne({
+      resetToken: passwordToken,
+      resetTokenExpiration: { $gt: Date.now() },
+      _id: userId,
+    });
+
+    if (user) {
+      const hashedPassword = await hash(newPassword, 12);
+      user.password = hashedPassword;
+      user.resetToken = undefined;
+      user.resetTokenExpiration = undefined;
+
+      await user.save();
+
+      await sendEmail(
+        user.email,
+        "User",
+        "Reset Password Successful",
+        `<p>Hello User, your password has been reset successfully</p>
+      <p>If this action wasn't performed by you, send us an email</p>
+      <p>May the Force be with you</p>`
+      );
+
+      console.log("Password reset successful");
+    }
+    res.redirect("/login");
+  } catch (error) {
+    console.log("Logging error ==>", error);
+  }
 };
