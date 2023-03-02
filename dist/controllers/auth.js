@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
+exports.getReset = exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
 const bcryptjs_1 = require("bcryptjs");
 const dotenv = __importStar(require("dotenv"));
 const models_1 = require("../models");
@@ -121,10 +121,10 @@ const postSignup = (req, res, next) => {
             return user.save();
         })
             .then((result) => {
-            console.log("saved ===>>", userDoc);
+            res.redirect("/login");
             return (0, mailjet_1.sendEmail)(email, "user")
                 .then((response) => {
-                res.redirect("/login");
+                // res.redirect("/login");
                 console.log("email sent", response.response.status);
             })
                 .catch((err) => console.log("Logging mailjet error", err.statusCode));
@@ -142,3 +142,18 @@ const postLogout = (req, res, next) => {
     });
 };
 exports.postLogout = postLogout;
+const getReset = (req, res, next) => {
+    let message = req.flash("error");
+    if (message.length > 0) {
+        message = message[0];
+    }
+    else {
+        message = null;
+    }
+    res.render("auth/reset", {
+        pageTitle: "Reset Password",
+        path: "/reset",
+        errorMessage: message,
+    });
+};
+exports.getReset = getReset;

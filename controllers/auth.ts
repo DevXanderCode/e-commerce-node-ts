@@ -109,11 +109,11 @@ export const postSignup = (req: Request, res: Response, next: NextFunction) => {
           return user.save();
         })
         .then((result) => {
-          console.log("saved ===>>", userDoc);
+          res.redirect("/login");
 
           return sendEmail(email, "user")
             .then((response) => {
-              res.redirect("/login");
+              // res.redirect("/login");
               console.log("email sent", response.response.status);
             })
             .catch((err) =>
@@ -131,5 +131,20 @@ export const postLogout = (req: Request, res: Response, next: NextFunction) => {
   req.session.destroy((err) => {
     console.log("Post logout error", err);
     res.redirect("/");
+  });
+};
+
+export const getReset = (req: Request, res: Response, next: NextFunction) => {
+  let message: string | string[] | null = req.flash("error");
+
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  res.render("auth/reset", {
+    pageTitle: "Reset Password",
+    path: "/reset",
+    errorMessage: message,
   });
 };

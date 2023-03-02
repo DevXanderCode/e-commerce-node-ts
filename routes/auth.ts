@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import {
   getLogin,
+  getReset,
   getSignup,
   postLogin,
   postLogout,
@@ -12,6 +13,8 @@ const router: Router = Router();
 router.get("/login", getLogin);
 
 router.get("/signup", getSignup);
+
+router.get("/reset", getReset);
 
 router.post("/login", postLogin);
 
