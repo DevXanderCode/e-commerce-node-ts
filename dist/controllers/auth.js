@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNewPassword = exports.postReset = exports.getReset = exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
+exports.postNewPassword = exports.getNewPassword = exports.postReset = exports.getReset = exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
 const bcryptjs_1 = require("bcryptjs");
 const dotenv = __importStar(require("dotenv"));
 const crypto_1 = __importDefault(require("crypto"));
@@ -218,6 +218,7 @@ const getNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             path: "/new-password",
             errorMessage: message,
             userId: user === null || user === void 0 ? void 0 : user._id.toString(),
+            passwordToken: token,
         });
     }
     catch (error) {
@@ -225,3 +226,29 @@ const getNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.getNewPassword = getNewPassword;
+const postNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { password: newPassword, userId, passwordToken } = req.body;
+    try {
+        const user = yield models_1.User.findOne({
+            resetToken: passwordToken,
+            resetTokenExpiration: { $gt: Date.now() },
+            _id: userId,
+        });
+        if (user) {
+            const hashedPassword = yield (0, bcryptjs_1.hash)(newPassword, 12);
+            user.password = hashedPassword;
+            user.resetToken = undefined;
+            user.resetTokenExpiration = undefined;
+            yield user.save();
+            yield (0, mailjet_1.sendEmail)(user.email, "User", "Reset Password Successful", `<p>Hello User, your password has been reset successfully</p>
+      <p>If this action wasn't performed by you, send us an email</p>
+      <p>May the Force be with you</p>`);
+            console.log("Password reset successful");
+        }
+        res.redirect("/login");
+    }
+    catch (error) {
+        console.log("Logging error ==>", error);
+    }
+});
+exports.postNewPassword = postNewPassword;

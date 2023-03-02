@@ -10,5 +10,6 @@ router.get("/reset/:token", auth_1.getNewPassword);
 router.post("/login", auth_1.postLogin);
 router.post("/signup", auth_1.postSignup);
 router.post("/reset", auth_1.postReset);
+router.post("/new-password", auth_1.postNewPassword);
 router.post("/logout", auth_1.postLogout);
 exports.default = router;

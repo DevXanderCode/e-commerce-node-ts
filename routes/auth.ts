@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
 import {
   getLogin,
   getNewPassword,
@@ -6,6 +6,7 @@ import {
   getSignup,
   postLogin,
   postLogout,
+  postNewPassword,
   postReset,
   postSignup,
 } from "../controllers/auth";
@@ -25,6 +26,8 @@ router.post("/login", postLogin);
 router.post("/signup", postSignup);
 
 router.post("/reset", postReset);
+
+router.post("/new-password", postNewPassword);
 
 router.post("/logout", postLogout);
 

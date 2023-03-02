@@ -213,8 +213,48 @@ export const getNewPassword = async (
       path: "/new-password",
       errorMessage: message,
       userId: user?._id.toString(),
+      passwordToken: token,
     });
   } catch (error) {
     console.log("error", error);
+  }
+};
+
+export const postNewPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { password: newPassword, userId, passwordToken } = req.body;
+
+  try {
+    const user = await User.findOne({
+      resetToken: passwordToken,
+      resetTokenExpiration: { $gt: Date.now() },
+      _id: userId,
+    });
+
+    if (user) {
+      const hashedPassword = await hash(newPassword, 12);
+      user.password = hashedPassword;
+      user.resetToken = undefined;
+      user.resetTokenExpiration = undefined;
+
+      await user.save();
+
+      await sendEmail(
+        user.email,
+        "User",
+        "Reset Password Successful",
+        `<p>Hello User, your password has been reset successfully</p>
+      <p>If this action wasn't performed by you, send us an email</p>
+      <p>May the Force be with you</p>`
+      );
+
+      console.log("Password reset successful");
+    }
+    res.redirect("/login");
+  } catch (error) {
+    console.log("Logging error ==>", error);
   }
 };
