@@ -1,42 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { hash, compare } from "bcryptjs";
-import Mailjet from "node-mailjet";
 import * as dotenv from "dotenv";
 import { User } from "../models";
+import { sendEmail } from "../externals/mailjet";
 
 dotenv.config();
-
-console.log(
-  "Apikeys",
-  process.env.MJ_APIKEY_PUBLIC,
-  process.env.MJ_APIKEY_PRIVATE
-);
-
-const mailjet = Mailjet.apiConnect(
-  process.env.MJ_APIKEY_PUBLIC!,
-  process.env.MJ_APIKEY_PRIVATE!
-);
-
-const sendEmail = (email: string, name: string) =>
-  mailjet.post("send", { version: "v3.1" }).request({
-    Messages: [
-      {
-        From: {
-          Email: "essienemma300dev@gmail.com",
-          Name: "Jarvis",
-        },
-        To: [
-          {
-            Email: email,
-            Name: name,
-          },
-        ],
-        Subject: "Signup Status",
-        TextPart: `Dear ${name}, welcome to Node Ecommerce! Your sign up was successful, May the force be with you!`,
-        HTMLPart: `<h3>Dear ${name}, welcome to <a href=\"https://www.mailjet.com/\">Node-Ecommerce</a>!</h3><br />May the force be with you!`,
-      },
-    ],
-  });
 
 export const getLogin = (req: Request, res: Response, next: NextFunction) => {
   //   const isLoggedIn = req.get("Cookie")?.split(";")[0]?.trim().split("=")[1];

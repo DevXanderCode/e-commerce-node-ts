@@ -22,37 +22,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
 const bcryptjs_1 = require("bcryptjs");
-const node_mailjet_1 = __importDefault(require("node-mailjet"));
 const dotenv = __importStar(require("dotenv"));
 const models_1 = require("../models");
+const mailjet_1 = require("../externals/mailjet");
 dotenv.config();
-console.log("Apikeys", process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
-const mailjet = node_mailjet_1.default.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
-const sendEmail = (email, name) => mailjet.post("send", { version: "v3.1" }).request({
-    Messages: [
-        {
-            From: {
-                Email: "essienemma300dev@gmail.com",
-                Name: "Jarvis",
-            },
-            To: [
-                {
-                    Email: email,
-                    Name: name,
-                },
-            ],
-            Subject: "Signup Status",
-            TextPart: `Dear ${name}, welcome to Node Ecommerce! Your sign up was successful, May the force be with you!`,
-            HTMLPart: `<h3>Dear ${name}, welcome to <a href=\"https://www.mailjet.com/\">Node-Ecommerce</a>!</h3><br />May the force be with you!`,
-        },
-    ],
-});
 const getLogin = (req, res, next) => {
     //   const isLoggedIn = req.get("Cookie")?.split(";")[0]?.trim().split("=")[1];
     let message = req.flash("error");
@@ -146,7 +122,7 @@ const postSignup = (req, res, next) => {
         })
             .then((result) => {
             console.log("saved ===>>", userDoc);
-            return sendEmail(email, "user")
+            return (0, mailjet_1.sendEmail)(email, "user")
                 .then((response) => {
                 res.redirect("/login");
                 console.log("email sent", response.response.status);
