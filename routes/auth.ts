@@ -5,6 +5,7 @@ import {
   getSignup,
   postLogin,
   postLogout,
+  postReset,
   postSignup,
 } from "../controllers/auth";
 
@@ -19,6 +20,8 @@ router.get("/reset", getReset);
 router.post("/login", postLogin);
 
 router.post("/signup", postSignup);
+
+router.post("/reset", postReset);
 
 router.post("/logout", postLogout);
 

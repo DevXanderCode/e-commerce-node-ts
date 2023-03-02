@@ -8,5 +8,6 @@ router.get("/signup", auth_1.getSignup);
 router.get("/reset", auth_1.getReset);
 router.post("/login", auth_1.postLogin);
 router.post("/signup", auth_1.postSignup);
+router.post("/reset", auth_1.postReset);
 router.post("/logout", auth_1.postLogout);
 exports.default = router;

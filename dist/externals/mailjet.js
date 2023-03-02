@@ -31,7 +31,7 @@ const node_mailjet_1 = __importDefault(require("node-mailjet"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const mailjet = node_mailjet_1.default.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
-const sendEmail = (email, name) => mailjet.post("send", { version: "v3.1" }).request({
+const sendEmail = (email, name, Subject, HTMLPart, TextPart) => mailjet.post("send", { version: "v3.1" }).request({
     Messages: [
         {
             From: {
@@ -44,9 +44,11 @@ const sendEmail = (email, name) => mailjet.post("send", { version: "v3.1" }).req
                     Name: name,
                 },
             ],
-            Subject: "Signup Status",
-            TextPart: `Dear ${name}, welcome to Node Ecommerce! Your sign up was successful, May the force be with you!`,
-            HTMLPart: `<h3>Dear ${name}, welcome to <a href=\"https://www.mailjet.com/\">Node-Ecommerce</a>!</h3><br />May the force be with you!`,
+            Subject: Subject || "Signup Status",
+            TextPart: TextPart ||
+                `Dear ${name}, welcome to Node Ecommerce! Your sign up was successful, May the force be with you!`,
+            HTMLPart: HTMLPart ||
+                `<h3>Dear ${name}, welcome to <a href=\"https://www.mailjet.com/\">Node-Ecommerce</a>!</h3><br />May the force be with you!`,
         },
     ],
 });

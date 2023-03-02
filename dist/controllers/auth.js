@@ -22,10 +22,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReset = exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
+exports.postReset = exports.getReset = exports.postLogout = exports.postSignup = exports.getSignup = exports.postLogin = exports.getLogin = void 0;
 const bcryptjs_1 = require("bcryptjs");
 const dotenv = __importStar(require("dotenv"));
+const crypto_1 = __importDefault(require("crypto"));
 const models_1 = require("../models");
 const mailjet_1 = require("../externals/mailjet");
 dotenv.config();
@@ -157,3 +161,31 @@ const getReset = (req, res, next) => {
     });
 };
 exports.getReset = getReset;
+const postReset = (req, res, next) => {
+    const { email } = req.body;
+    crypto_1.default.randomBytes(32, (err, buffer) => {
+        if (err) {
+            console.log("Token generation error", err);
+            return res.redirect("/reset");
+        }
+        let token = buffer.toString("hex");
+        models_1.User.findOne({ email: email })
+            .then((user) => {
+            if (!user) {
+                req.flash("error", "No Account with email found!");
+                return res.redirect("/reset");
+            }
+            user.resetToken = token;
+            user.resetTokenExpiration = Date.now() + 3600000;
+            return user.save();
+        })
+            .then((result) => {
+            res.redirect("/");
+            (0, mailjet_1.sendEmail)(email, "User", "Password Reset", `<p>You requested a Password reset</p><p>Click this <a href='http://localhost:3000/reset/${token}'>Link</a> to set a  new password</p>`);
+        })
+            .catch((err) => {
+            console.log("error", err);
+        });
+    });
+};
+exports.postReset = postReset;

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { hash, compare } from "bcryptjs";
 import * as dotenv from "dotenv";
+import crypto from "crypto";
 import { User } from "../models";
 import { sendEmail } from "../externals/mailjet";
 
@@ -146,5 +147,42 @@ export const getReset = (req: Request, res: Response, next: NextFunction) => {
     pageTitle: "Reset Password",
     path: "/reset",
     errorMessage: message,
+  });
+};
+
+export const postReset = (req: Request, res: Response, next: NextFunction) => {
+  const { email } = req.body;
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log("Token generation error", err);
+      return res.redirect("/reset");
+    }
+
+    let token = buffer.toString("hex");
+
+    User.findOne({ email: email })
+      .then((user: any) => {
+        if (!user) {
+          req.flash("error", "No Account with email found!");
+          return res.redirect("/reset");
+        }
+
+        user.resetToken = token;
+        user.resetTokenExpiration = Date.now() + 3600000;
+
+        return user.save();
+      })
+      .then((result) => {
+        res.redirect("/");
+        sendEmail(
+          email,
+          "User",
+          "Password Reset",
+          `<p>You requested a Password reset</p><p>Click this <a href='http://localhost:3000/reset/${token}'>Link</a> to set a  new password</p>`
+        );
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
   });
 };
