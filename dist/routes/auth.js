@@ -21,8 +21,10 @@ router.post("/login", [
             }
             return true;
         });
-    }),
-    (0, express_validator_1.body)("password").custom((value, { req }) => {
+    })
+        .normalizeEmail(),
+    (0, express_validator_1.body)("password")
+        .custom((value, { req }) => {
         return models_1.User.findOne({ email: req.body.email }).then((user) => {
             if (user) {
                 return (0, bcryptjs_1.compare)(value, user === null || user === void 0 ? void 0 : user.password).then((doMatch) => {
@@ -34,7 +36,8 @@ router.post("/login", [
             }
             return true;
         });
-    }),
+    })
+        .trim(),
 ], auth_1.postLogin);
 router.post("/signup", [
     (0, express_validator_1.check)("email")
@@ -51,11 +54,15 @@ router.post("/signup", [
             }
             return true;
         });
-    }),
+    })
+        .normalizeEmail(),
     (0, express_validator_1.body)("password", "Please enter a password with at least 5 character and contains just numbers and letters")
         .isLength({ min: 5 })
-        .isAlphanumeric(),
-    (0, express_validator_1.body)("confirmPassword").custom((value, { req }) => {
+        .isAlphanumeric()
+        .trim(),
+    (0, express_validator_1.body)("confirmPassword")
+        .trim()
+        .custom((value, { req }) => {
         var _a;
         if (value !== ((_a = req.body) === null || _a === void 0 ? void 0 : _a.password)) {
             throw new Error("Passwords have to match");

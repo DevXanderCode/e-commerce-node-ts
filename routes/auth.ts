@@ -37,20 +37,23 @@ router.post(
           }
           return true;
         });
-      }),
-    body("password").custom((value, { req }) => {
-      return User.findOne({ email: req.body.email }).then((user: any) => {
-        if (user) {
-          return compare(value, user?.password).then((doMatch) => {
-            if (!doMatch) {
-              return Promise.reject("Invalid Password");
-            }
-            return true;
-          });
-        }
-        return true;
-      });
-    }),
+      })
+      .normalizeEmail(),
+    body("password")
+      .custom((value, { req }) => {
+        return User.findOne({ email: req.body.email }).then((user: any) => {
+          if (user) {
+            return compare(value, user?.password).then((doMatch) => {
+              if (!doMatch) {
+                return Promise.reject("Invalid Password");
+              }
+              return true;
+            });
+          }
+          return true;
+        });
+      })
+      .trim(),
   ],
   postLogin
 );
@@ -74,20 +77,24 @@ router.post(
           }
           return true;
         });
-      }),
+      })
+      .normalizeEmail(),
     body(
       "password",
       "Please enter a password with at least 5 character and contains just numbers and letters"
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body?.password) {
-        throw new Error("Passwords have to match");
-      }
+      .isAlphanumeric()
+      .trim(),
+    body("confirmPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body?.password) {
+          throw new Error("Passwords have to match");
+        }
 
-      return true;
-    }),
+        return true;
+      }),
   ],
   postSignup
 );

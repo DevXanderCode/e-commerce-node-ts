@@ -84,8 +84,18 @@ const postLogin = (req, res, next) => {
     models_1.User.findOne({ email })
         .then((user) => {
         if (!user) {
-            req.flash("error", "Invalid email or password.");
-            return res.redirect("/login");
+            // req.flash("error", "Invalid email or password.");
+            // return res.redirect("/login");
+            return res.status(422).render("auth/login", {
+                pageTitle: "Login",
+                path: "/login",
+                errorMessage: "Invalid Email or Password",
+                validationErrors: [],
+                oldInput: {
+                    email,
+                    password,
+                },
+            });
         }
         (0, bcryptjs_1.compare)(password, user === null || user === void 0 ? void 0 : user.password)
             .then((doMatch) => {
@@ -99,8 +109,16 @@ const postLogin = (req, res, next) => {
                     res.redirect("/");
                 });
             }
-            req.flash("error", "Invalid email or password.");
-            res.redirect("/login");
+            return res.status(422).render("auth/login", {
+                pageTitle: "Login",
+                path: "/login",
+                errorMessage: "Invalid Email or Password",
+                validationErrors: [],
+                oldInput: {
+                    email,
+                    password,
+                },
+            });
         })
             .catch((err) => console.log("got this matching password error", err));
     })

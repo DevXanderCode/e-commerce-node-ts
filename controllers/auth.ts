@@ -50,10 +50,20 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
   }
 
   User.findOne({ email })
-    .then((user) => {
+    .then((user: any) => {
       if (!user) {
-        req.flash("error", "Invalid email or password.");
-        return res.redirect("/login");
+        // req.flash("error", "Invalid email or password.");
+        // return res.redirect("/login");
+        return res.status(422).render("auth/login", {
+          pageTitle: "Login",
+          path: "/login",
+          errorMessage: "Invalid Email or Password",
+          validationErrors: [],
+          oldInput: {
+            email,
+            password,
+          },
+        });
       }
       compare(password, user?.password)
         .then((doMatch) => {
@@ -67,8 +77,16 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
               res.redirect("/");
             });
           }
-          req.flash("error", "Invalid email or password.");
-          res.redirect("/login");
+          return res.status(422).render("auth/login", {
+            pageTitle: "Login",
+            path: "/login",
+            errorMessage: "Invalid Email or Password",
+            validationErrors: [],
+            oldInput: {
+              email,
+              password,
+            },
+          });
         })
         .catch((err) => console.log("got this matching password error", err));
     })
