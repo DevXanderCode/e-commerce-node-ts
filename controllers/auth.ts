@@ -28,6 +28,15 @@ export const getLogin = (req: Request, res: Response, next: NextFunction) => {
 export const postLogin = (req: Request, res: Response, next: NextFunction) => {
   //   res.setHeader("Set-Cookie", "loggedIn=true");
   const { email, password } = req.body;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render("auth/login", {
+      pageTitle: "Login",
+      path: "/login",
+      errorMessage: errors.array()[0].msg,
+    });
+  }
 
   User.findOne({ email })
     .then((user) => {
@@ -84,6 +93,11 @@ export const getSignup = (req: Request, res: Response, next: NextFunction) => {
     path: "/signup",
     isAuthenticated: false,
     errorMessage: message,
+    oldInput: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 };
 
@@ -97,6 +111,11 @@ export const postSignup = (req: Request, res: Response, next: NextFunction) => {
       pageTitle: "Signup",
       path: "/signup",
       errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email,
+        password,
+        confirmPassword,
+      },
     });
   }
   // User.findOne({ email })
