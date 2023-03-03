@@ -88,7 +88,14 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
             },
           });
         })
-        .catch((err) => console.log("got this matching password error", err));
+        .catch((err) => {
+          console.log("got this matching password error", err);
+
+          const error: Error & { httpStatusCode?: number } = new Error(err);
+          error["httpStatusCode"] = 500;
+
+          return next(error);
+        });
     })
     .catch((err) =>
       console.log("Got this error when trying to find a user", err)
@@ -198,7 +205,14 @@ export const postSignup = (req: Request, res: Response, next: NextFunction) => {
           // res.redirect("/login");
           console.log("email sent", response.response.status);
         })
-        .catch((err) => console.log("Logging mailjet error", err.statusCode));
+        .catch((err) => {
+          console.log("Logging mailjet error", err.statusCode);
+
+          const error: Error & { httpStatusCode?: number } = new Error(err);
+          error["httpStatusCode"] = 500;
+
+          return next(error);
+        });
     });
   // })
 
@@ -292,6 +306,10 @@ export const postReset = (req: Request, res: Response, next: NextFunction) => {
       })
       .catch((err) => {
         console.log("error", err);
+        const error: Error & { httpStatusCode?: number } = new Error(err);
+        error["httpStatusCode"] = 500;
+
+        return next(error);
       });
   });
 };
@@ -381,7 +399,11 @@ export const postNewPassword = async (
       console.log("Password reset successful");
     }
     res.redirect("/login");
-  } catch (error) {
-    console.log("Logging error ==>", error);
+  } catch (err: any) {
+    console.log("Logging error ==>", err);
+    const error: Error & { httpStatusCode?: number } = new Error(err);
+    error["httpStatusCode"] = 500;
+
+    return next(error);
   }
 };

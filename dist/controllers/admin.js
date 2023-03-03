@@ -56,7 +56,7 @@ const postAddProduct = (req, res, next) => {
         console.error(err);
         // res.redirect("/500");
         const error = new Error(err);
-        error["httpStatus"] = 500;
+        error["httpStatusCode"] = 500;
         return next(error);
     });
     // req.user
@@ -78,7 +78,7 @@ exports.postAddProduct = postAddProduct;
  * @param {NextFunction} _next - NextFunction
  * @returns The product object
  */
-const getEditProduct = (req, res, _next) => {
+const getEditProduct = (req, res, next) => {
     const editMode = req.query.edit;
     if (!editMode) {
         return res.redirect("/");
@@ -105,7 +105,12 @@ const getEditProduct = (req, res, _next) => {
             res.redirect("/");
         }
     })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+        console.log(err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
+    });
 };
 exports.getEditProduct = getEditProduct;
 /**
@@ -118,7 +123,7 @@ exports.getEditProduct = getEditProduct;
  * @param {NextFunction} _next - NextFunction - This is a function that we can call to pass control to
  * the next middleware function in the stack.
  */
-const postEditProduct = (req, res, _next) => {
+const postEditProduct = (req, res, next) => {
     var _a;
     const { productId: prodId, title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
     const errors = (0, check_1.validationResult)(req);
@@ -157,7 +162,12 @@ const postEditProduct = (req, res, _next) => {
             });
         }
     })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+        console.log(err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
+    });
 };
 exports.postEditProduct = postEditProduct;
 /**
@@ -170,7 +180,7 @@ exports.postEditProduct = postEditProduct;
  * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
  * is done.
  */
-const postDeleteProduct = (req, res, _next) => {
+const postDeleteProduct = (req, res, next) => {
     var _a;
     const prodId = (_a = req.body) === null || _a === void 0 ? void 0 : _a.productId;
     models_1.Product.deleteOne({ _id: prodId, userId: req.user._id })
@@ -179,7 +189,10 @@ const postDeleteProduct = (req, res, _next) => {
         res.redirect("/admin/products");
     })
         .catch((err) => {
-        console.log("Logging product delete error", err);
+        console.log(err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
     });
     // console.log('delete', prodId)
     // Product.deleteById(prodId, () => {
@@ -196,7 +209,7 @@ exports.postDeleteProduct = postDeleteProduct;
  * @param {NextFunction} _next - NextFunction - This is a function that is used to call the next
  * middleware in the stack.
  */
-const getAdminProducts = (req, res, _next) => {
+const getAdminProducts = (req, res, next) => {
     // req.user
     //   .getProducts()
     models_1.Product.find({ userId: req.user._id })
@@ -210,6 +223,11 @@ const getAdminProducts = (req, res, _next) => {
             // isAuthenticated: req.session.isLoggedIn,
         });
     })
-        .catch((err) => console.error("get Admin product error", err));
+        .catch((err) => {
+        console.error("get Admin product error", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
+    });
 };
 exports.getAdminProducts = getAdminProducts;

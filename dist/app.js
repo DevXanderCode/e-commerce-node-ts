@@ -75,6 +75,11 @@ app.use((0, express_session_1.default)({
     store,
 }));
 app.use(csrfProtection);
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
 app.use((req, _res, next) => {
     var _a, _b;
     if (!req.session.user) {
@@ -96,13 +101,8 @@ app.use((req, _res, next) => {
     })
         .catch((err) => {
         console.log("Logging catch user error", err);
-        throw new Error(err);
+        next(new Error(err));
     });
-});
-app.use((req, res, next) => {
-    res.locals.isAuthenticated = req.session.isLoggedIn;
-    res.locals.csrfToken = req.csrfToken();
-    next();
 });
 app.use((0, connect_flash_1.default)());
 app.use("/admin", routes_1.adminRoutes);
@@ -111,7 +111,12 @@ app.use(routes_1.authRoutes);
 app.get("/500", error_1.get500Page);
 app.use(error_1.get404Page);
 app.use((error, req, res, next) => {
-    res.redirect("/500");
+    // res.redirect("/500");
+    res.status(500).render("500", {
+        pageTitle: "Error!",
+        path: "/500",
+        isAuthenticated: req.session.isLoggedIn,
+    });
 });
 // Associations
 // Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });

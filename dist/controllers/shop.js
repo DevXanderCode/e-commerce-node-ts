@@ -28,7 +28,7 @@ const models_1 = require("../models");
  * the request.
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
-const getProducts = (req, res, _next) => {
+const getProducts = (req, res, next) => {
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
     return models_1.Product.find()
@@ -41,7 +41,12 @@ const getProducts = (req, res, _next) => {
             // isAuthenticated: req.session.isLoggedIn,
         });
     })
-        .catch((err) => console.error("Logging err", err));
+        .catch((err) => {
+        console.error("Logging err", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
+    });
 };
 exports.getProducts = getProducts;
 const getProduct = (req, res, _next) => {
@@ -178,7 +183,7 @@ exports.postCart = postCart;
  * the client.
  * @param {NextFunction} _next - NextFunction
  */
-const postCartDeleteProduct = (req, res, _next) => {
+const postCartDeleteProduct = (req, res, next) => {
     var _a, _b;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
     // req.user
@@ -194,6 +199,9 @@ const postCartDeleteProduct = (req, res, _next) => {
         res.redirect("/cart");
     }).catch((err) => {
         console.log("get cart error", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
     });
 };
 exports.postCartDeleteProduct = postCartDeleteProduct;
@@ -207,7 +215,7 @@ exports.postCartDeleteProduct = postCartDeleteProduct;
 //     path: "/checkout",
 //   });
 // };
-const postOrder = (req, res, _next) => {
+const postOrder = (req, res, next) => {
     req.user
         .populate("cart.items.productId")
         .then((user) => {
@@ -236,7 +244,12 @@ const postOrder = (req, res, _next) => {
         .then(() => {
         res.redirect("/orders");
     })
-        .catch((err) => console.log("Post order error ", err));
+        .catch((err) => {
+        console.log("Post order error ", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
+    });
     // try {
     //   await req?.user?.addOrder();
     //   res.redirect("/orders");
@@ -245,7 +258,7 @@ const postOrder = (req, res, _next) => {
     // }
 };
 exports.postOrder = postOrder;
-const getOrders = (req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
+const getOrders = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
         const orders = yield models_1.Order.find({ "user.userId": (_b = (_a = req === null || req === void 0 ? void 0 : req.session) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id });
@@ -257,8 +270,11 @@ const getOrders = (req, res, _next) => __awaiter(void 0, void 0, void 0, functio
             isAuthenticated: req.session.isLoggedIn,
         });
     }
-    catch (error) {
-        console.log("Logging get orders error", error);
+    catch (err) {
+        console.log("Logging get orders error", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
     }
 });
 exports.getOrders = getOrders;

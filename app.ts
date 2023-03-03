@@ -61,6 +61,13 @@ app.use(
 );
 app.use(csrfProtection);
 
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+
+  next();
+});
+
 app.use((req: Request, _res: Response, next: NextFunction) => {
   if (!req.session.user) {
     return next();
@@ -82,15 +89,8 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
     })
     .catch((err) => {
       console.log("Logging catch user error", err);
-      throw new Error(err);
+      next(new Error(err));
     });
-});
-
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-
-  next();
 });
 
 app.use(flash());
@@ -104,7 +104,12 @@ app.get("/500", get500Page);
 app.use(get404Page);
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  res.redirect("/500");
+  // res.redirect("/500");
+  res.status(500).render("500", {
+    pageTitle: "Error!",
+    path: "/500",
+    isAuthenticated: req.session.isLoggedIn,
+  });
 });
 
 // Associations

@@ -24,7 +24,7 @@ import { Product, Order, User } from "../models";
 export const getProducts = (
   req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   // console.log("Admin products", adminData?.products);
   // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
@@ -38,7 +38,13 @@ export const getProducts = (
         // isAuthenticated: req.session.isLoggedIn,
       });
     })
-    .catch((err) => console.error("Logging err", err));
+    .catch((err) => {
+      console.error("Logging err", err);
+      const error: Error & { httpStatusCode?: number } = new Error(err);
+      error["httpStatusCode"] = 500;
+
+      return next(error);
+    });
 };
 
 export const getProduct = (
@@ -184,7 +190,7 @@ export const postCart = (req: Request, res: Response, _next: NextFunction) => {
 export const postCartDeleteProduct = (
   req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   const prodId = req?.body?.productId;
 
@@ -202,8 +208,12 @@ export const postCartDeleteProduct = (
     .then(() => {
       res.redirect("/cart");
     })
-    .catch((err: Error) => {
+    .catch((err: any) => {
       console.log("get cart error", err);
+      const error: Error & { httpStatusCode?: number } = new Error(err);
+      error["httpStatusCode"] = 500;
+
+      return next(error);
     });
 };
 
@@ -218,7 +228,7 @@ export const postCartDeleteProduct = (
 //   });
 // };
 
-export const postOrder = (req: Request, res: Response, _next: NextFunction) => {
+export const postOrder = (req: Request, res: Response, next: NextFunction) => {
   req.user
     .populate("cart.items.productId")
     .then((user: any) => {
@@ -244,7 +254,13 @@ export const postOrder = (req: Request, res: Response, _next: NextFunction) => {
     .then(() => {
       res.redirect("/orders");
     })
-    .catch((err: any) => console.log("Post order error ", err));
+    .catch((err: any) => {
+      console.log("Post order error ", err);
+      const error: Error & { httpStatusCode?: number } = new Error(err);
+      error["httpStatusCode"] = 500;
+
+      return next(error);
+    });
   // try {
   //   await req?.user?.addOrder();
   //   res.redirect("/orders");
@@ -256,7 +272,7 @@ export const postOrder = (req: Request, res: Response, _next: NextFunction) => {
 export const getOrders = async (
   req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   try {
     const orders = await Order.find({ "user.userId": req?.session?.user?._id });
@@ -267,7 +283,11 @@ export const getOrders = async (
       orders: orders,
       isAuthenticated: req.session.isLoggedIn,
     });
-  } catch (error) {
-    console.log("Logging get orders error", error);
+  } catch (err: any) {
+    console.log("Logging get orders error", err);
+    const error: Error & { httpStatusCode?: number } = new Error(err);
+    error["httpStatusCode"] = 500;
+
+    return next(error);
   }
 };
