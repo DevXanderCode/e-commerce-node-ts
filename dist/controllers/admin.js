@@ -134,7 +134,7 @@ exports.postDeleteProduct = postDeleteProduct;
 /**
  * We're using the fetchAll() method from the Product model to get all the products from the database,
  * then we're rendering the admin/products.ejs view with the products we got from the database
- * @param {Request} _req - Request - this is the request object that is passed to the route handler.
+ * @param {Request} req - Request - this is the request object that is passed to the route handler.
  * @param {Response} res - Response - this is the response object that we can use to send a response to
  * the client.
  * @param {NextFunction} _next - NextFunction - This is a function that is used to call the next

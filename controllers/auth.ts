@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { hash, compare } from "bcryptjs";
 import * as dotenv from "dotenv";
 import crypto from "crypto";
+import { ValidationError, validationResult } from "express-validator";
 import { User } from "../models";
 import { sendEmail } from "../externals/mailjet";
 
@@ -88,8 +89,16 @@ export const getSignup = (req: Request, res: Response, next: NextFunction) => {
 
 export const postSignup = (req: Request, res: Response, next: NextFunction) => {
   const { email, password, confirmPassword } = req.body;
+  const errors = validationResult(req);
   // console.log("Logging email password", email, password);
-
+  if (!errors.isEmpty()) {
+    console.log("Validator errors", errors.array());
+    return res.status(422).render("auth/signup", {
+      pageTitle: "Signup",
+      path: "/signup",
+      errorMessage: errors.array()[0].msg,
+    });
+  }
   User.findOne({ email })
     .then((userDoc: any): any => {
       if (userDoc) {
