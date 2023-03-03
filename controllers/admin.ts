@@ -20,6 +20,7 @@ export const getAddProduct = (
     // isAuthenticated: req.session.isLoggedIn,
     hasError: false,
     errorMessage: null,
+    validationErrors: [],
   });
 };
 
@@ -45,6 +46,7 @@ export const postAddProduct = (
       },
       hasError: true,
       errorMessage: errors.array()[0]?.msg,
+      validationErrors: errors.array(),
       // isAuthenticated: req.session.isLoggedIn,
     });
   }
@@ -104,6 +106,7 @@ export const getEditProduct = (
           product,
           hasError: false,
           errorMessage: null,
+          validationErrors: [],
           // isAuthenticated: req.session.isLoggedIn,
         });
       } else {
@@ -129,6 +132,28 @@ export const postEditProduct = (
   _next: NextFunction
 ) => {
   const { productId: prodId, title, imageUrl, description, price } = req?.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    // console.log("Logging the add product validation errors", errors.array());
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Edit Product",
+      path: "/admin/edit-product",
+      editing: true,
+      product: {
+        title,
+        price,
+        imageUrl,
+        description,
+        _id: prodId,
+      },
+      hasError: true,
+      errorMessage: errors.array()[0]?.msg,
+      validationErrors: errors.array(),
+      // isAuthenticated: req.session.isLoggedIn,
+    });
+  }
 
   Product.findById(prodId)
     .then((product) => {

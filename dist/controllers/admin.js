@@ -14,6 +14,7 @@ const getAddProduct = (req, res, _next) => {
         // isAuthenticated: req.session.isLoggedIn,
         hasError: false,
         errorMessage: null,
+        validationErrors: [],
     });
 };
 exports.getAddProduct = getAddProduct;
@@ -35,6 +36,7 @@ const postAddProduct = (req, res, _next) => {
             },
             hasError: true,
             errorMessage: (_a = errors.array()[0]) === null || _a === void 0 ? void 0 : _a.msg,
+            validationErrors: errors.array(),
             // isAuthenticated: req.session.isLoggedIn,
         });
     }
@@ -88,6 +90,7 @@ const getEditProduct = (req, res, _next) => {
                 product,
                 hasError: false,
                 errorMessage: null,
+                validationErrors: [],
                 // isAuthenticated: req.session.isLoggedIn,
             });
         }
@@ -109,7 +112,28 @@ exports.getEditProduct = getEditProduct;
  * the next middleware function in the stack.
  */
 const postEditProduct = (req, res, _next) => {
+    var _a;
     const { productId: prodId, title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const errors = (0, check_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        // console.log("Logging the add product validation errors", errors.array());
+        return res.status(422).render("admin/edit-product", {
+            pageTitle: "Edit Product",
+            path: "/admin/edit-product",
+            editing: true,
+            product: {
+                title,
+                price,
+                imageUrl,
+                description,
+                _id: prodId,
+            },
+            hasError: true,
+            errorMessage: (_a = errors.array()[0]) === null || _a === void 0 ? void 0 : _a.msg,
+            validationErrors: errors.array(),
+            // isAuthenticated: req.session.isLoggedIn,
+        });
+    }
     models_1.Product.findById(prodId)
         .then((product) => {
         if ((product === null || product === void 0 ? void 0 : product.userId.toString()) !== req.user._id.toString()) {

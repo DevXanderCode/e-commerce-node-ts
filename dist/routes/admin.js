@@ -23,7 +23,7 @@ router.get("/edit-product/:productId", middleware_1.isAuth, admin_1.getEditProdu
 //  /admin/products ==> Get
 router.get("/products", middleware_1.isAuth, admin_1.getAdminProducts);
 router.post("/edit-product", [
-    (0, check_1.body)("title").isAlphanumeric().isLength({ min: 3 }).trim(),
+    (0, check_1.body)("title").isString().isLength({ min: 3 }).trim(),
     (0, check_1.body)("imageUrl").isURL(),
     (0, check_1.body)("price").isNumeric(),
     (0, check_1.body)("description").isLength({ min: 5, max: 400 }).trim(),
