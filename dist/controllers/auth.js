@@ -128,34 +128,37 @@ const postSignup = (req, res, next) => {
             errorMessage: errors.array()[0].msg,
         });
     }
-    models_1.User.findOne({ email })
-        .then((userDoc) => {
-        if (userDoc) {
-            req.flash("error", "E-Mail exist already, please pick a different one.");
-            return res.redirect("/signup");
-        }
-        return (0, bcryptjs_1.hash)(password, 12)
-            .then((hashedPassword) => {
-            const user = new models_1.User({
-                email,
-                password: hashedPassword,
-                cart: { items: [] },
-            });
-            return user.save();
-        })
-            .then((result) => {
-            res.redirect("/login");
-            return (0, mailjet_1.sendEmail)(email, "user")
-                .then((response) => {
-                // res.redirect("/login");
-                console.log("email sent", response.response.status);
-            })
-                .catch((err) => console.log("Logging mailjet error", err.statusCode));
+    // User.findOne({ email })
+    //   .then((userDoc: any): any => {
+    //     if (userDoc) {
+    //       req.flash(
+    //         "error",
+    //         "E-Mail exist already, please pick a different one."
+    //       );
+    //       return res.redirect("/signup");
+    //     }
+    (0, bcryptjs_1.hash)(password, 12)
+        .then((hashedPassword) => {
+        const user = new models_1.User({
+            email,
+            password: hashedPassword,
+            cart: { items: [] },
         });
+        return user.save();
     })
-        .catch((err) => {
-        console.log(`Logging find user with email(${email}) err ==> ${err}`);
+        .then((result) => {
+        res.redirect("/login");
+        return (0, mailjet_1.sendEmail)(email, "user")
+            .then((response) => {
+            // res.redirect("/login");
+            console.log("email sent", response.response.status);
+        })
+            .catch((err) => console.log("Logging mailjet error", err.statusCode));
     });
+    // })
+    // .catch((err) => {
+    //   console.log(`Logging find user with email(${email}) err ==> ${err}`);
+    // });
 };
 exports.postSignup = postSignup;
 const postLogout = (req, res, next) => {

@@ -99,42 +99,40 @@ export const postSignup = (req: Request, res: Response, next: NextFunction) => {
       errorMessage: errors.array()[0].msg,
     });
   }
-  User.findOne({ email })
-    .then((userDoc: any): any => {
-      if (userDoc) {
-        req.flash(
-          "error",
-          "E-Mail exist already, please pick a different one."
-        );
-        return res.redirect("/signup");
-      }
-      return hash(password, 12)
-        .then((hashedPassword) => {
-          const user = new User({
-            email,
-            password: hashedPassword,
-            cart: { items: [] },
-          });
+  // User.findOne({ email })
+  //   .then((userDoc: any): any => {
+  //     if (userDoc) {
+  //       req.flash(
+  //         "error",
+  //         "E-Mail exist already, please pick a different one."
+  //       );
+  //       return res.redirect("/signup");
+  //     }
+  hash(password, 12)
+    .then((hashedPassword) => {
+      const user = new User({
+        email,
+        password: hashedPassword,
+        cart: { items: [] },
+      });
 
-          return user.save();
-        })
-        .then((result) => {
-          res.redirect("/login");
-
-          return sendEmail(email, "user")
-            .then((response) => {
-              // res.redirect("/login");
-              console.log("email sent", response.response.status);
-            })
-            .catch((err) =>
-              console.log("Logging mailjet error", err.statusCode)
-            );
-        });
+      return user.save();
     })
+    .then((result) => {
+      res.redirect("/login");
 
-    .catch((err) => {
-      console.log(`Logging find user with email(${email}) err ==> ${err}`);
+      return sendEmail(email, "user")
+        .then((response) => {
+          // res.redirect("/login");
+          console.log("email sent", response.response.status);
+        })
+        .catch((err) => console.log("Logging mailjet error", err.statusCode));
     });
+  // })
+
+  // .catch((err) => {
+  //   console.log(`Logging find user with email(${email}) err ==> ${err}`);
+  // });
 };
 
 export const postLogout = (req: Request, res: Response, next: NextFunction) => {
