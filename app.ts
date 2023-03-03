@@ -103,6 +103,10 @@ app.get("/500", get500Page);
 
 app.use(get404Page);
 
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+  res.redirect("/500");
+});
+
 // Associations
 // Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 // User.hasMany(Product);

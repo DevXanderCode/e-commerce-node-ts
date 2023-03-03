@@ -27,7 +27,7 @@ export const getAddProduct = (
 export const postAddProduct = (
   req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   const { title, imageUrl, description, price } = req?.body;
   const errors = validationResult(req);
@@ -59,10 +59,16 @@ export const postAddProduct = (
   });
   product
     .save()
-    .then(() => res.redirect("/admin/products"))
+    .then(() => {
+      return res.redirect("/admin/products");
+    })
     .catch((err) => {
       console.error(err);
-      res.redirect("/500");
+      // res.redirect("/500");
+      const error: Error & { httpStatus?: number } = new Error(err);
+      error["httpStatus"] = 500;
+
+      return next(error);
     });
   // req.user
   //   .createProduct({ title, price, imageUrl, description })

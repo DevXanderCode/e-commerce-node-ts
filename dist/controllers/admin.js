@@ -18,7 +18,7 @@ const getAddProduct = (req, res, _next) => {
     });
 };
 exports.getAddProduct = getAddProduct;
-const postAddProduct = (req, res, _next) => {
+const postAddProduct = (req, res, next) => {
     var _a;
     const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
     const errors = (0, check_1.validationResult)(req);
@@ -49,10 +49,15 @@ const postAddProduct = (req, res, _next) => {
     });
     product
         .save()
-        .then(() => res.redirect("/admin/products"))
+        .then(() => {
+        return res.redirect("/admin/products");
+    })
         .catch((err) => {
         console.error(err);
-        res.redirect("/500");
+        // res.redirect("/500");
+        const error = new Error(err);
+        error["httpStatus"] = 500;
+        return next(error);
     });
     // req.user
     //   .createProduct({ title, price, imageUrl, description })

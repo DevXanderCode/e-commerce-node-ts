@@ -110,6 +110,9 @@ app.use(routes_1.shopRoutes);
 app.use(routes_1.authRoutes);
 app.get("/500", error_1.get500Page);
 app.use(error_1.get404Page);
+app.use((error, req, res, next) => {
+    res.redirect("/500");
+});
 // Associations
 // Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 // User.hasMany(Product);
