@@ -1,6 +1,5 @@
-import path from "path";
-
 import express, { Router } from "express";
+import { body } from "express-validator/check";
 
 // import rootDir from "../util/path";
 import {
@@ -19,7 +18,17 @@ const router: Router = express.Router();
 router.get("/add-product", isAuth, getAddProduct);
 
 // /admin/add-product ==> post
-router.post("/add-product", isAuth, postAddProduct);
+router.post(
+  "/add-product",
+  [
+    body("title").isString().isLength({ min: 3 }).trim(),
+    body("imageUrl").isURL(),
+    body("price").isNumeric(),
+    body("description").isLength({ min: 5, max: 400 }).trim(),
+  ],
+  isAuth,
+  postAddProduct
+);
 
 // /admin/edit-product/:productId
 router.get("/edit-product/:productId", isAuth, getEditProduct);
@@ -27,7 +36,17 @@ router.get("/edit-product/:productId", isAuth, getEditProduct);
 //  /admin/products ==> Get
 router.get("/products", isAuth, getAdminProducts);
 
-router.post("/edit-product", isAuth, postEditProduct);
+router.post(
+  "/edit-product",
+  [
+    body("title").isAlphanumeric().isLength({ min: 3 }).trim(),
+    body("imageUrl").isURL(),
+    body("price").isNumeric(),
+    body("description").isLength({ min: 5, max: 400 }).trim(),
+  ],
+  isAuth,
+  postEditProduct
+);
 
 router.post("/delete-product", isAuth, postDeleteProduct);
 

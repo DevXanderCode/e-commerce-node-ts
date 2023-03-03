@@ -1,6 +1,7 @@
 // import { getProducts } from "./shop";
 // import { UserRequest } from "./../types";
-import { Response, Request, NextFunction, RequestHandler } from "express";
+import { Response, Request, NextFunction } from "express";
+import { validationResult } from "express-validator/check";
 import { Product } from "../models";
 // import { Model } from "sequelize-typescript";
 
@@ -16,7 +17,9 @@ export const getAddProduct = (
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
-    isAuthenticated: req.session.isLoggedIn,
+    // isAuthenticated: req.session.isLoggedIn,
+    hasError: false,
+    errorMessage: null,
   });
 };
 
@@ -26,6 +29,26 @@ export const postAddProduct = (
   _next: NextFunction
 ) => {
   const { title, imageUrl, description, price } = req?.body;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log("Logging the add product validation errors", errors.array());
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/edit-product",
+      editing: false,
+      product: {
+        title,
+        price,
+        imageUrl,
+        description,
+      },
+      hasError: true,
+      errorMessage: errors.array()[0]?.msg,
+      // isAuthenticated: req.session.isLoggedIn,
+    });
+  }
+  console.log("after if statement");
   const product = new Product({
     title,
     price,
@@ -79,6 +102,8 @@ export const getEditProduct = (
           path: "/admin/edit-product",
           editing: editMode,
           product,
+          hasError: false,
+          errorMessage: null,
           // isAuthenticated: req.session.isLoggedIn,
         });
       } else {

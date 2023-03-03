@@ -39,7 +39,7 @@ exports.postNewPassword = exports.getNewPassword = exports.postReset = exports.g
 const bcryptjs_1 = require("bcryptjs");
 const dotenv = __importStar(require("dotenv"));
 const crypto_1 = __importDefault(require("crypto"));
-const express_validator_1 = require("express-validator");
+const check_1 = require("express-validator/check");
 const models_1 = require("../models");
 const mailjet_1 = require("../externals/mailjet");
 dotenv.config();
@@ -67,7 +67,7 @@ exports.getLogin = getLogin;
 const postLogin = (req, res, next) => {
     //   res.setHeader("Set-Cookie", "loggedIn=true");
     const { email, password } = req.body;
-    const errors = (0, express_validator_1.validationResult)(req);
+    const errors = (0, check_1.validationResult)(req);
     if (!errors.isEmpty()) {
         console.log("Logging errors ", errors.array());
         return res.status(422).render("auth/login", {
@@ -183,7 +183,7 @@ exports.getSignup = getSignup;
  */
 const postSignup = (req, res, next) => {
     const { email, password, confirmPassword } = req.body;
-    const errors = (0, express_validator_1.validationResult)(req);
+    const errors = (0, check_1.validationResult)(req);
     // console.log("Logging email password", email, password);
     if (!errors.isEmpty()) {
         console.log("Validator errors", errors.array());

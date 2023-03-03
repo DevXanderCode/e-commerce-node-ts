@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAdminProducts = exports.postDeleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
+const check_1 = require("express-validator/check");
 const models_1 = require("../models");
 // import { Model } from "sequelize-typescript";
 // import Product from "../models/product";
@@ -10,12 +11,34 @@ const getAddProduct = (req, res, _next) => {
         pageTitle: "Add Product",
         path: "/admin/add-product",
         editing: false,
-        isAuthenticated: req.session.isLoggedIn,
+        // isAuthenticated: req.session.isLoggedIn,
+        hasError: false,
+        errorMessage: null,
     });
 };
 exports.getAddProduct = getAddProduct;
 const postAddProduct = (req, res, _next) => {
+    var _a;
     const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const errors = (0, check_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        console.log("Logging the add product validation errors", errors.array());
+        return res.status(422).render("admin/edit-product", {
+            pageTitle: "Add Product",
+            path: "/admin/edit-product",
+            editing: false,
+            product: {
+                title,
+                price,
+                imageUrl,
+                description,
+            },
+            hasError: true,
+            errorMessage: (_a = errors.array()[0]) === null || _a === void 0 ? void 0 : _a.msg,
+            // isAuthenticated: req.session.isLoggedIn,
+        });
+    }
+    console.log("after if statement");
     const product = new models_1.Product({
         title,
         price,
@@ -63,6 +86,8 @@ const getEditProduct = (req, res, _next) => {
                 path: "/admin/edit-product",
                 editing: editMode,
                 product,
+                hasError: false,
+                errorMessage: null,
                 // isAuthenticated: req.session.isLoggedIn,
             });
         }
