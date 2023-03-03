@@ -1,6 +1,7 @@
 // import { getProducts } from "./shop";
 // import { UserRequest } from "./../types";
-import { Response, Request, NextFunction, RequestHandler } from "express";
+import { Response, Request, NextFunction } from "express";
+import { validationResult } from "express-validator/check";
 import { Product } from "../models";
 // import { Model } from "sequelize-typescript";
 
@@ -16,7 +17,10 @@ export const getAddProduct = (
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
-    isAuthenticated: req.session.isLoggedIn,
+    // isAuthenticated: req.session.isLoggedIn,
+    hasError: false,
+    errorMessage: null,
+    validationErrors: [],
   });
 };
 
@@ -26,6 +30,27 @@ export const postAddProduct = (
   _next: NextFunction
 ) => {
   const { title, imageUrl, description, price } = req?.body;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log("Logging the add product validation errors", errors.array());
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/edit-product",
+      editing: false,
+      product: {
+        title,
+        price,
+        imageUrl,
+        description,
+      },
+      hasError: true,
+      errorMessage: errors.array()[0]?.msg,
+      validationErrors: errors.array(),
+      // isAuthenticated: req.session.isLoggedIn,
+    });
+  }
+  console.log("after if statement");
   const product = new Product({
     title,
     price,
@@ -79,6 +104,9 @@ export const getEditProduct = (
           path: "/admin/edit-product",
           editing: editMode,
           product,
+          hasError: false,
+          errorMessage: null,
+          validationErrors: [],
           // isAuthenticated: req.session.isLoggedIn,
         });
       } else {
@@ -104,6 +132,28 @@ export const postEditProduct = (
   _next: NextFunction
 ) => {
   const { productId: prodId, title, imageUrl, description, price } = req?.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    // console.log("Logging the add product validation errors", errors.array());
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Edit Product",
+      path: "/admin/edit-product",
+      editing: true,
+      product: {
+        title,
+        price,
+        imageUrl,
+        description,
+        _id: prodId,
+      },
+      hasError: true,
+      errorMessage: errors.array()[0]?.msg,
+      validationErrors: errors.array(),
+      // isAuthenticated: req.session.isLoggedIn,
+    });
+  }
 
   Product.findById(prodId)
     .then((product) => {
@@ -158,7 +208,7 @@ export const postDeleteProduct = (
 /**
  * We're using the fetchAll() method from the Product model to get all the products from the database,
  * then we're rendering the admin/products.ejs view with the products we got from the database
- * @param {Request} _req - Request - this is the request object that is passed to the route handler.
+ * @param {Request} req - Request - this is the request object that is passed to the route handler.
  * @param {Response} res - Response - this is the response object that we can use to send a response to
  * the client.
  * @param {NextFunction} _next - NextFunction - This is a function that is used to call the next

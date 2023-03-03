@@ -39,6 +39,7 @@ exports.postNewPassword = exports.getNewPassword = exports.postReset = exports.g
 const bcryptjs_1 = require("bcryptjs");
 const dotenv = __importStar(require("dotenv"));
 const crypto_1 = __importDefault(require("crypto"));
+const check_1 = require("express-validator/check");
 const models_1 = require("../models");
 const mailjet_1 = require("../externals/mailjet");
 dotenv.config();
@@ -55,17 +56,46 @@ const getLogin = (req, res, next) => {
         pageTitle: "Login",
         path: "/login",
         errorMessage: message,
+        validationErrors: [],
+        oldInput: {
+            email: "",
+            password: "",
+        },
     });
 };
 exports.getLogin = getLogin;
 const postLogin = (req, res, next) => {
     //   res.setHeader("Set-Cookie", "loggedIn=true");
     const { email, password } = req.body;
+    const errors = (0, check_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        console.log("Logging errors ", errors.array());
+        return res.status(422).render("auth/login", {
+            pageTitle: "Login",
+            path: "/login",
+            errorMessage: errors.array()[0].msg,
+            validationErrors: errors.array(),
+            oldInput: {
+                email,
+                password,
+            },
+        });
+    }
     models_1.User.findOne({ email })
         .then((user) => {
         if (!user) {
-            req.flash("error", "Invalid email or password.");
-            return res.redirect("/login");
+            // req.flash("error", "Invalid email or password.");
+            // return res.redirect("/login");
+            return res.status(422).render("auth/login", {
+                pageTitle: "Login",
+                path: "/login",
+                errorMessage: "Invalid Email or Password",
+                validationErrors: [],
+                oldInput: {
+                    email,
+                    password,
+                },
+            });
         }
         (0, bcryptjs_1.compare)(password, user === null || user === void 0 ? void 0 : user.password)
             .then((doMatch) => {
@@ -79,8 +109,16 @@ const postLogin = (req, res, next) => {
                     res.redirect("/");
                 });
             }
-            req.flash("error", "Invalid email or password.");
-            res.redirect("/login");
+            return res.status(422).render("auth/login", {
+                pageTitle: "Login",
+                path: "/login",
+                errorMessage: "Invalid Email or Password",
+                validationErrors: [],
+                oldInput: {
+                    email,
+                    password,
+                },
+            });
         })
             .catch((err) => console.log("got this matching password error", err));
     })
@@ -99,6 +137,16 @@ const postLogin = (req, res, next) => {
     //   .catch((err) => console.log("post Login error", err));
 };
 exports.postLogin = postLogin;
+/**
+ * It renders the signup page and passes in the error message, if there is one, and the old input
+ * values, if there are any
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function in the stack.
+ */
 const getSignup = (req, res, next) => {
     let message = req.flash("error");
     if (message.length > 0) {
@@ -112,42 +160,87 @@ const getSignup = (req, res, next) => {
         path: "/signup",
         isAuthenticated: false,
         errorMessage: message,
+        oldInput: {
+            email: "",
+            password: "",
+            confirmPassword: "",
+        },
+        validationErrors: [],
     });
 };
 exports.getSignup = getSignup;
+/**
+ * We're using the `validationResult` function from the `express-validator` package to validate the
+ * user's input. If the validation fails, we're rendering the signup page again and passing the errors
+ * to the view. If the validation succeeds, we're hashing the user's password and saving the user to
+ * the database
+ * @param {Request} req - Request - This is the incoming request object. It contains all the
+ * information about the request.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} next - The next middleware function in the stack.
+ * @returns The user is being returned.
+ */
 const postSignup = (req, res, next) => {
     const { email, password, confirmPassword } = req.body;
+    const errors = (0, check_1.validationResult)(req);
     // console.log("Logging email password", email, password);
-    models_1.User.findOne({ email })
-        .then((userDoc) => {
-        if (userDoc) {
-            req.flash("error", "E-Mail exist already, please pick a different one.");
-            return res.redirect("/signup");
-        }
-        return (0, bcryptjs_1.hash)(password, 12)
-            .then((hashedPassword) => {
-            const user = new models_1.User({
+    if (!errors.isEmpty()) {
+        console.log("Validator errors", errors.array());
+        return res.status(422).render("auth/signup", {
+            pageTitle: "Signup",
+            path: "/signup",
+            errorMessage: errors.array()[0].msg,
+            oldInput: {
                 email,
-                password: hashedPassword,
-                cart: { items: [] },
-            });
-            return user.save();
-        })
-            .then((result) => {
-            res.redirect("/login");
-            return (0, mailjet_1.sendEmail)(email, "user")
-                .then((response) => {
-                // res.redirect("/login");
-                console.log("email sent", response.response.status);
-            })
-                .catch((err) => console.log("Logging mailjet error", err.statusCode));
+                password,
+                confirmPassword,
+            },
+            validationErrors: errors.array(),
         });
+    }
+    // User.findOne({ email })
+    //   .then((userDoc: any): any => {
+    //     if (userDoc) {
+    //       req.flash(
+    //         "error",
+    //         "E-Mail exist already, please pick a different one."
+    //       );
+    //       return res.redirect("/signup");
+    //     }
+    (0, bcryptjs_1.hash)(password, 12)
+        .then((hashedPassword) => {
+        const user = new models_1.User({
+            email,
+            password: hashedPassword,
+            cart: { items: [] },
+        });
+        return user.save();
     })
-        .catch((err) => {
-        console.log(`Logging find user with email(${email}) err ==> ${err}`);
+        .then((result) => {
+        res.redirect("/login");
+        return (0, mailjet_1.sendEmail)(email, "user")
+            .then((response) => {
+            // res.redirect("/login");
+            console.log("email sent", response.response.status);
+        })
+            .catch((err) => console.log("Logging mailjet error", err.statusCode));
     });
+    // })
+    // .catch((err) => {
+    //   console.log(`Logging find user with email(${email}) err ==> ${err}`);
+    // });
 };
 exports.postSignup = postSignup;
+/**
+ * It destroys the session and redirects the user to the home page
+ * @param {Request} req - Request - This is the request object that contains the information about the
+ * request that was made to the server.
+ * @param {Response} res - Response - This is the response object that we will use to send a response
+ * to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that will be called if the current
+ * middleware function does not end the request-response cycle.
+ */
 const postLogout = (req, res, next) => {
     req.session.destroy((err) => {
         console.log("Post logout error", err);
@@ -155,6 +248,15 @@ const postLogout = (req, res, next) => {
     });
 };
 exports.postLogout = postLogout;
+/**
+ * It renders the reset password page and passes in the error message if there is one
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function in the stack.
+ */
 const getReset = (req, res, next) => {
     let message = req.flash("error");
     if (message.length > 0) {
@@ -170,6 +272,17 @@ const getReset = (req, res, next) => {
     });
 };
 exports.getReset = getReset;
+/**
+ * We are generating a random token, checking if the user exists, if the user exists, we are saving the
+ * token and the expiration date in the database, and then we are sending an email to the user with a
+ * link to reset the password
+ * @param {Request} req - Request - This is the request object that contains all the information about
+ * the request.
+ * @param {Response} res - Response - This is the response object that we will use to send a response
+ * back to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function.
+ */
 const postReset = (req, res, next) => {
     const { email } = req.body;
     crypto_1.default.randomBytes(32, (err, buffer) => {
@@ -199,6 +312,15 @@ const postReset = (req, res, next) => {
     });
 };
 exports.postReset = postReset;
+/**
+ * It renders the new-password view and passes the userId and passwordToken to the view
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function in the stack.
+ */
 const getNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.params.token;
     let message = req.flash("error");
@@ -226,6 +348,16 @@ const getNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.getNewPassword = getNewPassword;
+/**
+ * It checks if the user exists, if the user exists, it updates the user's password and sends an email
+ * to the user
+ * @param {Request} req - Request - This is the request object that contains the data sent from the
+ * client.
+ * @param {Response} res - Response - This is the response object that we will use to send a response
+ * to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that is called when the middleware is
+ * done.
+ */
 const postNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { password: newPassword, userId, passwordToken } = req.body;
     try {

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAdminProducts = exports.postDeleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
+const check_1 = require("express-validator/check");
 const models_1 = require("../models");
 // import { Model } from "sequelize-typescript";
 // import Product from "../models/product";
@@ -10,12 +11,36 @@ const getAddProduct = (req, res, _next) => {
         pageTitle: "Add Product",
         path: "/admin/add-product",
         editing: false,
-        isAuthenticated: req.session.isLoggedIn,
+        // isAuthenticated: req.session.isLoggedIn,
+        hasError: false,
+        errorMessage: null,
+        validationErrors: [],
     });
 };
 exports.getAddProduct = getAddProduct;
 const postAddProduct = (req, res, _next) => {
+    var _a;
     const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const errors = (0, check_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        console.log("Logging the add product validation errors", errors.array());
+        return res.status(422).render("admin/edit-product", {
+            pageTitle: "Add Product",
+            path: "/admin/edit-product",
+            editing: false,
+            product: {
+                title,
+                price,
+                imageUrl,
+                description,
+            },
+            hasError: true,
+            errorMessage: (_a = errors.array()[0]) === null || _a === void 0 ? void 0 : _a.msg,
+            validationErrors: errors.array(),
+            // isAuthenticated: req.session.isLoggedIn,
+        });
+    }
+    console.log("after if statement");
     const product = new models_1.Product({
         title,
         price,
@@ -63,6 +88,9 @@ const getEditProduct = (req, res, _next) => {
                 path: "/admin/edit-product",
                 editing: editMode,
                 product,
+                hasError: false,
+                errorMessage: null,
+                validationErrors: [],
                 // isAuthenticated: req.session.isLoggedIn,
             });
         }
@@ -84,7 +112,28 @@ exports.getEditProduct = getEditProduct;
  * the next middleware function in the stack.
  */
 const postEditProduct = (req, res, _next) => {
+    var _a;
     const { productId: prodId, title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const errors = (0, check_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        // console.log("Logging the add product validation errors", errors.array());
+        return res.status(422).render("admin/edit-product", {
+            pageTitle: "Edit Product",
+            path: "/admin/edit-product",
+            editing: true,
+            product: {
+                title,
+                price,
+                imageUrl,
+                description,
+                _id: prodId,
+            },
+            hasError: true,
+            errorMessage: (_a = errors.array()[0]) === null || _a === void 0 ? void 0 : _a.msg,
+            validationErrors: errors.array(),
+            // isAuthenticated: req.session.isLoggedIn,
+        });
+    }
     models_1.Product.findById(prodId)
         .then((product) => {
         if ((product === null || product === void 0 ? void 0 : product.userId.toString()) !== req.user._id.toString()) {
@@ -134,7 +183,7 @@ exports.postDeleteProduct = postDeleteProduct;
 /**
  * We're using the fetchAll() method from the Product model to get all the products from the database,
  * then we're rendering the admin/products.ejs view with the products we got from the database
- * @param {Request} _req - Request - this is the request object that is passed to the route handler.
+ * @param {Request} req - Request - this is the request object that is passed to the route handler.
  * @param {Response} res - Response - this is the response object that we can use to send a response to
  * the client.
  * @param {NextFunction} _next - NextFunction - This is a function that is used to call the next
