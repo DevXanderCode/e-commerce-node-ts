@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { check, body } from "express-validator";
+import { compare } from "bcryptjs";
 import {
   getLogin,
   getNewPassword,
@@ -23,7 +24,36 @@ router.get("/reset", getReset);
 
 router.get("/reset/:token", getNewPassword);
 
-router.post("/login", postLogin);
+router.post(
+  "/login",
+  [
+    body("email")
+      .isEmail()
+      .withMessage("Please enter a valid email")
+      .custom((value, { req }) => {
+        return User.findOne({ email: value }).then((userDoc) => {
+          if (!userDoc) {
+            return Promise.reject("Invalid email");
+          }
+          return true;
+        });
+      }),
+    body("password").custom((value, { req }) => {
+      return User.findOne({ email: req.body.email }).then((user: any) => {
+        if (user) {
+          return compare(value, user?.password).then((doMatch) => {
+            if (!doMatch) {
+              return Promise.reject("Invalid Password");
+            }
+            return true;
+          });
+        }
+        return true;
+      });
+    }),
+  ],
+  postLogin
+);
 
 router.post(
   "/signup",

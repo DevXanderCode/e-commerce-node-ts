@@ -56,6 +56,11 @@ const getLogin = (req, res, next) => {
         pageTitle: "Login",
         path: "/login",
         errorMessage: message,
+        validationErrors: [],
+        oldInput: {
+            email: "",
+            password: "",
+        },
     });
 };
 exports.getLogin = getLogin;
@@ -64,10 +69,16 @@ const postLogin = (req, res, next) => {
     const { email, password } = req.body;
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
+        console.log("Logging errors ", errors.array());
         return res.status(422).render("auth/login", {
             pageTitle: "Login",
             path: "/login",
             errorMessage: errors.array()[0].msg,
+            validationErrors: errors.array(),
+            oldInput: {
+                email,
+                password,
+            },
         });
     }
     models_1.User.findOne({ email })
@@ -108,6 +119,16 @@ const postLogin = (req, res, next) => {
     //   .catch((err) => console.log("post Login error", err));
 };
 exports.postLogin = postLogin;
+/**
+ * It renders the signup page and passes in the error message, if there is one, and the old input
+ * values, if there are any
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function in the stack.
+ */
 const getSignup = (req, res, next) => {
     let message = req.flash("error");
     if (message.length > 0) {
@@ -130,6 +151,18 @@ const getSignup = (req, res, next) => {
     });
 };
 exports.getSignup = getSignup;
+/**
+ * We're using the `validationResult` function from the `express-validator` package to validate the
+ * user's input. If the validation fails, we're rendering the signup page again and passing the errors
+ * to the view. If the validation succeeds, we're hashing the user's password and saving the user to
+ * the database
+ * @param {Request} req - Request - This is the incoming request object. It contains all the
+ * information about the request.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} next - The next middleware function in the stack.
+ * @returns The user is being returned.
+ */
 const postSignup = (req, res, next) => {
     const { email, password, confirmPassword } = req.body;
     const errors = (0, express_validator_1.validationResult)(req);

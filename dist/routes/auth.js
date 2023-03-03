@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
+const bcryptjs_1 = require("bcryptjs");
 const auth_1 = require("../controllers/auth");
 const models_1 = require("../models");
 const router = (0, express_1.Router)();
@@ -9,7 +10,32 @@ router.get("/login", auth_1.getLogin);
 router.get("/signup", auth_1.getSignup);
 router.get("/reset", auth_1.getReset);
 router.get("/reset/:token", auth_1.getNewPassword);
-router.post("/login", auth_1.postLogin);
+router.post("/login", [
+    (0, express_validator_1.body)("email")
+        .isEmail()
+        .withMessage("Please enter a valid email")
+        .custom((value, { req }) => {
+        return models_1.User.findOne({ email: value }).then((userDoc) => {
+            if (!userDoc) {
+                return Promise.reject("Invalid email");
+            }
+            return true;
+        });
+    }),
+    (0, express_validator_1.body)("password").custom((value, { req }) => {
+        return models_1.User.findOne({ email: req.body.email }).then((user) => {
+            if (user) {
+                return (0, bcryptjs_1.compare)(value, user === null || user === void 0 ? void 0 : user.password).then((doMatch) => {
+                    if (!doMatch) {
+                        return Promise.reject("Invalid Password");
+                    }
+                    return true;
+                });
+            }
+            return true;
+        });
+    }),
+], auth_1.postLogin);
 router.post("/signup", [
     (0, express_validator_1.check)("email")
         .isEmail()
