@@ -36,7 +36,7 @@ export const postAddProduct = (
     console.log("Logging the add product validation errors", errors.array());
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
-      path: "/admin/edit-product",
+      path: "/admin/add-product",
       editing: false,
       product: {
         title,
@@ -50,7 +50,6 @@ export const postAddProduct = (
       // isAuthenticated: req.session.isLoggedIn,
     });
   }
-  console.log("after if statement");
   const product = new Product({
     title,
     price,
@@ -61,7 +60,10 @@ export const postAddProduct = (
   product
     .save()
     .then(() => res.redirect("/admin/products"))
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      console.error(err);
+      res.redirect("/500");
+    });
   // req.user
   //   .createProduct({ title, price, imageUrl, description })
   //   .then(() => res.redirect("/"))

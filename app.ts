@@ -12,7 +12,7 @@ import flash from "connect-flash";
 
 import { adminRoutes, shopRoutes, authRoutes } from "./routes";
 import rootDir from "./util/path";
-import { get404Page } from "./controllers/error";
+import { get404Page, get500Page } from "./controllers/error";
 // import ternary from "./util/helpers/ternary";
 // import sequelize from "./util/database";
 import { User, Product, Order, OrderItem } from "./models";
@@ -62,8 +62,14 @@ app.use(
 app.use(csrfProtection);
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
+  if (!req.session.user) {
+    return next();
+  }
   User.findById(req.session?.user?._id)
     .then((userData: any) => {
+      if (!userData) {
+        return next();
+      }
       req["user"] = userData;
       // new User(
       //   userData?.name,
@@ -74,7 +80,10 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 
       next();
     })
-    .catch((err) => console.log("Logging catch user error", err));
+    .catch((err) => {
+      console.log("Logging catch user error", err);
+      throw new Error(err);
+    });
 });
 
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -89,6 +98,8 @@ app.use(flash());
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+
+app.get("/500", get500Page);
 
 app.use(get404Page);
 
