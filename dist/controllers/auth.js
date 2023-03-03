@@ -126,6 +126,7 @@ const getSignup = (req, res, next) => {
             password: "",
             confirmPassword: "",
         },
+        validationErrors: [],
     });
 };
 exports.getSignup = getSignup;
@@ -144,6 +145,7 @@ const postSignup = (req, res, next) => {
                 password,
                 confirmPassword,
             },
+            validationErrors: errors.array(),
         });
     }
     // User.findOne({ email })
@@ -179,6 +181,15 @@ const postSignup = (req, res, next) => {
     // });
 };
 exports.postSignup = postSignup;
+/**
+ * It destroys the session and redirects the user to the home page
+ * @param {Request} req - Request - This is the request object that contains the information about the
+ * request that was made to the server.
+ * @param {Response} res - Response - This is the response object that we will use to send a response
+ * to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that will be called if the current
+ * middleware function does not end the request-response cycle.
+ */
 const postLogout = (req, res, next) => {
     req.session.destroy((err) => {
         console.log("Post logout error", err);
@@ -186,6 +197,15 @@ const postLogout = (req, res, next) => {
     });
 };
 exports.postLogout = postLogout;
+/**
+ * It renders the reset password page and passes in the error message if there is one
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function in the stack.
+ */
 const getReset = (req, res, next) => {
     let message = req.flash("error");
     if (message.length > 0) {
@@ -201,6 +221,17 @@ const getReset = (req, res, next) => {
     });
 };
 exports.getReset = getReset;
+/**
+ * We are generating a random token, checking if the user exists, if the user exists, we are saving the
+ * token and the expiration date in the database, and then we are sending an email to the user with a
+ * link to reset the password
+ * @param {Request} req - Request - This is the request object that contains all the information about
+ * the request.
+ * @param {Response} res - Response - This is the response object that we will use to send a response
+ * back to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function.
+ */
 const postReset = (req, res, next) => {
     const { email } = req.body;
     crypto_1.default.randomBytes(32, (err, buffer) => {
@@ -230,6 +261,15 @@ const postReset = (req, res, next) => {
     });
 };
 exports.postReset = postReset;
+/**
+ * It renders the new-password view and passes the userId and passwordToken to the view
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function in the stack.
+ */
 const getNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.params.token;
     let message = req.flash("error");
@@ -257,6 +297,16 @@ const getNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.getNewPassword = getNewPassword;
+/**
+ * It checks if the user exists, if the user exists, it updates the user's password and sends an email
+ * to the user
+ * @param {Request} req - Request - This is the request object that contains the data sent from the
+ * client.
+ * @param {Response} res - Response - This is the response object that we will use to send a response
+ * to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that is called when the middleware is
+ * done.
+ */
 const postNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { password: newPassword, userId, passwordToken } = req.body;
     try {

@@ -98,6 +98,7 @@ export const getSignup = (req: Request, res: Response, next: NextFunction) => {
       password: "",
       confirmPassword: "",
     },
+    validationErrors: [],
   });
 };
 
@@ -116,6 +117,7 @@ export const postSignup = (req: Request, res: Response, next: NextFunction) => {
         password,
         confirmPassword,
       },
+      validationErrors: errors.array(),
     });
   }
   // User.findOne({ email })
@@ -154,6 +156,15 @@ export const postSignup = (req: Request, res: Response, next: NextFunction) => {
   // });
 };
 
+/**
+ * It destroys the session and redirects the user to the home page
+ * @param {Request} req - Request - This is the request object that contains the information about the
+ * request that was made to the server.
+ * @param {Response} res - Response - This is the response object that we will use to send a response
+ * to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that will be called if the current
+ * middleware function does not end the request-response cycle.
+ */
 export const postLogout = (req: Request, res: Response, next: NextFunction) => {
   req.session.destroy((err) => {
     console.log("Post logout error", err);
@@ -161,6 +172,15 @@ export const postLogout = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
+/**
+ * It renders the reset password page and passes in the error message if there is one
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function in the stack.
+ */
 export const getReset = (req: Request, res: Response, next: NextFunction) => {
   let message: string | string[] | null = req.flash("error");
 
@@ -176,6 +196,17 @@ export const getReset = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
+/**
+ * We are generating a random token, checking if the user exists, if the user exists, we are saving the
+ * token and the expiration date in the database, and then we are sending an email to the user with a
+ * link to reset the password
+ * @param {Request} req - Request - This is the request object that contains all the information about
+ * the request.
+ * @param {Response} res - Response - This is the response object that we will use to send a response
+ * back to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function.
+ */
 export const postReset = (req: Request, res: Response, next: NextFunction) => {
   const { email } = req.body;
   crypto.randomBytes(32, (err, buffer) => {
@@ -214,6 +245,15 @@ export const postReset = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
+/**
+ * It renders the new-password view and passes the userId and passwordToken to the view
+ * @param {Request} req - Request - this is the request object that contains all the information about
+ * the request that was made to the server.
+ * @param {Response} res - Response - this is the response object that we can use to send a response to
+ * the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function in the stack.
+ */
 export const getNewPassword = async (
   req: Request,
   res: Response,
@@ -246,6 +286,16 @@ export const getNewPassword = async (
   }
 };
 
+/**
+ * It checks if the user exists, if the user exists, it updates the user's password and sends an email
+ * to the user
+ * @param {Request} req - Request - This is the request object that contains the data sent from the
+ * client.
+ * @param {Response} res - Response - This is the response object that we will use to send a response
+ * to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that is called when the middleware is
+ * done.
+ */
 export const postNewPassword = async (
   req: Request,
   res: Response,
