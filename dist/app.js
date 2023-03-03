@@ -75,10 +75,21 @@ app.use((0, express_session_1.default)({
     store,
 }));
 app.use(csrfProtection);
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
 app.use((req, _res, next) => {
     var _a, _b;
+    if (!req.session.user) {
+        return next();
+    }
     models_1.User.findById((_b = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id)
         .then((userData) => {
+        if (!userData) {
+            return next();
+        }
         req["user"] = userData;
         // new User(
         //   userData?.name,
@@ -88,18 +99,25 @@ app.use((req, _res, next) => {
         // );
         next();
     })
-        .catch((err) => console.log("Logging catch user error", err));
-});
-app.use((req, res, next) => {
-    res.locals.isAuthenticated = req.session.isLoggedIn;
-    res.locals.csrfToken = req.csrfToken();
-    next();
+        .catch((err) => {
+        console.log("Logging catch user error", err);
+        next(new Error(err));
+    });
 });
 app.use((0, connect_flash_1.default)());
 app.use("/admin", routes_1.adminRoutes);
 app.use(routes_1.shopRoutes);
 app.use(routes_1.authRoutes);
+app.get("/500", error_1.get500Page);
 app.use(error_1.get404Page);
+app.use((error, req, res, next) => {
+    // res.redirect("/500");
+    res.status(500).render("500", {
+        pageTitle: "Error!",
+        path: "/500",
+        isAuthenticated: req.session.isLoggedIn,
+    });
+});
 // Associations
 // Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 // User.hasMany(Product);

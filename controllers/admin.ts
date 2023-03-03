@@ -27,7 +27,7 @@ export const getAddProduct = (
 export const postAddProduct = (
   req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   const { title, imageUrl, description, price } = req?.body;
   const errors = validationResult(req);
@@ -36,7 +36,7 @@ export const postAddProduct = (
     console.log("Logging the add product validation errors", errors.array());
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
-      path: "/admin/edit-product",
+      path: "/admin/add-product",
       editing: false,
       product: {
         title,
@@ -50,7 +50,6 @@ export const postAddProduct = (
       // isAuthenticated: req.session.isLoggedIn,
     });
   }
-  console.log("after if statement");
   const product = new Product({
     title,
     price,
@@ -60,8 +59,17 @@ export const postAddProduct = (
   });
   product
     .save()
-    .then(() => res.redirect("/admin/products"))
-    .catch((err) => console.error(err));
+    .then(() => {
+      return res.redirect("/admin/products");
+    })
+    .catch((err) => {
+      console.error(err);
+      // res.redirect("/500");
+      const error: Error & { httpStatusCode?: number } = new Error(err);
+      error["httpStatusCode"] = 500;
+
+      return next(error);
+    });
   // req.user
   //   .createProduct({ title, price, imageUrl, description })
   //   .then(() => res.redirect("/"))
@@ -84,7 +92,7 @@ export const postAddProduct = (
 export const getEditProduct = (
   req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   const editMode = req.query.edit;
 
@@ -113,7 +121,13 @@ export const getEditProduct = (
         res.redirect("/");
       }
     })
-    .catch((err: Error) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      const error: Error & { httpStatusCode?: number } = new Error(err);
+      error["httpStatusCode"] = 500;
+
+      return next(error);
+    });
 };
 
 /**
@@ -129,7 +143,7 @@ export const getEditProduct = (
 export const postEditProduct = (
   req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   const { productId: prodId, title, imageUrl, description, price } = req?.body;
 
@@ -172,7 +186,13 @@ export const postEditProduct = (
       }
     })
 
-    .catch((err: any) => console.log(err));
+    .catch((err: any) => {
+      console.log(err);
+      const error: Error & { httpStatusCode?: number } = new Error(err);
+      error["httpStatusCode"] = 500;
+
+      return next(error);
+    });
 };
 
 /**
@@ -188,7 +208,7 @@ export const postEditProduct = (
 export const postDeleteProduct = (
   req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   const prodId = req.body?.productId;
   Product.deleteOne({ _id: prodId, userId: req.user._id })
@@ -196,8 +216,12 @@ export const postDeleteProduct = (
       console.log("Product deleted");
       res.redirect("/admin/products");
     })
-    .catch((err: any) => {
-      console.log("Logging product delete error", err);
+    .catch((err) => {
+      console.log(err);
+      const error: Error & { httpStatusCode?: number } = new Error(err);
+      error["httpStatusCode"] = 500;
+
+      return next(error);
     });
   // console.log('delete', prodId)
   // Product.deleteById(prodId, () => {
@@ -217,7 +241,7 @@ export const postDeleteProduct = (
 export const getAdminProducts = (
   req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   // req.user
   //   .getProducts()
@@ -232,5 +256,11 @@ export const getAdminProducts = (
         // isAuthenticated: req.session.isLoggedIn,
       });
     })
-    .catch((err: Error) => console.error("get Admin product error", err));
+    .catch((err) => {
+      console.error("get Admin product error", err);
+      const error: Error & { httpStatusCode?: number } = new Error(err);
+      error["httpStatusCode"] = 500;
+
+      return next(error);
+    });
 };

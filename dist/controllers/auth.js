@@ -120,7 +120,12 @@ const postLogin = (req, res, next) => {
                 },
             });
         })
-            .catch((err) => console.log("got this matching password error", err));
+            .catch((err) => {
+            console.log("got this matching password error", err);
+            const error = new Error(err);
+            error["httpStatusCode"] = 500;
+            return next(error);
+        });
     })
         .catch((err) => console.log("Got this error when trying to find a user", err));
     // User.findById("63da8a48e804c4c4200bf875")
@@ -224,7 +229,12 @@ const postSignup = (req, res, next) => {
             // res.redirect("/login");
             console.log("email sent", response.response.status);
         })
-            .catch((err) => console.log("Logging mailjet error", err.statusCode));
+            .catch((err) => {
+            console.log("Logging mailjet error", err.statusCode);
+            const error = new Error(err);
+            error["httpStatusCode"] = 500;
+            return next(error);
+        });
     });
     // })
     // .catch((err) => {
@@ -308,6 +318,9 @@ const postReset = (req, res, next) => {
         })
             .catch((err) => {
             console.log("error", err);
+            const error = new Error(err);
+            error["httpStatusCode"] = 500;
+            return next(error);
         });
     });
 };
@@ -379,8 +392,11 @@ const postNewPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         }
         res.redirect("/login");
     }
-    catch (error) {
-        console.log("Logging error ==>", error);
+    catch (err) {
+        console.log("Logging error ==>", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
     }
 });
 exports.postNewPassword = postNewPassword;
