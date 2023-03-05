@@ -30,10 +30,28 @@ export const postAddProduct = (
   next: NextFunction
 ) => {
   const { title, description, price } = req?.body;
-  const imageUrl = req?.file;
+  const image = req?.file;
   const errors = validationResult(req);
 
   console.log("Logging Image url");
+
+  if (!image) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      editing: false,
+      product: {
+        title,
+        price,
+        description,
+      },
+      hasError: true,
+      errorMessage: "Attached File is not an Image",
+      validationErrors: [],
+    });
+  }
+
+  const imageUrl = image.path;
 
   if (!errors.isEmpty()) {
     console.log("Logging the add product validation errors", errors.array());
@@ -44,7 +62,6 @@ export const postAddProduct = (
       product: {
         title,
         price,
-        imageUrl,
         description,
       },
       hasError: true,
@@ -148,7 +165,8 @@ export const postEditProduct = (
   res: Response,
   next: NextFunction
 ) => {
-  const { productId: prodId, title, imageUrl, description, price } = req?.body;
+  const { productId: prodId, title, description, price } = req?.body;
+  const image = req.file;
 
   const errors = validationResult(req);
 
@@ -161,7 +179,6 @@ export const postEditProduct = (
       product: {
         title,
         price,
-        imageUrl,
         description,
         _id: prodId,
       },
@@ -182,7 +199,9 @@ export const postEditProduct = (
         product.title = title;
         product.price = price;
         product.description = description;
-        product.imageUrl = imageUrl;
+        if (image) {
+          product.imageUrl = image.path;
+        }
         return product.save().then(() => {
           res.redirect("/admin/products");
         });

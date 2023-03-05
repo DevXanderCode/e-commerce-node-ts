@@ -60,6 +60,17 @@ const fileStorage = multer_1.default.diskStorage({
         cb(null, new Date().toISOString() + "-" + file.originalname);
     },
 });
+const fileFilter = (_req, file, cb) => {
+    if (file.mimetype === "image/png" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "image/jpeg" ||
+        file.mimetype === "image/avif") {
+        cb(null, true);
+    }
+    else {
+        cb(null, false);
+    }
+};
 // For handleBars
 // app.engine(
 //   "hbs",
@@ -75,7 +86,7 @@ const fileStorage = multer_1.default.diskStorage({
 app.set("view engine", "ejs");
 app.set("views", path_1.default.join(path_2.default, "..", "views"));
 app.use(body_parser_1.default.urlencoded({ extended: false }));
-app.use((0, multer_1.default)({ storage: fileStorage }).single("image"));
+app.use((0, multer_1.default)({ storage: fileStorage, fileFilter }).single("image"));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public")));
 app.use((0, express_session_1.default)({
