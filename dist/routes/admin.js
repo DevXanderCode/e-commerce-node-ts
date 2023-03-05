@@ -18,7 +18,7 @@ router.post("/add-product", [
         .isLength({ min: 3 })
         .withMessage("Title should be more than 3 characters long")
         .trim(),
-    (0, check_1.body)("imageUrl").isURL().withMessage("Please enter a valid Image url."),
+    // body("imageUrl").isURL().withMessage("Please enter a valid Image url."),
     (0, check_1.body)("price").isNumeric().withMessage("Please enter a valid price"),
     (0, check_1.body)("description")
         .isLength({ min: 5, max: 400 })
@@ -35,7 +35,7 @@ router.post("/edit-product", [
         .isLength({ min: 3 })
         .withMessage("Title should be more than 3 characters long")
         .trim(),
-    (0, check_1.body)("imageUrl").isURL().withMessage("Please enter a valid Image url."),
+    // body("imageUrl").isURL().withMessage("Please enter a valid Image url."),
     (0, check_1.body)("price").isNumeric().withMessage("Please enter a valid price"),
     (0, check_1.body)("description")
         .isLength({ min: 5, max: 400 })

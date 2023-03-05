@@ -20,8 +20,10 @@ const getAddProduct = (req, res, _next) => {
 exports.getAddProduct = getAddProduct;
 const postAddProduct = (req, res, next) => {
     var _a;
-    const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const { title, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const imageUrl = req === null || req === void 0 ? void 0 : req.file;
     const errors = (0, check_1.validationResult)(req);
+    console.log("Logging Image url");
     if (!errors.isEmpty()) {
         console.log("Logging the add product validation errors", errors.array());
         return res.status(422).render("admin/edit-product", {

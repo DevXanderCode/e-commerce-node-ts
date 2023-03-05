@@ -29,8 +29,11 @@ export const postAddProduct = (
   res: Response,
   next: NextFunction
 ) => {
-  const { title, imageUrl, description, price } = req?.body;
+  const { title, description, price } = req?.body;
+  const imageUrl = req?.file;
   const errors = validationResult(req);
+
+  console.log("Logging Image url");
 
   if (!errors.isEmpty()) {
     console.log("Logging the add product validation errors", errors.array());
