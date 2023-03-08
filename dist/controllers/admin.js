@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAdminProducts = exports.postDeleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
 const check_1 = require("express-validator/check");
 const models_1 = require("../models");
+const file_1 = require("../util/file");
 // import { Model } from "sequelize-typescript";
 // import Product from "../models/product";
 // import { Product as ProductInterface } from "../types";
@@ -174,6 +175,7 @@ const postEditProduct = (req, res, next) => {
             product.price = price;
             product.description = description;
             if (image) {
+                (0, file_1.deleteFile)(product.imageUrl);
                 product.imageUrl = image.path;
             }
             return product.save().then(() => {
@@ -202,7 +204,14 @@ exports.postEditProduct = postEditProduct;
 const postDeleteProduct = (req, res, next) => {
     var _a;
     const prodId = (_a = req.body) === null || _a === void 0 ? void 0 : _a.productId;
-    models_1.Product.deleteOne({ _id: prodId, userId: req.user._id })
+    models_1.Product.findById(prodId)
+        .then((product) => {
+        if (!product) {
+            return next(new Error("Product not found"));
+        }
+        (0, file_1.deleteFile)(product === null || product === void 0 ? void 0 : product.imageUrl);
+        return models_1.Product.deleteOne({ _id: prodId, userId: req.user._id });
+    })
         .then(() => {
         console.log("Product deleted");
         res.redirect("/admin/products");
