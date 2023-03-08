@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getInvoice = exports.getOrders = exports.postOrder = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const pdfkit_1 = __importDefault(require("pdfkit"));
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -297,9 +298,15 @@ const getInvoice = (req, res, next) => {
         }
         const invoiceName = `invoice-${orderId}.pdf`;
         const invoicePath = path_1.default.join("data", "invoices", invoiceName);
-        const file = fs_1.default.createReadStream(invoicePath);
+        const pdfDoc = new pdfkit_1.default();
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", 'inline; filename="' + invoiceName + '"');
+        pdfDoc.pipe(fs_1.default.createWriteStream(invoicePath));
+        pdfDoc.pipe(res);
+        pdfDoc.text("Hello World!");
+        pdfDoc.end();
+        // const file = fs.createReadStream(invoicePath);
+        // file.pipe(res);
         // fs.readFile(invoicePath, (err, data) => {
         //   if (err) {
         //     return next(err);

@@ -34,7 +34,7 @@ router.get("/products/:productId", getProduct);
 
 router.get("/orders", isAuth, getOrders);
 
-router.get("/order/:orderId", isAuth, getInvoice);
+router.get("/orders/:orderId", isAuth, getInvoice);
 
 router.post("/create-order", isAuth, postOrder);
 

@@ -17,7 +17,7 @@ router.get("/products", shop_1.getProducts);
 router.get("/products/:productId", shop_1.getProduct);
 // router.get("/checkout", getCheckout);
 router.get("/orders", middleware_1.isAuth, shop_1.getOrders);
-router.get("/order/:orderId", middleware_1.isAuth, shop_1.getInvoice);
+router.get("/orders/:orderId", middleware_1.isAuth, shop_1.getInvoice);
 router.post("/create-order", middleware_1.isAuth, shop_1.postOrder);
 router.get("/", shop_1.getIndex);
 exports.default = router;

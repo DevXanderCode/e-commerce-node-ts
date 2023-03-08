@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, Router } from "express";
 import path from "path";
 import fs from "fs";
+import PDFDocument from "pdfkit";
 
 import { Product as ProductInterface } from "../types";
 import { Product, Order, User } from "../models";
@@ -307,12 +308,20 @@ export const getInvoice = (req: Request, res: Response, next: NextFunction) => {
       }
       const invoiceName = `invoice-${orderId}.pdf`;
       const invoicePath = path.join("data", "invoices", invoiceName);
-      const file = fs.createReadStream(invoicePath);
+
+      const pdfDoc = new PDFDocument();
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
         'inline; filename="' + invoiceName + '"'
       );
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+      pdfDoc.text("Hello World!");
+
+      pdfDoc.end();
+      // const file = fs.createReadStream(invoicePath);
+      // file.pipe(res);
       // fs.readFile(invoicePath, (err, data) => {
       //   if (err) {
       //     return next(err);
