@@ -89,6 +89,7 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use((0, multer_1.default)({ storage: fileStorage, fileFilter }).single("image"));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public")));
+app.use("/images", express_1.default.static(path_1.default.join(__dirname, "..", "images")));
 app.use((0, express_session_1.default)({
     secret: "my secret",
     resave: false,
