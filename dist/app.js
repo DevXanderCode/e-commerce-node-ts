@@ -35,6 +35,7 @@ const express_session_1 = __importDefault(require("express-session"));
 const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 const csurf_1 = __importDefault(require("csurf"));
 const connect_flash_1 = __importDefault(require("connect-flash"));
+const multer_1 = __importDefault(require("multer"));
 // import { create, engine } from "express-handlebars";
 const routes_1 = require("./routes");
 const path_2 = __importDefault(require("./util/path"));
@@ -51,6 +52,25 @@ const store = new MongoDBStore({
     collection: "sessions",
 });
 const csrfProtection = (0, csurf_1.default)();
+const fileStorage = multer_1.default.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "images");
+    },
+    filename: (req, file, cb) => {
+        cb(null, new Date().toISOString() + "-" + file.originalname);
+    },
+});
+const fileFilter = (_req, file, cb) => {
+    if (file.mimetype === "image/png" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "image/jpeg" ||
+        file.mimetype === "image/avif") {
+        cb(null, true);
+    }
+    else {
+        cb(null, false);
+    }
+};
 // For handleBars
 // app.engine(
 //   "hbs",
@@ -66,8 +86,10 @@ const csrfProtection = (0, csurf_1.default)();
 app.set("view engine", "ejs");
 app.set("views", path_1.default.join(path_2.default, "..", "views"));
 app.use(body_parser_1.default.urlencoded({ extended: false }));
+app.use((0, multer_1.default)({ storage: fileStorage, fileFilter }).single("image"));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public")));
+app.use("/images", express_1.default.static(path_1.default.join(__dirname, "..", "images")));
 app.use((0, express_session_1.default)({
     secret: "my secret",
     resave: false,

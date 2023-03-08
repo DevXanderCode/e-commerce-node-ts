@@ -14,6 +14,7 @@ import {
   postCart,
   postCartDeleteProduct,
   postOrder,
+  getInvoice,
 } from "../controllers/shop";
 import { isAuth } from "../middleware";
 
@@ -32,6 +33,8 @@ router.get("/products/:productId", getProduct);
 // router.get("/checkout", getCheckout);
 
 router.get("/orders", isAuth, getOrders);
+
+router.get("/orders/:orderId", isAuth, getInvoice);
 
 router.post("/create-order", isAuth, postOrder);
 

@@ -26,7 +26,7 @@ router.post(
       .isLength({ min: 3 })
       .withMessage("Title should be more than 3 characters long")
       .trim(),
-    body("imageUrl").isURL().withMessage("Please enter a valid Image url."),
+    // body("imageUrl").isURL().withMessage("Please enter a valid Image url."),
     body("price").isNumeric().withMessage("Please enter a valid price"),
     body("description")
       .isLength({ min: 5, max: 400 })
@@ -53,7 +53,7 @@ router.post(
       .isLength({ min: 3 })
       .withMessage("Title should be more than 3 characters long")
       .trim(),
-    body("imageUrl").isURL().withMessage("Please enter a valid Image url."),
+    // body("imageUrl").isURL().withMessage("Please enter a valid Image url."),
     body("price").isNumeric().withMessage("Please enter a valid price"),
     body("description")
       .isLength({ min: 5, max: 400 })

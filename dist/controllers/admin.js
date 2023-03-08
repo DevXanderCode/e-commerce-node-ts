@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAdminProducts = exports.postDeleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
 const check_1 = require("express-validator/check");
 const models_1 = require("../models");
+const file_1 = require("../util/file");
 // import { Model } from "sequelize-typescript";
 // import Product from "../models/product";
 // import { Product as ProductInterface } from "../types";
@@ -20,8 +21,26 @@ const getAddProduct = (req, res, _next) => {
 exports.getAddProduct = getAddProduct;
 const postAddProduct = (req, res, next) => {
     var _a;
-    const { title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const { title, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const image = req === null || req === void 0 ? void 0 : req.file;
     const errors = (0, check_1.validationResult)(req);
+    console.log("Logging Image url");
+    if (!image) {
+        return res.status(422).render("admin/edit-product", {
+            pageTitle: "Add Product",
+            path: "/admin/add-product",
+            editing: false,
+            product: {
+                title,
+                price,
+                description,
+            },
+            hasError: true,
+            errorMessage: "Attached File is not an Image",
+            validationErrors: [],
+        });
+    }
+    const imageUrl = image.path;
     if (!errors.isEmpty()) {
         console.log("Logging the add product validation errors", errors.array());
         return res.status(422).render("admin/edit-product", {
@@ -31,7 +50,6 @@ const postAddProduct = (req, res, next) => {
             product: {
                 title,
                 price,
-                imageUrl,
                 description,
             },
             hasError: true,
@@ -125,7 +143,8 @@ exports.getEditProduct = getEditProduct;
  */
 const postEditProduct = (req, res, next) => {
     var _a;
-    const { productId: prodId, title, imageUrl, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const { productId: prodId, title, description, price } = req === null || req === void 0 ? void 0 : req.body;
+    const image = req.file;
     const errors = (0, check_1.validationResult)(req);
     if (!errors.isEmpty()) {
         // console.log("Logging the add product validation errors", errors.array());
@@ -136,7 +155,6 @@ const postEditProduct = (req, res, next) => {
             product: {
                 title,
                 price,
-                imageUrl,
                 description,
                 _id: prodId,
             },
@@ -156,7 +174,10 @@ const postEditProduct = (req, res, next) => {
             product.title = title;
             product.price = price;
             product.description = description;
-            product.imageUrl = imageUrl;
+            if (image) {
+                (0, file_1.deleteFile)(product.imageUrl);
+                product.imageUrl = image.path;
+            }
             return product.save().then(() => {
                 res.redirect("/admin/products");
             });
@@ -183,7 +204,14 @@ exports.postEditProduct = postEditProduct;
 const postDeleteProduct = (req, res, next) => {
     var _a;
     const prodId = (_a = req.body) === null || _a === void 0 ? void 0 : _a.productId;
-    models_1.Product.deleteOne({ _id: prodId, userId: req.user._id })
+    models_1.Product.findById(prodId)
+        .then((product) => {
+        if (!product) {
+            return next(new Error("Product not found"));
+        }
+        (0, file_1.deleteFile)(product === null || product === void 0 ? void 0 : product.imageUrl);
+        return models_1.Product.deleteOne({ _id: prodId, userId: req.user._id });
+    })
         .then(() => {
         console.log("Product deleted");
         res.redirect("/admin/products");

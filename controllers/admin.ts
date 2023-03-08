@@ -3,6 +3,7 @@
 import { Response, Request, NextFunction } from "express";
 import { validationResult } from "express-validator/check";
 import { Product } from "../models";
+import { deleteFile } from "../util/file";
 // import { Model } from "sequelize-typescript";
 
 // import Product from "../models/product";
@@ -29,8 +30,29 @@ export const postAddProduct = (
   res: Response,
   next: NextFunction
 ) => {
-  const { title, imageUrl, description, price } = req?.body;
+  const { title, description, price } = req?.body;
+  const image = req?.file;
   const errors = validationResult(req);
+
+  console.log("Logging Image url");
+
+  if (!image) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      editing: false,
+      product: {
+        title,
+        price,
+        description,
+      },
+      hasError: true,
+      errorMessage: "Attached File is not an Image",
+      validationErrors: [],
+    });
+  }
+
+  const imageUrl = image.path;
 
   if (!errors.isEmpty()) {
     console.log("Logging the add product validation errors", errors.array());
@@ -41,7 +63,6 @@ export const postAddProduct = (
       product: {
         title,
         price,
-        imageUrl,
         description,
       },
       hasError: true,
@@ -145,7 +166,8 @@ export const postEditProduct = (
   res: Response,
   next: NextFunction
 ) => {
-  const { productId: prodId, title, imageUrl, description, price } = req?.body;
+  const { productId: prodId, title, description, price } = req?.body;
+  const image = req.file;
 
   const errors = validationResult(req);
 
@@ -158,7 +180,6 @@ export const postEditProduct = (
       product: {
         title,
         price,
-        imageUrl,
         description,
         _id: prodId,
       },
@@ -179,7 +200,10 @@ export const postEditProduct = (
         product.title = title;
         product.price = price;
         product.description = description;
-        product.imageUrl = imageUrl;
+        if (image) {
+          deleteFile(product.imageUrl);
+          product.imageUrl = image.path;
+        }
         return product.save().then(() => {
           res.redirect("/admin/products");
         });
@@ -211,7 +235,14 @@ export const postDeleteProduct = (
   next: NextFunction
 ) => {
   const prodId = req.body?.productId;
-  Product.deleteOne({ _id: prodId, userId: req.user._id })
+  Product.findById(prodId)
+    .then((product): any => {
+      if (!product) {
+        return next(new Error("Product not found"));
+      }
+      deleteFile(product?.imageUrl);
+      return Product.deleteOne({ _id: prodId, userId: req.user._id });
+    })
     .then(() => {
       console.log("Product deleted");
       res.redirect("/admin/products");

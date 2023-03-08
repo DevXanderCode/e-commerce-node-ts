@@ -8,6 +8,7 @@ import session from "express-session";
 import mongoDbStore from "connect-mongodb-session";
 import csrf from "csurf";
 import flash from "connect-flash";
+import multer from "multer";
 // import { create, engine } from "express-handlebars";
 
 import { adminRoutes, shopRoutes, authRoutes } from "./routes";
@@ -32,6 +33,32 @@ const store = new MongoDBStore({
 
 const csrfProtection = csrf();
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (
+  _req: any,
+  file: { mimetype: string },
+  cb: (arg0: null, arg1: boolean) => void
+) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/avif"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 // For handleBars
 // app.engine(
 //   "hbs",
@@ -49,8 +76,10 @@ app.set("view engine", "ejs");
 app.set("views", path.join(rootDir, "..", "views"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 // app.use("/css", express.static(path.join(__dirname, "..", "public", "css")));
 app.use(express.static(path.join(__dirname, "..", "public")));
+app.use("/images", express.static(path.join(__dirname, "..", "images")));
 app.use(
   session({
     secret: "my secret",
