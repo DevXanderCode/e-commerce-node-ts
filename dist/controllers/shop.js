@@ -289,7 +289,7 @@ const getInvoice = (req, res, next) => {
     const orderId = (_a = req.params) === null || _a === void 0 ? void 0 : _a.orderId;
     models_1.Order.findById(orderId)
         .then((order) => {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         if (!order) {
             return next(new Error("No Order Found"));
         }
@@ -303,7 +303,17 @@ const getInvoice = (req, res, next) => {
         res.setHeader("Content-Disposition", 'inline; filename="' + invoiceName + '"');
         pdfDoc.pipe(fs_1.default.createWriteStream(invoicePath));
         pdfDoc.pipe(res);
-        pdfDoc.text("Hello World!");
+        pdfDoc.fontSize(26).text("Invoice", { underline: true });
+        pdfDoc.text("--------------------------------------");
+        let totalPrice = 0;
+        (_d = order === null || order === void 0 ? void 0 : order.products) === null || _d === void 0 ? void 0 : _d.forEach((prod) => {
+            totalPrice += prod.quantity * prod.product.price;
+            pdfDoc
+                .fontSize(14)
+                .text(`${prod.product.title} - ${prod.quantity} x $${prod.product.price}`);
+        });
+        pdfDoc.text("--------------------------------------");
+        pdfDoc.fontSize(20).text(`Total Price: $${totalPrice}`);
         pdfDoc.end();
         // const file = fs.createReadStream(invoicePath);
         // file.pipe(res);
