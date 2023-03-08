@@ -8,8 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrders = exports.postOrder = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.getInvoice = exports.getOrders = exports.postOrder = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const models_1 = require("../models");
 // export const products: Product[] = [];
 /**
@@ -278,3 +283,29 @@ const getOrders = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.getOrders = getOrders;
+const getInvoice = (req, res, next) => {
+    var _a;
+    const orderId = (_a = req.params) === null || _a === void 0 ? void 0 : _a.orderId;
+    models_1.Order.findById(orderId)
+        .then((order) => {
+        var _a, _b, _c;
+        if (!order) {
+            return next(new Error("No Order Found"));
+        }
+        if (((_b = (_a = order === null || order === void 0 ? void 0 : order.user) === null || _a === void 0 ? void 0 : _a.userId) === null || _b === void 0 ? void 0 : _b.toString()) !== ((_c = req === null || req === void 0 ? void 0 : req.user) === null || _c === void 0 ? void 0 : _c._id.toString())) {
+            return next(new Error("Unauthorized"));
+        }
+        const invoiceName = `invoice-${orderId}.pdf`;
+        const invoicePath = path_1.default.join("data", "invoices", invoiceName);
+        fs_1.default.readFile(invoicePath, (err, data) => {
+            if (err) {
+                return next(err);
+            }
+            res.setHeader("Content-type", "application/pdf");
+            res.setHeader("Content-Disposition", 'inline; filename="' + invoiceName + '"');
+            res.send(data);
+        });
+    })
+        .catch((err) => next(err));
+};
+exports.getInvoice = getInvoice;
