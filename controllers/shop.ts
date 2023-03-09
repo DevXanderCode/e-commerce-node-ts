@@ -72,16 +72,28 @@ export const getProduct = (
 
 export const getIndex = (req: Request, res: Response, _next: NextFunction) => {
   const page = Number(req.query.page || 1);
-  console.log("Logging page number", page);
+  let totalItems: number;
   Product.find()
-    .skip((page - 1) * ITEM_PER_PAGE)
-    .limit(ITEM_PER_PAGE)
+    .countDocuments()
+    .then((numProduct) => {
+      totalItems = numProduct;
+      return Product.find()
+        .skip((page - 1) * ITEM_PER_PAGE)
+        .limit(ITEM_PER_PAGE);
+    })
     .then((products) => {
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
         path: "/",
         activeShop: true,
+        numProduct: totalItems,
+        currentPage: page,
+        hasNextPage: ITEM_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEM_PER_PAGE),
         // isAuthenticated: req.session.isLoggedIn,
         // csrfToken: req.csrfToken(),
       });
