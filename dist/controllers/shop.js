@@ -18,6 +18,7 @@ const fs_1 = __importDefault(require("fs"));
 const pdfkit_1 = __importDefault(require("pdfkit"));
 const models_1 = require("../models");
 // export const products: Product[] = [];
+const ITEM_PER_PAGE = 2;
 /**
  * We're using the fetchAll() method from the Product class to get all the products from the database.
  *
@@ -72,7 +73,11 @@ const getProduct = (req, res, _next) => {
 };
 exports.getProduct = getProduct;
 const getIndex = (req, res, _next) => {
+    const page = Number(req.query.page || 1);
+    console.log("Logging page number", page);
     models_1.Product.find()
+        .skip((page - 1) * ITEM_PER_PAGE)
+        .limit(ITEM_PER_PAGE)
         .then((products) => {
         res.render("shop/index", {
             prods: products,

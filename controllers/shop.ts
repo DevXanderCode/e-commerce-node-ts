@@ -7,6 +7,7 @@ import { Product as ProductInterface } from "../types";
 import { Product, Order, User } from "../models";
 
 // export const products: Product[] = [];
+const ITEM_PER_PAGE = 2;
 
 /**
  * We're using the fetchAll() method from the Product class to get all the products from the database.
@@ -70,7 +71,11 @@ export const getProduct = (
 };
 
 export const getIndex = (req: Request, res: Response, _next: NextFunction) => {
+  const page = Number(req.query.page || 1);
+  console.log("Logging page number", page);
   Product.find()
+    .skip((page - 1) * ITEM_PER_PAGE)
+    .limit(ITEM_PER_PAGE)
     .then((products) => {
       res.render("shop/index", {
         prods: products,
