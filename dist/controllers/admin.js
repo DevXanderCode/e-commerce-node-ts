@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAdminProducts = exports.postDeleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
+exports.getAdminProducts = exports.deleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
 const check_1 = require("express-validator/check");
 const models_1 = require("../models");
 const file_1 = require("../util/file");
@@ -201,9 +201,9 @@ exports.postEditProduct = postEditProduct;
  * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
  * is done.
  */
-const postDeleteProduct = (req, res, next) => {
+const deleteProduct = (req, res, next) => {
     var _a;
-    const prodId = (_a = req.body) === null || _a === void 0 ? void 0 : _a.productId;
+    const prodId = (_a = req.params) === null || _a === void 0 ? void 0 : _a.productId;
     models_1.Product.findById(prodId)
         .then((product) => {
         if (!product) {
@@ -214,20 +214,22 @@ const postDeleteProduct = (req, res, next) => {
     })
         .then(() => {
         console.log("Product deleted");
-        res.redirect("/admin/products");
+        // res.redirect("/admin/products");
+        res.status(200).json({ message: "Success" });
     })
         .catch((err) => {
-        console.log(err);
-        const error = new Error(err);
-        error["httpStatusCode"] = 500;
-        return next(error);
+        res.status(500).json({ message: "Deleting Product failed" });
+        // console.log(err);
+        // const error: Error & { httpStatusCode?: number } = new Error(err);
+        // error["httpStatusCode"] = 500;
+        // return next(error);
     });
     // console.log('delete', prodId)
     // Product.deleteById(prodId, () => {
     //   res.redirect("/admin/products");
     // });
 };
-exports.postDeleteProduct = postDeleteProduct;
+exports.deleteProduct = deleteProduct;
 /**
  * We're using the fetchAll() method from the Product model to get all the products from the database,
  * then we're rendering the admin/products.ejs view with the products we got from the database
