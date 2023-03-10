@@ -7,6 +7,7 @@ import { Product as ProductInterface } from "../types";
 import { Product, Order, User } from "../models";
 
 // export const products: Product[] = [];
+const ITEM_PER_PAGE = 2;
 
 /**
  * We're using the fetchAll() method from the Product class to get all the products from the database.
@@ -31,13 +32,29 @@ export const getProducts = (
 ) => {
   // console.log("Admin products", adminData?.products);
   // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-  return Product.find()
+  const page = Number(req.query.page || 1);
+  let totalItems: number;
+  Product.find()
+    .countDocuments()
+    .then((numProduct) => {
+      totalItems = numProduct;
+      return Product.find()
+        .skip((page - 1) * ITEM_PER_PAGE)
+        .limit(ITEM_PER_PAGE);
+    })
     .then((result) => {
       res.render("shop/product-list", {
         prods: result,
         pageTitle: "All products",
         path: "/products",
         activeShop: true,
+        numProduct: totalItems,
+        currentPage: page,
+        hasNextPage: ITEM_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEM_PER_PAGE),
         // isAuthenticated: req.session.isLoggedIn,
       });
     })
@@ -70,13 +87,29 @@ export const getProduct = (
 };
 
 export const getIndex = (req: Request, res: Response, _next: NextFunction) => {
+  const page = Number(req.query.page || 1);
+  let totalItems: number;
   Product.find()
+    .countDocuments()
+    .then((numProduct) => {
+      totalItems = numProduct;
+      return Product.find()
+        .skip((page - 1) * ITEM_PER_PAGE)
+        .limit(ITEM_PER_PAGE);
+    })
     .then((products) => {
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
         path: "/",
         activeShop: true,
+        numProduct: totalItems,
+        currentPage: page,
+        hasNextPage: ITEM_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEM_PER_PAGE),
         // isAuthenticated: req.session.isLoggedIn,
         // csrfToken: req.csrfToken(),
       });
@@ -231,6 +264,16 @@ export const postCartDeleteProduct = (
 //   });
 // };
 
+/**
+ * We're populating the cart items with the product details, then we're creating a new order with the
+ * user details and the products details, then we're saving the order, then we're clearing the cart,
+ * then we're redirecting to the orders page
+ * @param {Request} req - Request - this is the incoming request object.
+ * @param {Response} res - Response - this is the response object that we can use to send a response
+ * back to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function.
+ */
 export const postOrder = (req: Request, res: Response, next: NextFunction) => {
   req.user
     .populate("cart.items.productId")
@@ -272,6 +315,16 @@ export const postOrder = (req: Request, res: Response, next: NextFunction) => {
   // }
 };
 
+/**
+ * We're using the find() method to find all the orders that have the same userId as the user that's
+ * logged in
+ * @param {Request} req - Request - This is the request object that contains the request information.
+ * @param {Response} res - Response - This is the response object that we will use to send the response
+ * back to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass the request
+ * to the next middleware in line.
+ * @returns The orders are being returned.
+ */
 export const getOrders = async (
   req: Request,
   res: Response,
@@ -295,6 +348,15 @@ export const getOrders = async (
   }
 };
 
+/**
+ * We are creating a new PDF document, setting the headers, piping the document to the response and the
+ * file system, and then writing the invoice data to the document
+ * @param {Request} req - Request - This is the incoming request object. It contains all the
+ * information about the request.
+ * @param {Response} res - The response object.
+ * @param {NextFunction} next - This is a function that we can call to pass control to the next
+ * middleware function in the stack.
+ */
 export const getInvoice = (req: Request, res: Response, next: NextFunction) => {
   const orderId = req.params?.orderId;
 

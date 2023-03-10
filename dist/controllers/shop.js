@@ -18,6 +18,7 @@ const fs_1 = __importDefault(require("fs"));
 const pdfkit_1 = __importDefault(require("pdfkit"));
 const models_1 = require("../models");
 // export const products: Product[] = [];
+const ITEM_PER_PAGE = 2;
 /**
  * We're using the fetchAll() method from the Product class to get all the products from the database.
  *
@@ -37,13 +38,29 @@ const models_1 = require("../models");
 const getProducts = (req, res, next) => {
     // console.log("Admin products", adminData?.products);
     // res.sendFile(path.join(rootDir, "..", "views", "shop.html"));
-    return models_1.Product.find()
+    const page = Number(req.query.page || 1);
+    let totalItems;
+    models_1.Product.find()
+        .countDocuments()
+        .then((numProduct) => {
+        totalItems = numProduct;
+        return models_1.Product.find()
+            .skip((page - 1) * ITEM_PER_PAGE)
+            .limit(ITEM_PER_PAGE);
+    })
         .then((result) => {
         res.render("shop/product-list", {
             prods: result,
             pageTitle: "All products",
             path: "/products",
             activeShop: true,
+            numProduct: totalItems,
+            currentPage: page,
+            hasNextPage: ITEM_PER_PAGE * page < totalItems,
+            hasPreviousPage: page > 1,
+            nextPage: page + 1,
+            previousPage: page - 1,
+            lastPage: Math.ceil(totalItems / ITEM_PER_PAGE),
             // isAuthenticated: req.session.isLoggedIn,
         });
     })
@@ -72,13 +89,29 @@ const getProduct = (req, res, _next) => {
 };
 exports.getProduct = getProduct;
 const getIndex = (req, res, _next) => {
+    const page = Number(req.query.page || 1);
+    let totalItems;
     models_1.Product.find()
+        .countDocuments()
+        .then((numProduct) => {
+        totalItems = numProduct;
+        return models_1.Product.find()
+            .skip((page - 1) * ITEM_PER_PAGE)
+            .limit(ITEM_PER_PAGE);
+    })
         .then((products) => {
         res.render("shop/index", {
             prods: products,
             pageTitle: "Shop",
             path: "/",
             activeShop: true,
+            numProduct: totalItems,
+            currentPage: page,
+            hasNextPage: ITEM_PER_PAGE * page < totalItems,
+            hasPreviousPage: page > 1,
+            nextPage: page + 1,
+            previousPage: page - 1,
+            lastPage: Math.ceil(totalItems / ITEM_PER_PAGE),
             // isAuthenticated: req.session.isLoggedIn,
             // csrfToken: req.csrfToken(),
         });
@@ -221,6 +254,16 @@ exports.postCartDeleteProduct = postCartDeleteProduct;
 //     path: "/checkout",
 //   });
 // };
+/**
+ * We're populating the cart items with the product details, then we're creating a new order with the
+ * user details and the products details, then we're saving the order, then we're clearing the cart,
+ * then we're redirecting to the orders page
+ * @param {Request} req - Request - this is the incoming request object.
+ * @param {Response} res - Response - this is the response object that we can use to send a response
+ * back to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass control to
+ * the next middleware function.
+ */
 const postOrder = (req, res, next) => {
     req.user
         .populate("cart.items.productId")
@@ -264,6 +307,16 @@ const postOrder = (req, res, next) => {
     // }
 };
 exports.postOrder = postOrder;
+/**
+ * We're using the find() method to find all the orders that have the same userId as the user that's
+ * logged in
+ * @param {Request} req - Request - This is the request object that contains the request information.
+ * @param {Response} res - Response - This is the response object that we will use to send the response
+ * back to the client.
+ * @param {NextFunction} next - NextFunction - This is a function that we can call to pass the request
+ * to the next middleware in line.
+ * @returns The orders are being returned.
+ */
 const getOrders = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
@@ -284,6 +337,15 @@ const getOrders = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.getOrders = getOrders;
+/**
+ * We are creating a new PDF document, setting the headers, piping the document to the response and the
+ * file system, and then writing the invoice data to the document
+ * @param {Request} req - Request - This is the incoming request object. It contains all the
+ * information about the request.
+ * @param {Response} res - The response object.
+ * @param {NextFunction} next - This is a function that we can call to pass control to the next
+ * middleware function in the stack.
+ */
 const getInvoice = (req, res, next) => {
     var _a;
     const orderId = (_a = req.params) === null || _a === void 0 ? void 0 : _a.orderId;
