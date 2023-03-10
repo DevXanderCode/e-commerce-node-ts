@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { body } from "express-validator/check";
+import { body } from "express-validator";
 
 // import rootDir from "../util/path";
 import {
@@ -8,7 +8,7 @@ import {
   postAddProduct,
   getEditProduct,
   postEditProduct,
-  postDeleteProduct,
+  deleteProduct,
 } from "../controllers/admin";
 import { isAuth } from "../middleware";
 
@@ -66,6 +66,6 @@ router.post(
   postEditProduct
 );
 
-router.post("/delete-product", isAuth, postDeleteProduct);
+router.delete("/product/:productId", isAuth, deleteProduct);
 
 export default router;

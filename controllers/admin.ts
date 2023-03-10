@@ -229,12 +229,12 @@ export const postEditProduct = (
  * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
  * is done.
  */
-export const postDeleteProduct = (
+export const deleteProduct = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const prodId = req.body?.productId;
+  const prodId = req.params?.productId;
   Product.findById(prodId)
     .then((product): any => {
       if (!product) {
@@ -245,14 +245,16 @@ export const postDeleteProduct = (
     })
     .then(() => {
       console.log("Product deleted");
-      res.redirect("/admin/products");
+      // res.redirect("/admin/products");
+      res.status(200).json({ message: "Success" });
     })
     .catch((err) => {
-      console.log(err);
-      const error: Error & { httpStatusCode?: number } = new Error(err);
-      error["httpStatusCode"] = 500;
+      res.status(500).json({ message: "Deleting Product failed" });
+      // console.log(err);
+      // const error: Error & { httpStatusCode?: number } = new Error(err);
+      // error["httpStatusCode"] = 500;
 
-      return next(error);
+      // return next(error);
     });
   // console.log('delete', prodId)
   // Product.deleteById(prodId, () => {
