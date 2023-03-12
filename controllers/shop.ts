@@ -253,16 +253,16 @@ export const postCartDeleteProduct = (
     });
 };
 
-// export const getCheckout = (
-//   _req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   res.render("shop/checkout", {
-//     pageTitle: "Checkout",
-//     path: "/checkout",
-//   });
-// };
+export const getCheckout = (
+  _req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  res.render("shop/checkout", {
+    pageTitle: "Checkout",
+    path: "/checkout",
+  });
+};
 
 /**
  * We're populating the cart items with the product details, then we're creating a new order with the

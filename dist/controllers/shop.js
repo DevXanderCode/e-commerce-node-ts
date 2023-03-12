@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInvoice = exports.getOrders = exports.postOrder = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
+exports.getInvoice = exports.getOrders = exports.postOrder = exports.getCheckout = exports.postCartDeleteProduct = exports.postCart = exports.getCart = exports.getIndex = exports.getProduct = exports.getProducts = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const pdfkit_1 = __importDefault(require("pdfkit"));
@@ -244,16 +244,13 @@ const postCartDeleteProduct = (req, res, next) => {
     });
 };
 exports.postCartDeleteProduct = postCartDeleteProduct;
-// export const getCheckout = (
-//   _req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) => {
-//   res.render("shop/checkout", {
-//     pageTitle: "Checkout",
-//     path: "/checkout",
-//   });
-// };
+const getCheckout = (_req, res, _next) => {
+    res.render("shop/checkout", {
+        pageTitle: "Checkout",
+        path: "/checkout",
+    });
+};
+exports.getCheckout = getCheckout;
 /**
  * We're populating the cart items with the product details, then we're creating a new order with the
  * user details and the products details, then we're saving the order, then we're clearing the cart,
