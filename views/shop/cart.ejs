@@ -13,25 +13,25 @@
               <article class="card product-item">
                 <header class="card__header">
                   <h1 class="product__title">
-                    <%= product.productId.title %>(<%= product.quantity %>)
+                    <%= product?.productId?.title %>(<%= product?.quantity %>)
                   </h1>
                 </header>
                 <div class="card__image">
-                  <img src="<%= product.productId.imageUrl %>" alt="<%= product._doc.title %>" />
+                  <img src="<%= product?.productId?.imageUrl %>" alt="<%= product?._doc.title %>" />
                 </div>
                 <div class="card__content">
                   <h2 class="product__price">
-                    ₦<%= product.productId.price %>
+                    ₦<%= product?.productId?.price %>
                   </h2>
                   <p class="product__description">
-                    <%= product.productId.description %>
+                    <%= product?.productId?.description %>
                   </p>
                 </div>
                 <div class="card__actions">
                   <form action="/cart-delete-item" method="post">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
 
-                    <input type="hidden" name="productId" value="<%=product.productId._id%>" />
+                    <input type="hidden" name="productId" value="<%=product?.productId?._id%>" />
                     <button class="btn" type="submit">Delete</button>
                   </form>
                 </div>
@@ -40,11 +40,12 @@
           </div>
           <hr />
           <div class="centered">
-            <form action="/create-order" method="POST">
+            <!-- <form action="/create-order" method="POST">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
 
               <button type="submit" class="btn">Order Now!</button>
-            </form>
+            </form>-->
+            <a class="btn" href="/checkout">Order Now!</a>
           </div>
           <% } else { %>
             <h1>No Products Found!</h1>

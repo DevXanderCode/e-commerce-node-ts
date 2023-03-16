@@ -6,7 +6,7 @@ import express, { Router } from "express";
 // import adminData from "./admin";
 import {
   getCart,
-  // getCheckout,
+  getCheckout,
   getIndex,
   getProducts,
   getOrders,
@@ -30,7 +30,7 @@ router.get("/products", getProducts);
 
 router.get("/products/:productId", getProduct);
 
-// router.get("/checkout", getCheckout);
+router.get("/checkout", getCheckout);
 
 router.get("/orders", isAuth, getOrders);
 
