@@ -72,7 +72,7 @@ const getProducts = (req, res, next) => {
     });
 };
 exports.getProducts = getProducts;
-const getProduct = (req, res, _next) => {
+const getProduct = (req, res, next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.productId;
     models_1.Product.findById(prodId)
@@ -85,10 +85,16 @@ const getProduct = (req, res, _next) => {
             // isAuthenticated: req.session.isLoggedIn,
         });
     })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+        console.error("Logging err", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
+    });
+    // .catch((err) => console.error(err));
 };
 exports.getProduct = getProduct;
-const getIndex = (req, res, _next) => {
+const getIndex = (req, res, next) => {
     const page = Number(req.query.page || 1);
     let totalItems;
     models_1.Product.find()
@@ -116,7 +122,13 @@ const getIndex = (req, res, _next) => {
             // csrfToken: req.csrfToken(),
         });
     })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+        console.error("Logging err", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
+    });
+    // .catch((err) => console.log(err));
     // Product.fetchAll()
     //   .then(([rows]) => {
     //     res.render("shop/index", {
@@ -139,15 +151,15 @@ exports.getIndex = getIndex;
  * the client.
  * @param {NextFunction} _next - NextFunction is a function that is called when the middleware is done.
  */
-const getCart = (req, res, _next) => {
+const getCart = (req, res, next) => {
     // if (req.session.user) {
     // return
     req.user
         .populate("cart.items.productId")
         .then((user) => {
-        // console.log("Logging cart", JSON.stringify(user, null, 2));
         var _a;
         const products = (_a = user === null || user === void 0 ? void 0 : user.cart) === null || _a === void 0 ? void 0 : _a.items;
+        // console.log("Logging cart", JSON.stringify(products, null, 2));
         res.render("shop/cart", {
             pageTitle: "My Cart",
             path: "/cart",
@@ -155,7 +167,13 @@ const getCart = (req, res, _next) => {
             // isAuthenticated: req.session.isLoggedIn,
         });
     })
-        .catch((err) => console.log("get cart Errror", err));
+        .catch((err) => {
+        console.error("Logging err", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
+    });
+    // .catch((err: Error) => console.log("get cart Errror", err));
     // }
     // return Promise.resolve();
 };
@@ -171,7 +189,7 @@ exports.getCart = getCart;
  * @param {NextFunction} _next - NextFunction - This is a function that is called when the middleware
  * is done.
  */
-const postCart = (req, res, _next) => {
+const postCart = (req, res, next) => {
     var _a;
     const prodId = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.productId;
     models_1.Product.findById(prodId)
@@ -179,7 +197,13 @@ const postCart = (req, res, _next) => {
         req.user.addToCart(prod);
         res.redirect("/cart");
     })
-        .catch((err) => console.log("Logging error", err));
+        .catch((err) => {
+        console.error("Logging err", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
+    });
+    // .catch((err) => console.log("Logging error", err));
     // let fetchedCart: any;
     // let newQuantity = 1;
     // req.user
@@ -244,10 +268,31 @@ const postCartDeleteProduct = (req, res, next) => {
     });
 };
 exports.postCartDeleteProduct = postCartDeleteProduct;
-const getCheckout = (_req, res, _next) => {
-    res.render("shop/checkout", {
-        pageTitle: "Checkout",
-        path: "/checkout",
+const getCheckout = (req, res, next) => {
+    req.user
+        .populate("cart.items.productId")
+        .then((user) => {
+        // console.log("Logging cart", JSON.stringify(user, null, 2));
+        var _a;
+        const products = (_a = user === null || user === void 0 ? void 0 : user.cart) === null || _a === void 0 ? void 0 : _a.items;
+        let total = 0;
+        console.log("Logging cart", JSON.stringify(products, null, 2));
+        products.forEach((p) => {
+            total += p.quantity * p.productId.price;
+        });
+        res.render("shop/checkout", {
+            pageTitle: "Checkout",
+            path: "/checkout",
+            products: products,
+            totalSum: total,
+            // isAuthenticated: req.session.isLoggedIn,
+        });
+    })
+        .catch((err) => {
+        console.error("Logging err", err);
+        const error = new Error(err);
+        error["httpStatusCode"] = 500;
+        return next(error);
     });
 };
 exports.getCheckout = getCheckout;
