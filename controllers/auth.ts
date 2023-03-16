@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { hash, compare } from "bcryptjs";
 import * as dotenv from "dotenv";
 import crypto from "crypto";
-import { validationResult } from "express-validator/check";
+import { validationResult } from "express-validator";
 import { User } from "../models";
 import { sendEmail } from "../externals/mailjet";
 

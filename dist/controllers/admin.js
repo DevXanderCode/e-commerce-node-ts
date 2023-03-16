@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAdminProducts = exports.deleteProduct = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
-const check_1 = require("express-validator/check");
+const express_validator_1 = require("express-validator");
 const models_1 = require("../models");
 const file_1 = require("../util/file");
 // import { Model } from "sequelize-typescript";
@@ -23,7 +23,7 @@ const postAddProduct = (req, res, next) => {
     var _a;
     const { title, description, price } = req === null || req === void 0 ? void 0 : req.body;
     const image = req === null || req === void 0 ? void 0 : req.file;
-    const errors = (0, check_1.validationResult)(req);
+    const errors = (0, express_validator_1.validationResult)(req);
     console.log("Logging Image url");
     if (!image) {
         return res.status(422).render("admin/edit-product", {
@@ -145,7 +145,7 @@ const postEditProduct = (req, res, next) => {
     var _a;
     const { productId: prodId, title, description, price } = req === null || req === void 0 ? void 0 : req.body;
     const image = req.file;
-    const errors = (0, check_1.validationResult)(req);
+    const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         // console.log("Logging the add product validation errors", errors.array());
         return res.status(422).render("admin/edit-product", {

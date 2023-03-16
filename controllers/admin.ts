@@ -1,7 +1,7 @@
 // import { getProducts } from "./shop";
 // import { UserRequest } from "./../types";
 import { Response, Request, NextFunction } from "express";
-import { validationResult } from "express-validator/check";
+import { validationResult } from "express-validator";
 import { Product } from "../models";
 import { deleteFile } from "../util/file";
 // import { Model } from "sequelize-typescript";
